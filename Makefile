@@ -18,4 +18,4 @@ run-with-volume:
 	docker run -it -p 8080:8080 -v ~/Documents/Projects/e-motion/e-motion-web:/usr/src/app/e-motion-web/. e-motion-web
 
 # Phony targets
-.PHONY: install-docker create-folder-dockerfile build-image run-container check-create-project move-code create-volume run-with-volume
+.PHONY: install-docker create-folder-dockerfile build-image run-container check-create-project move-code create-volume run-with-volume init
