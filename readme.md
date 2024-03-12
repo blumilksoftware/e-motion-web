@@ -1,15 +1,27 @@
 # e-motion-web
 
 ## Project setup
+### Project initialization
 ```
-npm install
+make init
 ```
-
-### Compiles and hot-reloads for development
+### Run project
 ```
-npm run serve
+make run
 ```
-
+### Stop project
+```
+make stop
+```
+### remove project container
+```
+make clean
+```
+### remove project image
+```
+make remove-img
+```
+## TBD:
 ### Compiles and minifies for production
 ```
 npm run build
@@ -30,5 +42,3 @@ npm run test:e2e
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
