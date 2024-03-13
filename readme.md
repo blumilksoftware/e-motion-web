@@ -9,6 +9,10 @@ make init
 ```
 make run
 ```
+### Attach shell to project container
+```
+make shell
+```
 ### Stop project
 ```
 make stop
@@ -21,7 +25,7 @@ make clean
 ```
 make remove-img
 ```
-## TBD:
+## Commands to run inside container:
 ### Compiles and minifies for production
 ```
 npm run build

@@ -2,7 +2,10 @@ init:
 	docker build -t e-motion-web .
 
 run:
-	docker run -it -p 8080:8080 -v .:/usr/src/app/e-motion-web e-motion-web -d
+	docker run -it -p 8080:8080 -v .:/usr/src/app/e-motion-web e-motion-web
+
+shell:
+	docker exec -it $$(docker ps --filter "ancestor=e-motion-web" -q) sh
 
 clean:
 	docker stop $$(docker ps -a --filter "ancestor=e-motion-web" -q)
@@ -14,5 +17,4 @@ remove-img:
 stop:
 	docker stop $$(docker ps --filter "ancestor=e-motion-web" -q)
 
-# Phony targets
 .PHONY: init run clean remove stop
