@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import LangSwitch from "@/components/LangSwitch.vue"; // @ is an alias to /src
 
-const locale = ref("en");
 const isMenuOpen = ref(false);
 const isAdmin = ref(true);
 const isAuth = ref(false);

@@ -2,12 +2,12 @@ networks:
   traefik-proxy-blumilk-local:
     external: true
 services:
-  e-motion-web:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
-    # image: e-motion-web:latest
-    container_name: e-motion-web
+    image: e-motion-web
+    # container_name: e-motion
     labels:
       - "traefik.enable=true"
       - "traefik.blumilk.environment=true"

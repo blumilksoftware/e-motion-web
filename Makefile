@@ -5,16 +5,12 @@ init:
 run:
 	docker compose up -d
 shell:
-	docker exec -it e-motion-web sh
-
-clean:
-	docker stop $$(docker ps -a --filter "ancestor=e-motion-web" -q)
-	docker rm $$(docker ps -a --filter "ancestor=e-motion-web" -q)
+	docker exec -it $$(docker ps --filter "ancestor=e-motion-web" -q) sh
 
 remove-img:
 	docker rmi e-motion-web
 
 stop:
-	docker stop $$(docker ps --filter "ancestor=e-motion-web" -q)
+	docker compose down
 
-.PHONY: init run shell clean remove stop
+.PHONY: init run shell remove-img stop
