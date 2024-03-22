@@ -1,11 +1,7 @@
 <template>
   <div class="home">
-    <img
-      alt="Vue logo"
-      src="favicon.svg"
-      class="h-48 w-48 relative left-[calc(50%-96px)]"
-    />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <div class="h-[calc(100%-64px)] w-full lg:w-1/2 absolute left-0">main</div>
+    <div class="h-[calc(100%-64px)] w-full lg:w-1/2 absolute right-0">map</div>
   </div>
 </template>
 

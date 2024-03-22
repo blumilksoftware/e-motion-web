@@ -1,9 +1,9 @@
 init:
+	[ -f .env ] || cp .env.example .env
 	docker build -t e-motion-web .
 
 run:
-	docker run -it -p 8080:8080 -v .:/usr/src/app/e-motion-web e-motion-web
-
+	docker compose up -d
 shell:
 	docker exec -it $$(docker ps --filter "ancestor=e-motion-web" -q) sh
 

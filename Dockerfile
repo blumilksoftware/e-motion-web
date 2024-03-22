@@ -1,10 +1,20 @@
+# Use the official Node.js 20 image with Alpine Linux as base
 FROM node:20-alpine
 
+# Set the working directory in the container
 WORKDIR /usr/src/app/e-motion-web
-RUN npm install -g @vue/cli
-VOLUME /usr/src/app/e-motion-web/node_modules
-COPY package*.json ./
-RUN npm install
-EXPOSE 8080
 
+# Install Vue CLI globally
+RUN npm install -g @vue/cli
+
+# Copy package.json and package-lock.json (if exists) to the container
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Expose port 80 internally
+EXPOSE 80
+
+# Start the application
 CMD ["npm", "run", "serve"]

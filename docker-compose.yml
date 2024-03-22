@@ -1,0 +1,28 @@
+networks:
+  traefik-proxy-blumilk-local:
+    external: true
+services:
+  e-motion-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: e-motion-web:latest
+    container_name: e-motion-web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.blumilk.environment=true"
+      # HTTP
+      - "traefik.http.routers.emotion-http-router.rule=Host(`emotion.blumilk.localhost`)"
+      - "traefik.http.routers.emotion-http-router.entrypoints=web"
+      # HTTP to HTTPS redirect
+      #      - "traefik.http.routers.escooters-http-router.middlewares=https-redirect@file"
+      # HTTPS
+      - "traefik.http.routers.emotion-https-router.rule=Host(`emotion.blumilk.localhost`)"
+      - "traefik.http.routers.emotion-https-router.entrypoints=websecure"
+      - "traefik.http.routers.emotion-https-router.tls=true"
+    volumes:
+      - .:/usr/src/app/e-motion-web
+    ports:
+      - ${DOCKER_APP_HOST_PORT:-3852}:80
+    networks:
+      - traefik-proxy-blumilk-local
