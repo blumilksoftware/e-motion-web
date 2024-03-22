@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
+import "@/../node_modules/flag-icons/css/flag-icons.min.css";
 import store from "@/store/sessionData";
 const locales = [
   {
@@ -31,12 +31,11 @@ const currentLocale = computed(() => store.state.locale);
         changeLocale(locale.lang);
         console.log(`${locale.lang}`);
       "
-      :class="[currentLocale === locale.lang ? 'opacity-10' : 'opacity-30']"
+      :class="[currentLocale === locale.lang ? 'opacity-100' : 'opacity-30']"
       :disabled="currentLocale === locale.lang"
     >
-      {{ locale.name }}
       <i
-        :class="`${locale.iso} flat flag`"
+        :class="`fi-${locale.iso} flat fi`"
         class="!h-[24px] !w-[36px] rounded md:!h-[18px] md:!w-[27px]"
       />
     </button>
