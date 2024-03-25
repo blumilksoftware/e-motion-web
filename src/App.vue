@@ -1,10 +1,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import LangSwitch from "@/components/LangSwitch.vue"; // @ is an alias to /src
-
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserCircleIcon,
+  ComputerDesktopIcon,
+  ArrowRightStartOnRectangleIcon,
+  MapPinIcon,
+  FlagIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/vue/24/outline";
+// import { TranslateResult } from "vue-i18n";
+const isAuthDialogOpened = ref(false);
+const isLoginFormSelected = ref(true);
+const isPasswordVisible = ref(false);
 const isMenuOpen = ref(false);
 const isAdmin = ref(true);
-const isAuth = ref(false);
+const isAuth = ref(true);
 const countCitiesWithoutAssignedCountry = ref(1);
 const countCitiesWithoutCoordinates = ref(1);
 function logout() {
@@ -14,6 +28,11 @@ function toggleAuthDialog() {
   console.log("toggleAuthDialog");
 }
 //  TODO: scripts
+
+/**
+ * You can specify the your definition schema with object literal at first type parameters
+ * About type parameter, see the http://vue-i18n.intlify.dev/api/composition.html#usei18n
+ */
 </script>
 
 <template>
@@ -21,8 +40,7 @@ function toggleAuthDialog() {
     class="w-full z-30 h-16 px-6 py-3 bg-white justify-between items-center flex"
   >
     <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold"
-      ><img src="@/assets/logo.png" class="h-10 inline-block float-start" />
-      <span>e-motion</span>
+      ><img src="/logo.svg" class="h-10 inline-block float-start" />
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -30,38 +48,14 @@ function toggleAuthDialog() {
         class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
       >
         <span class="sr-only">Open main menu</span>
-        <svg
-          class="block h-6 w-6"
+        <bars3-icon
+          class="h-6 w-6"
           :class="{ hidden: isMenuOpen, block: !isMenuOpen }"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16m-7 6h7"
-          />
-        </svg>
-        <svg
-          class="hidden h-6 w-6"
-          :class="{ block: isMenuOpen, hidden: !isMenuOpen }"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        />
+        <x-mark-icon
+          class="h-6 w-6"
+          :class="{ hidden: !isMenuOpen, block: isMenuOpen }"
+        />
       </button>
     </div>
     <div class="hidden items-center md:flex md:gap-x-12">
@@ -76,39 +70,322 @@ function toggleAuthDialog() {
           to="/admin/cities"
           class="flex animate-pulse items-center rounded-full border border-rose-500 bg-rose-50 px-2 py-1"
         >
-          [flag]{{ countCitiesWithoutAssignedCountry }}
+          <flag-icon class="h-4 w-4" />
+          {{ countCitiesWithoutAssignedCountry }}
         </router-link>
         <router-link
           v-if="countCitiesWithoutCoordinates"
           to="/admin/cities"
           class="ml-2 flex animate-pulse items-center rounded-full border border-rose-500 bg-rose-50 px-2 py-1"
         >
-          [map]{{ countCitiesWithoutCoordinates }}
+          <map-pin-icon class="h-4 w-4" />
+          {{ countCitiesWithoutCoordinates }}
         </router-link>
       </div>
       <router-link v-if="isAdmin" to="/admin/cities" class="font-bold"
-        >[desktop]</router-link
-      >
+        ><computer-desktop-icon class="h-8 w-8"
+      /></router-link>
       <button>
-        <img
+        <arrow-right-start-on-rectangle-icon
           v-if="isAuth"
-          src="favicon.ico"
-          alt=""
-          class="h-6 w-6"
+          class="h-8 w-8"
           @click="logout"
         />
-        <img
-          v-else
-          src="favicon.ico"
-          alt=""
-          class="h-6 w-6 invert"
-          @click="toggleAuthDialog"
-        />
+        <user-circle-icon v-else class="h-8 w-8" @click="toggleAuthDialog" />
       </button>
       <lang-switch />
     </div>
   </nav>
-  <router-view />
+  <!-- <div
+    v-if="isAuthDialogOpened"
+    class="fixed inset-0 z-50 flex items-center bg-black/50"
+  >
+    <div
+      ref="authDialog"
+      class="mx-auto w-11/12 rounded-lg bg-white shadow-lg sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3"
+    >
+      <div class="flex w-full justify-end">
+        <button class="p-4" @click="toggleAuthDialog">
+          <XMarkIcon class="h-6 w-6" />
+        </button>
+      </div>
+      <div v-if="isLoginFormSelected" class="rounded-lg px-6 pb-8">
+        <form class="space-y-5" @submit.prevent="login">
+          <div>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{
+              $t("Email")
+            }}</label>
+            <input
+              v-model="loginForm.email"
+              type="email"
+              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              required
+            />
+          </div>
+          <div class="relative">
+            <label
+              class="mb-1 block w-full text-sm font-semibold text-gray-800"
+              >{{ $t("Password") }}</label
+            >
+            <input
+              v-model="loginForm.password"
+              :type="isPasswordVisible ? 'text' : 'password'"
+              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              required
+            />
+            <button
+              type="button"
+              class="absolute bottom-3 right-2 md:bottom-2"
+              @click="togglePasswordVisibility"
+            >
+              <component
+                :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
+                class="h-6 w-6 text-blumilk-400"
+              />
+            </button>
+          </div>
+          <ErrorMessage :message="loginForm.errors.loginError" />
+          <div>
+            <label
+              class="mb-4 flex justify-center text-sm font-semibold text-gray-800"
+              >{{ $t("You can also login by:") }}</label
+            >
+            <div class="flex items-center justify-center space-x-5">
+              <button
+                type="button"
+                class="flex items-center justify-center"
+                @click="socialMediaLogin('github')"
+              >
+                <img
+                  class="h-10 w-10"
+                  src="@/assets/github.png"
+                  alt="github logo"
+                />
+              </button>
+              <button
+                type="button"
+                class="flex items-center justify-center"
+                @click="socialMediaLogin('facebook')"
+              >
+                <img
+                  class="h-10 w-10"
+                  src="@/assets/facebook.png"
+                  alt="facebook logo"
+                />
+              </button>
+              <button
+                type="button"
+                class="flex items-center justify-center"
+                @click="socialMediaLogin('google')"
+              >
+                <img
+                  class="h-10 w-10"
+                  src="@/assets/google.png"
+                  alt="google logo"
+                />
+              </button>
+            </div>
+          </div>
+          <div class="flex w-full md:w-fit">
+            <button
+              type="submit"
+              class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
+            >
+              {{ $t("Log in") }}
+            </button>
+          </div>
+        </form>
+        <button
+          :disabled="loginForm.processing"
+          class="mt-6 text-xs font-light"
+          @click="toggleAuthOption"
+        >
+          {{ $t("Don`t have an account?") }}
+          <span class="font-normal">{{ $t("Sign up") }}</span>
+        </button>
+      </div>
+
+      <div v-else class="rounded-lg px-6 pb-8">
+        <form class="space-y-5" @submit.prevent="register">
+          <div>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{
+              $t("Name")
+            }}</label>
+            <input
+              v-model="registerForm.name"
+              type="text"
+              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              required
+            />
+            <ErrorMessage :message="registerForm.errors.name" />
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{
+              $t("Email")
+            }}</label>
+            <input
+              v-model="registerForm.email"
+              type="email"
+              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              required
+            />
+            <ErrorMessage :message="registerForm.errors.email" />
+          </div>
+          <div class="relative">
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{
+              $t("Password")
+            }}</label>
+            <input
+              v-model="registerForm.password"
+              :type="isPasswordVisible ? 'text' : 'password'"
+              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              required
+            />
+            <button
+              type="button"
+              class="absolute bottom-3 right-2 md:bottom-2"
+              @click="togglePasswordVisibility"
+            >
+              <component
+                :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
+                class="h-6 w-6 text-blumilk-400"
+              />
+            </button>
+          </div>
+          <ErrorMessage :message="registerForm.errors.password" />
+          <div class="flex w-full md:w-fit">
+            <button
+              type="submit"
+              class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
+            >
+              {{ $t("Sign up") }}
+            </button>
+          </div>
+        </form>
+        <button
+          :disabled="registerForm.processing"
+          class="mt-6 text-xs font-light"
+          @click="toggleAuthOption"
+        >
+          {{ $t("Already have an account?") }}
+          <span class="font-normal">{{ $t("Log in") }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <Dialog
+    v-if="isMobileMenuOpened"
+    as="div"
+    class="z-30 lg:hidden"
+    :open="isMobileMenuOpened"
+    @close="toggleMobileMenu"
+  >
+    <div class="fixed inset-0 z-30" />
+    <DialogPanel
+      class="fixed inset-y-0 right-0 z-30 w-full overflow-y-auto border-b-2 bg-white px-6 py-3 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
+    >
+      <div class="flex items-center justify-between sm:justify-end">
+        <InertiaLink href="/">
+          <img
+            class="h-10 sm:hidden"
+            src="@/assets/scooter.png"
+            alt="escooter logo"
+          />
+        </InertiaLink>
+        <button
+          type="button"
+          class="-m-2.5 rounded-md px-2.5 text-gray-700 sm:pt-4"
+          @click="toggleMobileMenu"
+        >
+          <span class="sr-only">{{ $t("Close menu") }}</span>
+          <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+        </button>
+      </div>
+      <div class="mt-6 flow-root">
+        <div class="-my-6 divide-y divide-gray-500/10">
+          <div class="space-y-4 pt-6">
+            <div class="space-y-2 py-6">
+              <InertiaLink
+                v-for="item in navigation"
+                :key="item.name"
+                :href="item.href"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-blumilk-25"
+              >
+                {{ $t(item.name) }}
+              </InertiaLink>
+            </div>
+
+            <div
+              v-if="
+                countCitiesWithoutAssignedCountry ||
+                countCitiesWithoutCoordinates
+              "
+              class="flex flex-col items-start text-sm font-bold text-rose-500"
+            >
+              <InertiaLink
+                v-if="countCitiesWithoutAssignedCountry"
+                href="/admin/cities"
+                class="flex items-center"
+              >
+                <FlagIcon class="mr-2 h-5 w-5 shrink-0" />
+                {{ $t("Cities with no country assigned:") }}
+                {{ countCitiesWithoutAssignedCountry }}
+              </InertiaLink>
+              <InertiaLink
+                v-if="countCitiesWithoutCoordinates"
+                href="/admin/cities?order=empty-coordinates"
+                class="mt-5 flex items-center"
+              >
+                <MapPinIcon class="mr-2 h-5 w-5 shrink-0" />
+                {{ $t("Cities with no coordinates assigned:") }}
+                {{ countCitiesWithoutCoordinates }}
+              </InertiaLink>
+            </div>
+
+            <div class="pb-6">
+              <button
+                v-if="isAdmin"
+                class="-mx-3 mb-4 flex w-full font-semibold text-gray-800"
+              >
+                <InertiaLink
+                  v-if="isAdmin"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  href="/admin/cities"
+                >
+                  <ComputerDesktopIcon class="h-6 w-6" />
+                  <span class="ml-2">{{ $t("Admin panel") }}</span>
+                </InertiaLink>
+              </button>
+              <button class="-mx-3 flex w-full font-semibold text-gray-800">
+                <span
+                  v-if="isAuth"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  @click="logout"
+                >
+                  <ArrowRightOnRectangleIcon class="h-6 w-6" />
+                  <span class="ml-2">{{ $t("Log out") }}</span>
+                </span>
+
+                <span
+                  v-if="!isAuth"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  @click="toggleAuthDialog"
+                >
+                  <UserCircleIcon class="h-6 w-6" />
+                  <span class="ml-2">{{ $t("Log in") }}</span>
+                </span>
+              </button>
+              <div class="mx-auto flex items-center pt-8">
+                <LanguageSwitch class="text-2xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DialogPanel>
+  </Dialog> -->
 </template>
 
 <style lang="scss">

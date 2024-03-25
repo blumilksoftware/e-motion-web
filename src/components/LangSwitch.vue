@@ -15,7 +15,7 @@ const locales = [
   },
 ];
 
-const changeLocale = (locale) => {
+const changeLocale = (locale: string) => {
   store.commit("setLocale", locale);
 };
 
@@ -23,13 +23,14 @@ const currentLocale = computed(() => store.state.locale);
 </script>
 
 <template>
-  <div class="flex space-x-2 pt-1.5">
+  <div @load="$i18n.locale = currentLocale" class="flex space-x-2 pt-1.5">
     <button
       v-for="locale in locales"
       :key="locale.lang"
       @click="
         changeLocale(locale.lang);
         console.log(`${locale.lang}`);
+        $i18n.locale = locale.lang;
       "
       :class="[currentLocale === locale.lang ? 'opacity-100' : 'opacity-30']"
       :disabled="currentLocale === locale.lang"

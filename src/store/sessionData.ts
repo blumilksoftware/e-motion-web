@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { defaultLocale } from "@/locales";
 
 // Helper function to set a cookie
 function setCookie(name: string, value: string, days: number) {
@@ -22,7 +23,7 @@ function getCookie(name: string | string[]) {
 // Define your Vuex store here
 const store = createStore({
   state: {
-    locale: getCookie("locale") || "en", // Initialize locale from cookie or default to 'en'
+    locale: getCookie("locale") || defaultLocale, // Initialize locale from cookie or default to 'en'
   },
   mutations: {
     setLocale(state, locale) {
