@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import LangSwitch from "@/components/LangSwitch.vue"; // @ is an alias to /src
+import store from "@/store/sessionData";
+
 import {
   Bars3Icon,
   XMarkIcon,
@@ -12,6 +14,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/vue/24/outline";
+import { onMounted } from "vue";
 // import { TranslateResult } from "vue-i18n";
 const isAuthDialogOpened = ref(false);
 const isLoginFormSelected = ref(true);
@@ -27,6 +30,8 @@ function logout() {
 function toggleAuthDialog() {
   console.log("toggleAuthDialog");
 }
+
+const currentLocale = computed(() => store.state.locale);
 //  TODO: scripts
 
 /**
@@ -96,6 +101,7 @@ function toggleAuthDialog() {
       <lang-switch />
     </div>
   </nav>
+  <!-- TODO: rest of nav -->
   <!-- <div
     v-if="isAuthDialogOpened"
     class="fixed inset-0 z-50 flex items-center bg-black/50"
@@ -386,6 +392,7 @@ function toggleAuthDialog() {
       </div>
     </DialogPanel>
   </Dialog> -->
+  <router-view :locale="currentLocale" />
 </template>
 
 <style lang="scss">
