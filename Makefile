@@ -13,4 +13,8 @@ remove-img:
 stop:
 	docker compose down
 
-.PHONY: init run shell remove-img stop
+prune:
+	make stop
+	docker system prune -a
+
+.PHONY: init run shell remove-img stop prune

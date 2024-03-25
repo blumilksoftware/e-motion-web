@@ -15,7 +15,7 @@ import {
   EyeSlashIcon,
 } from "@heroicons/vue/24/outline";
 import { onMounted } from "vue";
-// import { TranslateResult } from "vue-i18n";
+const isMobileMenuOpened = ref(false);
 const isAuthDialogOpened = ref(false);
 const isLoginFormSelected = ref(true);
 const isPasswordVisible = ref(false);
@@ -29,6 +29,9 @@ function logout() {
 }
 function toggleAuthDialog() {
   console.log("toggleAuthDialog");
+}
+function toggleMobileMenu() {
+  console.log("toggleMobileMenu");
 }
 
 const currentLocale = computed(() => store.state.locale);
@@ -102,7 +105,8 @@ const currentLocale = computed(() => store.state.locale);
     </div>
   </nav>
   <!-- TODO: rest of nav -->
-  <!-- <div
+  <!--
+    <div
     v-if="isAuthDialogOpened"
     class="fixed inset-0 z-50 flex items-center bg-black/50"
   >
@@ -280,7 +284,8 @@ const currentLocale = computed(() => store.state.locale);
       </div>
     </div>
   </div>
-
+-->
+  <!--
   <Dialog
     v-if="isMobileMenuOpened"
     as="div"

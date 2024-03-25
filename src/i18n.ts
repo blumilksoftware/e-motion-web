@@ -2,9 +2,13 @@ import { createI18n } from "vue-i18n";
 import pl from "./locales/pl.json";
 import en from "./locales/en.json";
 
+interface i18mTypes {
+  [key: string]: any;
+}
+
 function loadLocaleMessages() {
-  const locales: { [key: string]: any }[] = [{ pl: pl }, { en: en }];
-  const messages: { [key: string]: any } = {}; // Add index signature
+  const locales: i18mTypes[] = [{ pl: pl }, { en: en }];
+  const messages: i18mTypes = {}; // Add index signature
   locales.forEach((locale) => {
     const key = Object.keys(locale)[0];
     messages[key] = locale[key];
