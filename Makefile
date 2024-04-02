@@ -4,11 +4,11 @@ init:
 
 run:
 	docker compose up -d
-	
+
 shell:
 	docker exec -it e-motion-web sh
 
-remove-img:
+img-clean:
 	docker rmi e-motion-web
 
 stop:
@@ -18,4 +18,4 @@ prune:
 	make stop
 	docker system prune -a
 
-.PHONY: init run shell remove-img stop prune
+.PHONY: init run shell img-clean stop prune
