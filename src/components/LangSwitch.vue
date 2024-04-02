@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import "@/../node_modules/flag-icons/css/flag-icons.min.css";
 import store from "@/store/sessionData";
-import i18n from "@/i18n";
 
 const locales = [
   {

@@ -5,7 +5,6 @@ FROM node:20-alpine
 WORKDIR /usr/src/app/e-motion-web
 
 # Install Vue CLI globally
-RUN npm install -g @vue/cli
 
 # Copy package.json and package-lock.json (if exists) to the container
 COPY package*.json ./

@@ -1,11 +1,12 @@
 init:
 	[ -f .env ] || cp .env.example .env
-	docker build -t e-motion-web .
+	make run
 
 run:
 	docker compose up -d
+	
 shell:
-	docker exec -it $$(docker ps --filter "ancestor=e-motion-web" -q) sh
+	docker exec -it e-motion-web sh
 
 remove-img:
 	docker rmi e-motion-web

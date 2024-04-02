@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import LangSwitch from "@/components/LangSwitch.vue"; // @ is an alias to /src
-import store from "@/store/sessionData";
 
 import {
   Bars3Icon,
@@ -14,7 +13,6 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/vue/24/outline";
-import { onMounted } from "vue";
 const isMobileMenuOpened = ref(false);
 const isAuthDialogOpened = ref(false);
 const isLoginFormSelected = ref(true);
@@ -24,23 +22,81 @@ const isAdmin = ref(true);
 const isAuth = ref(true);
 const countCitiesWithoutAssignedCountry = ref(1);
 const countCitiesWithoutCoordinates = ref(1);
-function logout() {
-  console.log("logout");
-}
-function toggleAuthDialog() {
-  console.log("toggleAuthDialog");
-}
-function toggleMobileMenu() {
-  console.log("toggleMobileMenu");
-}
 
-const currentLocale = computed(() => store.state.locale);
 //  TODO: scripts
 
 /**
  * You can specify the your definition schema with object literal at first type parameters
  * About type parameter, see the http://vue-i18n.intlify.dev/api/composition.html#usei18n
  */
+// Placeholder functions
+const login = () => {
+  console.log("login");
+};
+const register = () => {
+  console.log("register");
+};
+const socialMediaLogin = (provider: string) => {
+  console.log("socialMediaLogin", provider);
+};
+const togglePasswordVisibility = () => {
+  console.log("togglePasswordVisibility");
+};
+const toggleAuthOption = () => {
+  console.log("toggleAuthOption");
+};
+const toggleAuthDialog = () => {
+  console.log("toggleAuthDialog");
+};
+const toggleMobileMenu = () => {
+  console.log("toggleMobileMenu");
+};
+const logout = () => {
+  console.log("logout");
+};
+
+const loginForm = ref({
+  email: "",
+  password: "",
+  processing: false,
+  errors: {
+    loginError: "",
+  },
+});
+const registerForm = ref({
+  name: "",
+  email: "",
+  password: "",
+  processing: false,
+  errors: {
+    name: "",
+    email: "",
+    password: "",
+  },
+});
+const navigation = [
+  {
+    name: "Home",
+    href: "/",
+  },
+  {
+    name: "About",
+    href: "/about",
+  },
+  {
+    name: "Contact",
+    href: "/contact",
+  },
+  {
+    name: "Blog",
+    href: "/blog",
+  },
+  {
+    name: "FAQ",
+    href: "/faq",
+  },
+];
+
 </script>
 
 <template>
@@ -104,8 +160,6 @@ const currentLocale = computed(() => store.state.locale);
       <lang-switch />
     </div>
   </nav>
-  <!-- TODO: rest of nav -->
-  <!--
     <div
     v-if="isAuthDialogOpened"
     class="fixed inset-0 z-50 flex items-center bg-black/50"
@@ -168,7 +222,7 @@ const currentLocale = computed(() => store.state.locale);
               >
                 <img
                   class="h-10 w-10"
-                  src="@/assets/github.png"
+                  src="@/assets/logo.png"
                   alt="github logo"
                 />
               </button>
@@ -179,7 +233,7 @@ const currentLocale = computed(() => store.state.locale);
               >
                 <img
                   class="h-10 w-10"
-                  src="@/assets/facebook.png"
+                  src="@/assets/logo.png"
                   alt="facebook logo"
                 />
               </button>
@@ -190,7 +244,7 @@ const currentLocale = computed(() => store.state.locale);
               >
                 <img
                   class="h-10 w-10"
-                  src="@/assets/google.png"
+                  src="@/assets/logo.png"
                   alt="google logo"
                 />
               </button>
@@ -284,8 +338,6 @@ const currentLocale = computed(() => store.state.locale);
       </div>
     </div>
   </div>
--->
-  <!--
   <Dialog
     v-if="isMobileMenuOpened"
     as="div"
@@ -301,7 +353,7 @@ const currentLocale = computed(() => store.state.locale);
         <InertiaLink href="/">
           <img
             class="h-10 sm:hidden"
-            src="@/assets/scooter.png"
+            src="@/assets/logo.png"
             alt="escooter logo"
           />
         </InertiaLink>
@@ -396,8 +448,8 @@ const currentLocale = computed(() => store.state.locale);
         </div>
       </div>
     </DialogPanel>
-  </Dialog> -->
-  <router-view :locale="currentLocale" />
+  </Dialog>
+  <router-view/>
 </template>
 
 <style lang="scss">
