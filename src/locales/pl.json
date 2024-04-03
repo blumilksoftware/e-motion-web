@@ -1,5 +1,15 @@
 {
-    "hello": "witaj",
-    "main": "główna",
-    "map": "mapa"
+  "hello": "witaj",
+  "main": "główna",
+  "map": "mapa",
+  "Close_menu": "Zamknij menu",
+  "Cities_no_country": "Miasta bez przypisanego kraju",
+  "Cities_no_coordinates": "Miasta bez przypisanych współrzędnych",
+  "Log out": "Wyloguj",
+  "Log in": "Zaloguj",
+  "Home": "Strona główna",
+  "About": "O nas",
+  "Contact": "Kontakt",
+  "Search": "Szukaj",
+  "Admin_panel": "Panel administracyjny"
 }

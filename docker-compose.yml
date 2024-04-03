@@ -8,5 +8,5 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - ${EXTERNAL_NODE_PORT:-3000}:3000
+      - ${DOCKER_APP_HOST_PORT:-3000}:80
     command: ["npm", "run", "dev"]
