@@ -18,4 +18,7 @@ prune:
 	make stop
 	docker system prune -a
 
+lint:
+	docker exec -it e-motion-web npm run lint
+
 .PHONY: init run shell img-clean stop prune
