@@ -4,6 +4,7 @@ init:
 
 run:
 	docker compose up -d
+	docker logs -f e-motion-web
 
 shell:
 	docker exec -it e-motion-web sh
@@ -21,4 +22,4 @@ prune:
 lint:
 	docker exec -it e-motion-web npm run lint
 
-.PHONY: init run shell img-clean stop prune
+.PHONY: init run shell img-clean stop prune lint
