@@ -25,6 +25,14 @@ make clean
 ```
 make remove-img
 ```
+### lint project
+```
+make lint
+```
+### prune docker (in case of any issues with the project)
+```
+make prune
+```
 ## Commands to run inside container:
 ### Compiles and minifies for production
 ```
