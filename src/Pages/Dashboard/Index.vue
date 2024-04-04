@@ -13,12 +13,30 @@ onMounted(() => {
 const page = usePage()
 
 const props = defineProps({
-  usersCount: Number,
-  citiesWithProvidersCount: Number,
-  countriesWithCitiesWithProvidersCount: Number,
-  providersCount: Number,
-  providerCitiesCount: Object,
-  providers: Object,
+  usersCount: {
+    type: Number,
+    default: 0,
+  },
+  citiesWithProvidersCount: {
+    type: Number,
+    default: 0,
+  },
+  countriesWithCitiesWithProvidersCount: {
+    type: Number,
+    default: 0,
+  },
+  providersCount: {
+    type: Number,
+    default: 0,
+  },
+  providerCitiesCount: {
+    type: Object,
+    default: () => ({}),
+  },
+  providers: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
 function getProviderColor(providerName) {
@@ -79,7 +97,7 @@ const chartOptions = {
   <div class="flex h-full min-h-screen flex-col md:flex-row">
     <AdminNavigation :url="page.url" />
     <div class="flex w-full md:justify-end">
-      <div class="mt-16 flex h-full w-full flex-col md:mt-0 md:w-2/3 lg:w-3/4 xl:w-5/6">
+      <div class="mt-16 flex size-full flex-col md:mt-0 md:w-2/3 lg:w-3/4 xl:w-5/6">
         <div class="p-4">
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">

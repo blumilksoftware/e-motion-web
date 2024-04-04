@@ -25,9 +25,18 @@ const rules = reactive({ pl: '<i class="text-gray-400">ładowanie informacji o z
 
 fetchRegulations()
 const props = defineProps({
-  city: Object,
-  providers: Object,
-  cityOpinions: Object,
+  city: {
+    type: Object,
+    default: () => ({}),
+  },
+  providers: {
+    type: Object,
+    default: () => ({}),
+  },
+  cityOpinions: {
+    type: Object,
+    default: () => ({}),
+  },
 })
 
 const currentLocale = ref(computed(() => page.props.locale))
@@ -131,11 +140,21 @@ function createOpinion() {
             {{ city.latitude }}, {{ city.longitude }}
           </h2>
           <ProviderIcons class="pt-4" :item="city" :providers="props.providers" />
-          <div class="regulations relative overflow-hidden rounded border-[1px] border-solid border-gray-200 px-3">
+          <div class="regulations relative overflow-hidden rounded border-DEFAULT border-solid border-gray-200 px-3">
             <div class="my-3 flex cursor-pointer items-center text-2xl font-bold text-gray-700" @click="toggleRegulations()">
-              {{ __('Rules') }} <ArrowDownIcon :class="regulationsOpen ? 'rotated' : ''" class="absolute right-3 inline-block h-6 w-6 transition-all" />
+              {{ __('Rules') }} <ArrowDownIcon :class="regulationsOpen ? 'rotated' : ''" class="absolute right-3 inline-block size-6 transition-all" />
             </div>
-            <div :class="regulationsOpen?'show':''" class="overflow-scroll transition" v-html="currentRules" />
+            <div :class="regulationsOpen?'show':''" class="overflow-scroll transition">
+              <div class="my-3 flex cursor-pointer items-center text-2xl font-bold text-gray-700" @click="toggleRegulations()">
+                {{ __('Rules') }} <ArrowDownIcon :class="regulationsOpen ? 'rotated' : ''" class="absolute right-3 inline-block size-6 transition-all" />
+              </div>
+              <div v-if="currentRules == ''" :class="regulationsOpen ? 'show' : ''" class="overflow-scroll transition">
+                <i class="animate-pulse text-gray-400">{{ $t('loading_rules_info') }}...</i>
+              </div>
+              <div v-else :class="regulationsOpen ? 'show' : ''" class="overflow-scroll transition" style="white-space: pre-line;">
+                {{ currentRules }}
+              </div>
+            </div>
           </div>
           <form v-if="isAuth" class="mt-8 flex flex-col" @submit.prevent="createOpinion">
             <p class="mb-2 text-xs font-medium text-gray-700">
@@ -145,7 +164,7 @@ function createOpinion() {
               <StarIcon
                 v-for="index in maxRating"
                 :key="index"
-                class="h-6 w-6 cursor-pointer text-yellow-400"
+                class="size-6 cursor-pointer text-yellow-400"
                 :class="{ 'fill-yellow-400': index <= opinionForm.rating }"
                 @click="setRating(index)"
               />
@@ -161,7 +180,7 @@ function createOpinion() {
 
             <button class="mt-2 flex w-full items-center justify-center rounded-lg bg-emerald-500 p-3 text-xs font-medium text-white hover:bg-emerald-600 sm:w-fit sm:px-4 sm:py-2">
               {{ __('Send') }}
-              <PaperAirplaneIcon class="ml-2 h-4 w-4" />
+              <PaperAirplaneIcon class="ml-2 size-4" />
             </button>
           </form>
 
@@ -187,7 +206,7 @@ function createOpinion() {
         <button class="hover:blumilk-600 fixed bottom-5 z-20 flex items-center justify-center rounded-full bg-blumilk-500 px-2 py-1.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 @click="switchMap"
         >
-          <component :is="buttonIcon" class="h-6 w-6" />
+          <component :is="buttonIcon" class="size-6" />
         </button>
       </div>
     </div>

@@ -12,6 +12,23 @@
     }
   ],
   "compilerOptions": {
-    "module": "NodeNext"
-  }
+    "target": "esnext",
+    "module": "NodeNext",
+    "strict": true,
+    "jsx": "preserve",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.vue"]
 }

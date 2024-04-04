@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import "@/../node_modules/flag-icons/css/flag-icons.min.css";
-import store from "@/store/sessionData";
+import { computed } from 'vue'
+import '@/../node_modules/flag-icons/css/flag-icons.min.css'
+import store from '@/store/sessionData'
 
 const locales = [
   {
-    name: "Polski",
-    lang: "pl",
-    iso: "pl",
+    name: 'Polski',
+    lang: 'pl',
+    iso: 'pl',
   },
   {
-    name: "English",
-    lang: "en",
-    iso: "gb",
+    name: 'English',
+    lang: 'en',
+    iso: 'gb',
   },
-];
+]
 
 const changeLocale = (locale: string) => {
-  store.commit("setLocale", locale);
-};
+  store.commit('setLocale', locale)
+}
 
-const currentLocale = computed(() => store.state.locale);
+const currentLocale = computed(() => store.state.locale)
 </script>
 
 <template>
@@ -28,17 +28,17 @@ const currentLocale = computed(() => store.state.locale);
     <button
       v-for="locale in locales"
       :key="locale.lang"
-      @click="
-        changeLocale(locale.lang);
-        $i18n.locale = locale.lang;
-      "
-      @load="
-        console.log($i18n.locale);
-        console.log(currentLocale);
-        console.log(locale.lang);
-      "
       :class="[currentLocale === locale.lang ? 'opacity-100' : 'opacity-30']"
       :disabled="currentLocale === locale.lang"
+      @click="
+        changeLocale(locale.lang)
+        $i18n.locale = locale.lang
+      "
+      @load="
+        console.log($i18n.locale)
+        console.log(currentLocale)
+        console.log(locale.lang)
+      "
     >
       <i
         :class="`fi-${locale.iso} flat fi`"
@@ -47,3 +47,4 @@ const currentLocale = computed(() => store.state.locale);
     </button>
   </div>
 </template>
+@/store/SessionData @/store/SessionData

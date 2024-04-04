@@ -2,11 +2,11 @@ services:
   node:
     image: node:21.5-bullseye-slim
     container_name: e-motion-web
-    working_dir: /application
+    working_dir: /e-motion-web
     volumes:
-      - .:/application
+      - .:/e-motion-web
     restart: unless-stopped
     tty: true
     ports:
-      - ${DOCKER_APP_HOST_PORT:-3000}:80
+      - ${DOCKER_APP_HOST_PORT:-3000}:3000
     command: ["npm", "run", "dev"]

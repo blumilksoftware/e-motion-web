@@ -4,19 +4,19 @@ import vue from '@vitejs/plugin-vue'
 import { dirname } from 'path'
 
 // Obtain the directory path of the current file
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const dirName = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [vue()],
   build: {
-    sourcemap: true // Enable source maps
+    sourcemap: true, // Enable source maps
   },
   resolve: {
     alias: {
-      '@': `${__dirname}/src` // Use the obtained directory path to construct the alias
-    }
+      '@': `${dirName}/src`, // Use the obtained directory path to construct the alias
+    },
   },
   server: {
-    port: 80
-  }
+    port: 80,
+  },
 })

@@ -14,7 +14,7 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
 } from '@heroicons/vue/24/outline'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
@@ -62,43 +62,43 @@ const loginForm = ref({
   password: '',
   processing: false,
   errors: {
-    loginError: ''
-  }
+    loginError: '',
+  },
 })
 const registerForm = useForm({
   name: '',
   email: '',
-  password: ''
+  password: '',
 })
 const navigation = [
   {
     name: 'Home',
-    to: '/'
+    to: '/',
   },
   {
     name: 'About',
-    to: '/about'
-  }
+    to: '/about',
+  },
 ]
 </script>
 
 <template>
   <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between items-center flex">
-    <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold"
-      ><img src="/logo.svg" class="h-10 inline-block float-start" />
+    <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
+      <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
-        @click="isMobileMenuOpened = !isMobileMenuOpened"
         class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+        @click="isMobileMenuOpened = !isMobileMenuOpened"
       >
         <span class="sr-only">Open main menu</span>
         <bars3-icon
-          class="h-6 w-6"
+          class="size-6"
           :class="{ hidden: isMobileMenuOpened, block: !isMobileMenuOpened }"
         />
         <x-mark-icon
-          class="h-6 w-6"
+          class="size-6"
           :class="{ hidden: !isMobileMenuOpened, block: isMobileMenuOpened }"
         />
       </button>
@@ -113,7 +113,7 @@ const navigation = [
           to="/admin/cities"
           class="flex animate-pulse items-center rounded-full border border-rose-500 bg-rose-50 px-2 py-1"
         >
-          <flag-icon class="h-4 w-4" />
+          <flag-icon class="size-4" />
           {{ countCitiesWithoutAssignedCountry }}
         </router-link>
         <router-link
@@ -121,16 +121,16 @@ const navigation = [
           to="/admin/cities"
           class="ml-2 flex animate-pulse items-center rounded-full border border-rose-500 bg-rose-50 px-2 py-1"
         >
-          <map-pin-icon class="h-4 w-4" />
+          <map-pin-icon class="size-4" />
           {{ countCitiesWithoutCoordinates }}
         </router-link>
       </div>
-      <router-link v-if="isAdmin" to="/admin/cities" class="font-bold"
-        ><computer-desktop-icon class="h-8 w-8"
-      /></router-link>
+      <router-link v-if="isAdmin" to="/admin/cities" class="font-bold">
+        <computer-desktop-icon class="size-8" />
+      </router-link>
       <button>
-        <arrow-right-start-on-rectangle-icon v-if="isAuth" class="h-8 w-8" @click="logout" />
-        <user-circle-icon v-else class="h-8 w-8" @click="toggleAuthDialog" />
+        <arrow-right-start-on-rectangle-icon v-if="isAuth" class="size-8" @click="logout" />
+        <user-circle-icon v-else class="size-8" @click="toggleAuthDialog" />
       </button>
       <lang-switch />
     </div>
@@ -142,7 +142,7 @@ const navigation = [
     >
       <div class="flex w-full justify-end">
         <button class="p-4" @click="toggleAuthDialog">
-          <XMarkIcon class="h-6 w-6" />
+          <XMarkIcon class="size-6" />
         </button>
       </div>
       <div v-if="isLoginFormSelected" class="rounded-lg px-6 pb-8">
@@ -154,7 +154,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -165,7 +165,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -173,7 +173,7 @@ const navigation = [
             >
               <component
                 :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
-                class="h-6 w-6 text-blumilk-400"
+                class="size-6 text-blumilk-400"
               />
             </button>
           </div>
@@ -188,21 +188,21 @@ const navigation = [
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="h-10 w-10" src="@/assets/logo.png" alt="github logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="github logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="h-10 w-10" src="@/assets/logo.png" alt="facebook logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="h-10 w-10" src="@/assets/logo.png" alt="google logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="google logo">
               </button>
             </div>
           </div>
@@ -234,7 +234,7 @@ const navigation = [
               type="text"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -245,7 +245,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -257,7 +257,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -265,7 +265,7 @@ const navigation = [
             >
               <component
                 :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
-                class="h-6 w-6 text-blumilk-400"
+                class="size-6 text-blumilk-400"
               />
             </button>
           </div>
@@ -303,7 +303,7 @@ const navigation = [
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
         </router-link>
         <button
           type="button"
@@ -311,7 +311,7 @@ const navigation = [
           @click="toggleMobileMenu"
         >
           <span class="sr-only">{{ $t('Close_menu') }}</span>
-          <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+          <XMarkIcon class="size-6" aria-hidden="true" />
         </button>
       </div>
       <div class="mt-6 flow-root">
@@ -337,7 +337,7 @@ const navigation = [
                 to="/admin/cities"
                 class="flex items-center"
               >
-                <FlagIcon class="mr-2 h-5 w-5 shrink-0" />
+                <FlagIcon class="mr-2 size-5 shrink-0" />
                 {{ $t('Cities_no_country') }}:
                 {{ countCitiesWithoutAssignedCountry }}
               </router-link>
@@ -346,7 +346,7 @@ const navigation = [
                 to="/admin/cities?order=empty-coordinates"
                 class="mt-5 flex items-center"
               >
-                <MapPinIcon class="mr-2 h-5 w-5 shrink-0" />
+                <MapPinIcon class="mr-2 size-5 shrink-0" />
                 {{ $t('Cities_no_coordinates') }}:
                 {{ countCitiesWithoutCoordinates }}
               </router-link>
@@ -359,7 +359,7 @@ const navigation = [
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   to="/admin/cities"
                 >
-                  <ComputerDesktopIcon class="h-6 w-6" />
+                  <ComputerDesktopIcon class="size-6" />
                   <span class="ml-2">{{ $t('Admin_panel') }}</span>
                 </router-link>
               </button>
@@ -369,7 +369,7 @@ const navigation = [
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   @click="logout"
                 >
-                  <ArrowRightStartOnRectangleIcon class="h-6 w-6" />
+                  <ArrowRightStartOnRectangleIcon class="size-6" />
                   <span class="ml-2">{{ $t('Log out') }}</span>
                 </span>
 
@@ -378,7 +378,7 @@ const navigation = [
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   @click="toggleAuthDialog"
                 >
-                  <UserCircleIcon class="h-6 w-6" />
+                  <UserCircleIcon class="size-6" />
                   <span class="ml-2">{{ $t('Log in') }}</span>
                 </span>
               </button>
@@ -401,10 +401,6 @@ const navigation = [
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-* {
-  // outline: green dashed 1px;
 }
 
 nav {
