@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import '@/../node_modules/flag-icons/css/flag-icons.min.css'
-import store from '@/store/sessionData'
+import store from '@/store/SessionData'
 
 const locales = [
   {
     name: 'Polski',
     lang: 'pl',
-    iso: 'pl',
+    iso: 'pl'
   },
   {
     name: 'English',
     lang: 'en',
-    iso: 'gb',
-  },
+    iso: 'gb'
+  }
 ]
 
 const changeLocale = (locale: string) => {
@@ -30,15 +30,7 @@ const currentLocale = computed(() => store.state.locale)
       :key="locale.lang"
       :class="[currentLocale === locale.lang ? 'opacity-100' : 'opacity-30']"
       :disabled="currentLocale === locale.lang"
-      @click="
-        changeLocale(locale.lang)
-        $i18n.locale = locale.lang
-      "
-      @load="
-        console.log($i18n.locale)
-        console.log(currentLocale)
-        console.log(locale.lang)
-      "
+      @click="changeLocale(locale.lang), ($i18n.locale = locale.lang)"
     >
       <i
         :class="`fi-${locale.iso} flat fi`"
