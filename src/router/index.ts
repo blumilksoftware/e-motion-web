@@ -25,6 +25,18 @@ const routes: Array<RouteRecordRaw> = [
         // when /user/:id/posts is matched
         path: 'countries',
         component: AdminCountriesView
+      },
+      {
+        path: '',
+        redirect: 'cities'
+      },
+      {
+        path: 'importers',
+        component: () => import('@/views/AdminImportersView.vue')
+      },
+      {
+        path: 'dashboard',
+        component: () => import('@/views/AdminDashboardView.vue')
       }
     ]
   },

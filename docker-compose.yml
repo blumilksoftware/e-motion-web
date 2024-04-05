@@ -9,4 +9,4 @@ services:
     tty: true
     ports:
       - ${DOCKER_APP_HOST_PORT:-3000}:3000
-    command: ["npm", "run", "dev"]
+    command: bash -c "npm install && npm run dev"
