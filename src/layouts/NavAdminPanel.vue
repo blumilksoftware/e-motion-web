@@ -45,7 +45,7 @@ const navigation = [
           class="flex h-full md:h-fit"
         >
           <div
-            :class="{ 'bg-blumilk-50': $route.path.startsWith(item.to) }"
+            :class="{ 'bg-blue-50': $route.path.startsWith(item.to) }"
             class="mx-auto flex w-11/12 items-center bg-blumilk-25 px-6 hover:bg-blumilk-50 md:rounded-lg md:px-2 md:py-3"
           >
             <component :is="item.icon" class="size-7" />
