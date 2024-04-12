@@ -24,7 +24,7 @@ const currentLocale = computed(() => store.state.locale)
 </script>
 
 <template>
-  <div class="flex space-x-2 pt-1.5" @loadstart="$i18n.locale = currentLocale">
+  <div class="flex space-x-2 pt-1.5">
     <button
       v-for="locale in locales"
       :key="locale.lang"

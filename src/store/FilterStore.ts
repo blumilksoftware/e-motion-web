@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 
-const store = createStore({
+const fStore = createStore({
   state: {
     citiesWithProviders: {
       cities: [],
@@ -31,4 +31,4 @@ const store = createStore({
   getters: {},
 })
 
-export default store
+export default fStore
