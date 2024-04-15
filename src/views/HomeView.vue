@@ -9,10 +9,10 @@ function toggleMap() {
 </script>
 
 <template>
-  <div class="size-full lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white" :class="!map ? 'left-0' : '-left-full'">
-    {{ $t('main') }}
+  <div class="size-full rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white" :class="!map ? 'left-0' : '-left-full'">
+    <router-view />
   </div>
-  <div class="size-full lg:w-1/2 transition-all z-0 absolute lg:right-0 bg-white" :class="map ? 'right-0' : '-right-full'">
+  <div class="size-full rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:right-0 bg-white" :class="map ? 'right-0' : '-right-full'">
     <map-view />
   </div>
   <button

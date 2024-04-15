@@ -5,10 +5,25 @@ import AdminCountriesView from '@/views/AdminCountriesView.vue'
 import NavAdminPanel from '@/layouts/NavAdminPanel.vue'
 
 const routes: Array<RouteRecordRaw> = [
+  // {
+  //   path: '/',
+  //   component: HomeView,
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'home',
+  //       component: () => import('@/Pages/Landing/Index.vue')
+  //     },
+  //     {
+  //       path: ':country/:city',
+  //       component: () => import('@/Pages/City/Index.vue')
+  //     }
+  //   ]
+  // },
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: () => import('@/Pages/Landing/Index.vue')
   },
   {
     path: '/admin',

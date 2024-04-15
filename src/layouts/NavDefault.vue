@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import LangSwitch from '@/components/LangSwitch.vue' // @ is an alias to /src
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { useForm } from '@inertiajs/vue3'
-
+import store from '@/store/SessionData.ts'
 import {
   Bars3Icon,
   XMarkIcon,
@@ -18,20 +18,16 @@ import {
 } from '@heroicons/vue/24/outline'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
-const isLoginFormSelected = ref(true)
+const isLoginFormSelected = ref(false)
 const isPasswordVisible = ref(false)
-const isAdmin = ref(true)
-const isAuth = ref(true)
+const isAdmin = computed(() => store.state.auth.isAdmin)
+const isAuth = (computed(() => store.state.auth.token)!='')
 const countCitiesWithoutAssignedCountry = ref(1)
 const countCitiesWithoutCoordinates = ref(1)
 
 //  TODO: scripts
 
-/**
- * You can specify the your definition schema with object literal at first type parameters
- * About type parameter, see the http://vue-i18n.intlify.dev/api/composition.html#usei18n
- */
-// Placeholder functions
+
 const login = () => {
   console.log('login')
 }
@@ -60,10 +56,6 @@ const logout = () => {
 const loginForm = ref({
   email: '',
   password: '',
-  processing: false,
-  errors: {
-    loginError: '',
-  },
 })
 const registerForm = useForm({
   name: '',
@@ -83,14 +75,14 @@ const navigation = [
 </script>
 
 <template>
-  <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between items-center flex">
+  <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between relative items-center flex">
     <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
       <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
         class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-        @click="isMobileMenuOpened = !isMobileMenuOpened"
+        @click="toggleMobileMenu()"
       >
         <span class="sr-only">Open main menu</span>
         <bars3-icon
@@ -293,7 +285,7 @@ const navigation = [
   <Dialog
     v-if="isMobileMenuOpened"
     as="div"
-    class="z-30 lg:hidden"
+    class="z-20 relative lg:hidden"
     :open="isMobileMenuOpened"
     @close="toggleMobileMenu"
   >

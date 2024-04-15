@@ -4,7 +4,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import fStore from '@/store/FilterStore'
 defineOptions({
-  inheritAttrs: false,
+  inheritAttrs: false
 })
 const mapContainer = ref(null)
 const map = ref(null)
@@ -12,7 +12,7 @@ const markers = ref(null)
 
 const props = defineProps({
   cities: Array,
-  isCityPage: Boolean,
+  isCityPage: Boolean
 })
 onMounted(async () => {
   await nextTick()
@@ -22,15 +22,21 @@ onMounted(async () => {
   centerToSelectedCity()
   centerToSingleCity()
 
-  watch(() => fStore.selectedCountry, () => {
-    centerToSelectedCountry()
-    clearMap()
-    fillMap()
-  })
+  watch(
+    () => fStore.selectedCountry,
+    () => {
+      centerToSelectedCountry()
+      clearMap()
+      fillMap()
+    }
+  )
 
-  watch(() => fStore.selectedCity, () => {
-    centerToSelectedCity()
-  })
+  watch(
+    () => fStore.selectedCity,
+    () => {
+      centerToSelectedCity()
+    }
+  )
 })
 
 function buildMap() {
@@ -39,7 +45,7 @@ function buildMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18,
+    maxZoom: 18
   }).addTo(map.value)
 }
 function clearMap() {
@@ -52,14 +58,14 @@ function centerToSelectedCity() {
 function centerToSelectedCountry() {
   if (fStore.selectedCountry) {
     switch (fStore.selectedCountry.name) {
-    case 'Australia':
-    case 'Canada':
-    case 'China':
-    case 'Russia':
-      centerToLocation(fStore.selectedCountry, 2)
-      break
-    default:
-      centerToLocation(fStore.selectedCountry, 6)
+      case 'Australia':
+      case 'Canada':
+      case 'China':
+      case 'Russia':
+        centerToLocation(fStore.selectedCountry, 2)
+        break
+      default:
+        centerToLocation(fStore.selectedCountry, 6)
     }
   }
 }
@@ -87,13 +93,13 @@ function fillMap() {
   const { selectedCountry, selectedProviderName } = fStore
   const filteredCities = filterCities(props.cities, selectedCountry, selectedProviderName)
 
-  filteredCities.forEach(city => {
+  filteredCities.forEach((city) => {
     const marker = L.circleMarker([city.latitude, city.longitude], {
       radius: 5,
       weight: 1,
       color: '#6F90C6',
       fillColor: '#527ABA',
-      fillOpacity: 1,
+      fillOpacity: 1
     })
 
     marker
@@ -102,21 +108,25 @@ function fillMap() {
         const selectedCity = fStore.selectedCity
 
         if (selectedCity && selectedCity.id === city.id) {
-          fStore.changeSelectedCity(null)
+          fStore.commit('changeSelectedCity', null)
         } else {
-          fStore.changeSelectedCity(city)
+          fStore.commit('changeSelectedCity', city)
         }
       })
-      .bindTooltip(`<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`)
+      .bindTooltip(
+        `<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`
+      )
   })
 
   markers.value.addTo(map.value)
 }
 
 function filterCities(cities, selectedCountry, selectedProviderName) {
-  return cities.filter(city => {
+  return cities.filter((city) => {
     const matchCountry = !selectedCountry || city.country.id === selectedCountry.id
-    const matchProvider = !selectedProviderName || city.cityProviders.some(cityProvider => cityProvider.provider_name === selectedProviderName)
+    const matchProvider =
+      !selectedProviderName ||
+      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName)
 
     return matchCountry && matchProvider
   })

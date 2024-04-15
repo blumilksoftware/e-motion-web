@@ -5,11 +5,11 @@ const fStore = createStore({
     citiesWithProviders: {
       cities: [],
       providers: [],
-      countries: [],
+      countries: []
     },
     selectedCity: null,
     selectedCountry: null,
-    selectedProviderName: null,
+    selectedProviderName: null
   },
   mutations: {
     saveCitiesWithProviders(state, response) {
@@ -25,10 +25,10 @@ const fStore = createStore({
     },
     changeSelectedProvider(state, providerName) {
       state.selectedProviderName = providerName
-    },
+    }
   },
   actions: {},
-  getters: {},
+  getters: {}
 })
 
 export default fStore

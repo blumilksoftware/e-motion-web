@@ -1,7 +1,6 @@
-<script setup>
-import fStore from '@/store/FilterStore'
+<script setup lang="ts">
+import fStore from '/src/store/FilterStore.ts'
 import { computed, onMounted, ref, watch } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
 import { TrashIcon, XMarkIcon, MapIcon } from '@heroicons/vue/24/outline'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
@@ -26,10 +25,10 @@ const props = defineProps({
     default: () => []
   }
 })
-const isAuth = computed(() => store.state.auth.token)!=null
+const isAuth = computed(() => usePage().props.auth.isAuth)
 const filteredCities = computed(() => {
-  const selectedCountryId = fStore.state.selectedCountry ? fStore.selectedCountry.id : null
-  const selectedProviderName = fStore.state.selectedProviderName
+  const selectedCountryId = fStore.selectedCountry ? fStore.selectedCountry.id : null
+  const selectedProviderName = fStore.selectedProviderName
 
   if (selectedCountryId === null && selectedProviderName === null) {
     return props.cities
@@ -50,7 +49,7 @@ const filteredCities = computed(() => {
   }
 })
 const filteredProviders = computed(() => {
-  const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
+  const selectedCountryId = fStore.selectedCountry ? fStore.selectedCountry.id : null
 
   if (selectedCountryId === null) {
     return props.providers
@@ -65,8 +64,8 @@ const filteredProviders = computed(() => {
   }
 })
 const filteredCountries = computed(() => {
-  const selectedProviderName = fStore.state.selectedProviderName
-  const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
+  const selectedProviderName = fStore.selectedProviderName
+  const selectedCountryId = fStore.selectedCountry ? fStore.selectedCountry.id : null
   const cityMap = new Map()
 
   for (const city of props.cities) {
@@ -85,13 +84,13 @@ const filteredCountries = computed(() => {
 })
 
 function filterCountry(country) {
-  fStore.commit('changeSelectedCity', null)
+  fStore.changeSelectedCity(null)
 
-  if (fStore.state.selectedCountry && fStore.state.selectedCountry.id === country.id) {
-    fStore.commit('changeSelectedCountry', null)
+  if (fStore.selectedCountry && fStore.selectedCountry.id === country.id) {
+    fStore.changeSelectedCountry(null)
   } else {
-    fStore.commit('changeSelectedCountry', country)
-    fStore.commit('changeSelectedProvider', null)
+    fStore.changeSelectedCountry(country)
+    fStore.changeSelectedProvider(null)
   }
 
   if (!isIconFilterEnabled.value) {
@@ -100,12 +99,12 @@ function filterCountry(country) {
 }
 
 function filterProvider(providerName) {
-  fStore.commit('changeSelectedCity', null)
+  fStore.changeSelectedCity(null)
 
-  if (fStore.state.selectedProviderName === providerName) {
-    fStore.commit('changeSelectedProvider', null)
+  if (fStore.selectedProviderName === providerName) {
+    fStore.changeSelectedProvider(null)
   } else {
-    fStore.commit('changeSelectedProvider', providerName)
+    fStore.changeSelectedProvider(providerName)
   }
 
   if (!isIconFilterEnabled.value) {
@@ -114,16 +113,16 @@ function filterProvider(providerName) {
 }
 
 function clearFilters() {
-  fStore.commit('changeSelectedProvider', null)
-  fStore.commit('changeSelectedCountry', null)
-  fStore.commit('changeSelectedCity', null)
+  fStore.changeSelectedProvider(null)
+  fStore.changeSelectedCountry(null)
+  fStore.changeSelectedCity(null)
 }
 
 function showCity(city) {
-  if (fStore.state.selectedCity && fStore.state.selectedCity.id === city.id) {
-    fStore.commit('changeSelectedCity', null)
+  if (fStore.selectedCity && fStore.selectedCity.id === city.id) {
+    fStore.changeSelectedCity(null)
   } else {
-    fStore.commit('changeSelectedCity', city)
+    fStore.changeSelectedCity(city)
   }
 }
 const isCountryListOpened = ref(false)
@@ -147,7 +146,7 @@ function changeFilter() {
 }
 
 function clearMap() {
-  fStore.commit('changeSelectedCity', null)
+  fStore.changeSelectedCity(null)
 }
 
 function getProviderColor(providerName) {
@@ -163,16 +162,16 @@ const providerAutocomplete = ref('')
 const countryAutocomplete = ref('')
 
 function rememberProviderAutocompleteValue() {
-  if (fStore.state.selectedProviderName) {
-    providerAutocomplete.value = fStore.state.selectedProviderName
+  if (fStore.selectedProviderName) {
+    providerAutocomplete.value = fStore.selectedProviderName
   } else {
     providerAutocomplete.value = ''
   }
 }
 
 function rememberCountryAutocompleteValue() {
-  if (fStore.state.selectedCountry) {
-    countryAutocomplete.value = fStore.state.selectedCountry.name
+  if (fStore.selectedCountry) {
+    countryAutocomplete.value = fStore.selectedCountry.name
   } else {
     countryAutocomplete.value = ''
   }
@@ -181,13 +180,13 @@ onMounted(() => {
   rememberProviderAutocompleteValue()
   rememberCountryAutocompleteValue()
   watch(
-    () => fStore.state.selectedProviderName,
+    () => fStore.selectedProviderName,
     () => {
       rememberProviderAutocompleteValue()
     }
   )
   watch(
-    () => fStore.state.selectedCountry,
+    () => fStore.selectedCountry,
     () => {
       rememberCountryAutocompleteValue()
     }
@@ -196,7 +195,7 @@ onMounted(() => {
     () => providerAutocomplete.value,
     () => {
       if (providerAutocomplete.value === '') {
-        fStore.commit('changeSelectedProvider', null)
+        fStore.changeSelectedProvider(null)
       }
     }
   )
@@ -204,7 +203,7 @@ onMounted(() => {
     () => countryAutocomplete.value,
     () => {
       if (countryAutocomplete.value === '') {
-        fStore.commit('changeSelectedCountry', null)
+        fStore.changeSelectedCountry(null)
       }
     }
   )
@@ -291,8 +290,7 @@ function selectCountry(country) {
           class="col-span-1 flex cursor-pointer rounded-md"
           :class="{
             'opacity-25':
-              fStore.state.selectedProviderName !== null &&
-              fStore.state.selectedProviderName !== provider.name
+              fStore.selectedProviderName !== null && fStore.selectedProviderName !== provider.name
           }"
           @click="filterProvider(provider.name)"
         >
@@ -323,9 +321,9 @@ function selectCountry(country) {
             <div class="relative flex grow items-stretch focus-within:z-10">
               <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <i
-                  v-if="fStore.state.selectedCountry"
+                  v-if="fStore.selectedCountry"
                   class="flat flag !h-[18px] !w-[27px]"
-                  :class="fStore.state.selectedCountry.iso"
+                  :class="fStore.selectedCountry.iso"
                 />
                 <FlagIcon v-else class="ml-1 size-6 text-gray-800" />
               </div>
@@ -378,16 +376,14 @@ function selectCountry(country) {
             <div class="relative flex grow items-stretch focus-within:z-10">
               <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <div
-                  v-if="fStore.state.selectedProviderName"
-                  :style="{
-                    'background-color': getProviderColor(fStore.state.selectedProviderName)
-                  }"
+                  v-if="fStore.selectedProviderName"
+                  :style="{ 'background-color': getProviderColor(fStore.selectedProviderName) }"
                   class="flex h-5 w-fit shrink-0 items-center justify-center rounded px-1"
                 >
                   <img
                     loading="lazy"
                     class="w-5"
-                    :src="'/providers/' + fStore.state.selectedProviderName.toLowerCase() + '.png'"
+                    :src="'/providers/' + fStore.selectedProviderName.toLowerCase() + '.png'"
                     alt=""
                   />
                 </div>
@@ -461,12 +457,12 @@ function selectCountry(country) {
       <div
         :class="[
           isDesktop ? 'flex-col' : 'w-full',
-          fStore.state.selectedCity ? 'justify-between' : 'justify-end'
+          fStore.selectedCity ? 'justify-between' : 'justify-end'
         ]"
         class="flex"
       >
         <button
-          v-if="fStore.state.selectedCity !== null"
+          v-if="fStore.selectedCity !== null"
           class="mt-2 flex w-fit items-center rounded-lg border border-gray-300 px-4 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
           @click="clearMap"
         >
@@ -474,7 +470,7 @@ function selectCountry(country) {
           {{ $t('Clear map') }}
         </button>
         <button
-          v-if="fStore.state.selectedCountry !== null || fStore.state.selectedProviderName !== null"
+          v-if="fStore.selectedCountry !== null || fStore.selectedProviderName !== null"
           class="mt-2 flex w-fit items-center rounded-lg border border-gray-300 px-4 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
           @click="clearFilters"
         >
@@ -499,7 +495,7 @@ function selectCountry(country) {
           :size-dependencies="[item.name]"
           :item="item"
           :active="active"
-          :class="fStore.state.selectedCity ? 'opacity-25 saturate-50' : ''"
+          :class="fStore.selectedCity ? 'opacity-25 saturate-50' : ''"
           class="group flex origin-left cursor-pointer flex-col justify-between gap-x-6 border-b transition-all duration-500 ease-out hover:brightness-105 hover:drop-shadow-xl sm:flex-row md:items-center"
           @click="showCity(item)"
         >

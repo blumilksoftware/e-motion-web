@@ -39,4 +39,3 @@ const currentLocale = computed(() => store.state.locale)
     </button>
   </div>
 </template>
-@/store/SessionData @/store/SessionData
