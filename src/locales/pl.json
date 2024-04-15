@@ -11,5 +11,7 @@
   "About": "O nas",
   "Contact": "Kontakt",
   "Search": "Szukaj",
-  "Admin_panel": "Panel administracyjny"
+  "Admin_panel": "Panel administracyjny",
+  "showMap": "Pokaż mapę",
+  "hideMap": "Ukryj mapę"
 }
