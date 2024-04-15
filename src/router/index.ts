@@ -15,14 +15,10 @@ const routes: Array<RouteRecordRaw> = [
     component: NavAdminPanel,
     children: [
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
         path: 'cities',
         component: AdminCitiesView
       },
       {
-        // UserPosts will be rendered inside User's <router-view>
-        // when /user/:id/posts is matched
         path: 'countries',
         component: AdminCountriesView
       },
