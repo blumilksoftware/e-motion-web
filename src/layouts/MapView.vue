@@ -1,4 +1,4 @@
-<script></script>
+<script />
 
 <template>
   <div class="map">

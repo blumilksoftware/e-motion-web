@@ -9,11 +9,11 @@ const dirName = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [vue()],
   build: {
-    sourcemap: true // Enable source maps
+    sourcemap: true
   },
   resolve: {
     alias: {
-      '@': `${dirName}/src` // Use the obtained directory path to construct the alias
+      '@': `${dirName}/src`
     }
   },
   server: {

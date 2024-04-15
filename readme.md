@@ -17,13 +17,9 @@ make shell
 ```
 make stop
 ```
-### remove project container
-```
-make clean
-```
 ### remove project image
 ```
-make remove-img
+make img-clean
 ```
 ### lint project
 ```
@@ -48,9 +44,3 @@ npm run test:unit
 ```
 npm run test:e2e
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-

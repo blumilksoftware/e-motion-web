@@ -7,6 +7,4 @@ services:
       - .:/e-motion-web
     restart: unless-stopped
     tty: true
-    # ports:
-    #   - ${DOCKER_APP_HOST_PORT:-3000}:3000
     command: bash -c "npm install && npm run dev"

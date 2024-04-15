@@ -21,7 +21,7 @@ const toast = useToast()
 const page = usePage()
 const isAuth = computed(() => page.props.auth.isAuth)
 const regulationsOpen = ref(false)
-const rules = reactive({ pl: '<i class="text-gray-400">ładowanie informacji o zasadach, proszę czekać...</i>', en: '<i class="text-gray-400">loading info about rules, please wait...</i>' })
+const rules = reactive({pl: '', en: ''})
 
 fetchRegulations()
 const props = defineProps({

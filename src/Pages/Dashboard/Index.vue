@@ -15,32 +15,32 @@ const page = usePage()
 const props = defineProps({
   usersCount: {
     type: Number,
-    default: 0,
+    default: 0
   },
   citiesWithProvidersCount: {
     type: Number,
-    default: 0,
+    default: 0
   },
   countriesWithCitiesWithProvidersCount: {
     type: Number,
-    default: 0,
+    default: 0
   },
   providersCount: {
     type: Number,
-    default: 0,
+    default: 0
   },
   providerCitiesCount: {
     type: Object,
-    default: () => ({}),
+    default: () => ({})
   },
   providers: {
     type: Object,
-    default: () => ({}),
-  },
+    default: () => ({})
+  }
 })
 
 function getProviderColor(providerName) {
-  const provider = props.providers.find(provider => provider.name === providerName)
+  const provider = props.providers.find((provider) => provider.name === providerName)
 
   return provider ? provider.color : ''
 }
@@ -50,9 +50,9 @@ const chartData = ref({
   datasets: [
     {
       backgroundColor: [],
-      data: [5],
-    },
-  ],
+      data: [5]
+    }
+  ]
 })
 
 onMounted(() => {
@@ -71,26 +71,23 @@ onMounted(() => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data,
-      },
-    ],
+        data: data
+      }
+    ]
   }
 })
 
-
 const chartOptions = {
-
   responsive: true,
   maintainAspectRatio: false,
   aspectRatio: 2 / 3,
   animation: false,
   plugins: {
     legend: {
-      display: false,
-    },
-  },
+      display: false
+    }
+  }
 }
-
 </script>
 
 <template>
@@ -142,16 +139,26 @@ const chartOptions = {
             </h1>
 
             <div class="flex flex-wrap">
-              <div v-for="provider in props.providerCitiesCount" :key="provider.name"
-                   class="m-2 flex flex-col items-center shadow-lg"
+              <div
+                v-for="provider in props.providerCitiesCount"
+                :key="provider.name"
+                class="m-2 flex flex-col items-center shadow-lg"
               >
-                <div :style="{ 'background-color': getProviderColor(provider.name) }"
-                     class="flex h-12 w-16 shrink-0 items-center justify-center rounded-md rounded-b-none p-6 px-2 py-3"
+                <div
+                  :style="{ 'background-color': getProviderColor(provider.name) }"
+                  class="flex h-12 w-16 shrink-0 items-center justify-center rounded-md rounded-b-none p-6 px-2 py-3"
                 >
-                  <img loading="lazy" :src="'/providers/' + provider.name.toLowerCase() + '.png'" alt="">
+                  <img
+                    loading="lazy"
+                    :src="'/providers/' + provider.name.toLowerCase() + '.png'"
+                    alt=""
+                  />
                 </div>
-                <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50 ">
-                  <span class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700">{{ provider.count }}</span>
+                <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50">
+                  <span
+                    class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700"
+                    >{{ provider.count }}</span
+                  >
                 </div>
               </div>
             </div>

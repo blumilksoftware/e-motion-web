@@ -6,17 +6,14 @@ import { setCookie } from '../cookies/setCookie.js'
 interface state {
   locale: string
 }
-// Define your Vuex store here
 const store = createStore({
   state: {
-    locale: getCookie('locale') || defaultLocale, // Initialize locale from cookie or default to 'en'
+    locale: getCookie('locale') || defaultLocale,
   },
   mutations: {
     setLocale(state: state, locale: string) {
-      // Update the type of 'state' parameter
       state.locale = locale
-      // Set the locale in a cookie to make it persistent
-      setCookie('locale', locale, 30) // Cookie expires in 30 days
+      setCookie('locale', locale, 30)
     },
   },
   actions: {},
