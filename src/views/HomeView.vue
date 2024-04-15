@@ -7,11 +7,12 @@ function toggleMap() {
   map.value = !map.value
 }
 </script>
+
 <template>
-  <div class="h-full w-full lg:w-1/2 transition-all absolute lg:left-0 bg-white" :class="!map ? 'left-0' : '-left-full'">
+  <div class="size-full lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white" :class="!map ? 'left-0' : '-left-full'">
     {{ $t('main') }}
   </div>
-  <div class="h-full w-full lg:w-1/2 transition-all absolute lg:right-0 bg-white" :class="map ? 'right-0' : '-right-full'">
+  <div class="size-full lg:w-1/2 transition-all z-0 absolute lg:right-0 bg-white" :class="map ? 'right-0' : '-right-full'">
     <map-view />
   </div>
   <button

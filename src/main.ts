@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
 import App from '@/layouts/NavDefault.vue'
 import router from './router/index.js'
-import store from './store/FilterStore.js'
+import store from "./store/SessionData.js";
+import fStore from './store/FilterStore.js'
 import './index.css'
 import { messages, defaultLocale } from '@/locales/LocaleIndex.js'
 import { createI18n } from 'vue-i18n'
@@ -14,6 +15,7 @@ const i18n = createI18n({
 })
 
 createApp(App)
+  .use(fStore)
   .use(store)
   .use(router)
   // .use(Toast, {

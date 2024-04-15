@@ -15,28 +15,28 @@ const page = usePage()
 const props = defineProps({
   usersCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   citiesWithProvidersCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   countriesWithCitiesWithProvidersCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   providersCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   providerCitiesCount: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   providers: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 function getProviderColor(providerName) {
@@ -50,9 +50,9 @@ const chartData = ref({
   datasets: [
     {
       backgroundColor: [],
-      data: [5]
-    }
-  ]
+      data: [5],
+    },
+  ],
 })
 
 onMounted(() => {
@@ -71,9 +71,9 @@ onMounted(() => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data
-      }
-    ]
+        data: data,
+      },
+    ],
   }
 })
 
@@ -84,9 +84,9 @@ const chartOptions = {
   animation: false,
   plugins: {
     legend: {
-      display: false
-    }
-  }
+      display: false,
+    },
+  },
 }
 </script>
 
@@ -152,13 +152,12 @@ const chartOptions = {
                     loading="lazy"
                     :src="'/providers/' + provider.name.toLowerCase() + '.png'"
                     alt=""
-                  />
+                  >
                 </div>
                 <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50">
                   <span
                     class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700"
-                    >{{ provider.count }}</span
-                  >
+                  >{{ provider.count }}</span>
                 </div>
               </div>
             </div>

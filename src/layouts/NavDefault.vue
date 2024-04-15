@@ -14,7 +14,7 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
 } from '@heroicons/vue/24/outline'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
@@ -62,30 +62,30 @@ const loginForm = ref({
   password: '',
   processing: false,
   errors: {
-    loginError: ''
-  }
+    loginError: '',
+  },
 })
 const registerForm = useForm({
   name: '',
   email: '',
-  password: ''
+  password: '',
 })
 const navigation = [
   {
     name: 'Home',
-    to: '/'
+    to: '/',
   },
   {
     name: 'About',
-    to: '/about'
-  }
+    to: '/about',
+  },
 ]
 </script>
 
 <template>
   <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between items-center flex">
     <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
-      <img src="/logo.svg" class="h-10 inline-block float-start" />
+      <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -154,7 +154,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -165,7 +165,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -188,21 +188,21 @@ const navigation = [
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="github logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="google logo">
               </button>
             </div>
           </div>
@@ -234,7 +234,7 @@ const navigation = [
               type="text"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -245,7 +245,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -257,7 +257,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -303,7 +303,7 @@ const navigation = [
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
         </router-link>
         <button
           type="button"

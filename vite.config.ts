@@ -8,14 +8,14 @@ const dirName = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [vue()],
   build: {
-    sourcemap: true
+    sourcemap: true,
   },
   resolve: {
     alias: {
-      '@': `${dirName}/src`
-    }
+      '@': `${dirName}/src`,
+    },
   },
   server: {
-    port: 3854
-  }
+    port: 3854,
+  },
 })
