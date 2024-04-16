@@ -1,0 +1,10 @@
+services:
+  node:
+    image: node:21.5-bullseye-slim
+    container_name: e-motion-web
+    working_dir: /e-motion-web
+    volumes:
+      - .:/e-motion-web
+    restart: unless-stopped
+    tty: true
+    command: bash -c "npm install && npm run dev"
