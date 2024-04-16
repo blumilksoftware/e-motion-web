@@ -123,16 +123,6 @@ onUnmounted(() => {
           </p>
         </div>
       </div>
-
-      <div v-if="shouldShowButton" class="flex justify-center">
-        <button
-          :class="buttonAnimation"
-          class="hover:blumilk-600 fixed bottom-5 z-20 flex items-center justify-center rounded-full bg-blumilk-500 px-2 py-1.5 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          @click="switchMap"
-        >
-          <component :is="buttonIcon" class="h-6 w-6" />
-        </button>
-      </div>
     </div>
   </div>
   <button

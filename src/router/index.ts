@@ -53,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/city?country=:country&city=:city',
+    path: '/city/:country/:city',
     component: () => import('@/Pages/City/Index.vue')
   },
   {

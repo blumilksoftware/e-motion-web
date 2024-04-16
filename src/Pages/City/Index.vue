@@ -1,23 +1,20 @@
 <script setup>
-import Nav from '@/Shared/Layout/Nav.vue'
-import Map from '@/Shared/Layout/Map.vue'
+import MapView from '@/layouts/MapView.vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, onUnmounted, ref, reactive } from 'vue'
 import { MapIcon, XMarkIcon, StarIcon, PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/vue/24/outline'
-import { useFilterStore } from '@/Shared/Stores/FilterStore'
-import FavoriteButton from '@/Shared/Components/FavoriteButton.vue'
-import ProviderIcons from '@/Shared/Components/ProviderIcons.vue'
-import { __ } from '@/translate'
+import fStore from '@/store/FilterStore.ts'
+import FavoriteButton from '@/components/FavoriteButton.vue'
+import ProviderIcons from '@/components/ProviderIcons.vue'
 import { useForm, usePage } from '@inertiajs/vue3'
-import ErrorMessage from '@/Shared/Components/ErrorMessage.vue'
-import { useToast } from 'vue-toastification'
-import Pagination from '@/Shared/Components/Pagination.vue'
-import InfoPopup from '@/Shared/Components/InfoPopup.vue'
-import Opinion from '@/Shared/Components/Opinion.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import Pagination from '@/components/Pagination.vue'
+import InfoPopup from '@/components/InfoPopup.vue'
+import Opinion from '@/components/Opinion.vue'
 import axios from 'axios'
 
 
-const toast = useToast()
+// const toast = useToast()
 const page = usePage()
 const isAuth = computed(() => page.props.auth.isAuth)
 const regulationsOpen = ref(false)

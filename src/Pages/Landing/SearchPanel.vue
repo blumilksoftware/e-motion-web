@@ -122,6 +122,8 @@ function clearFilters() {
 }
 
 function showCity(city) {
+  console.log(city.id)
+  console.log(fStore.state.selectedCity)
   if (fStore.state.selectedCity && fStore.state.selectedCity.id === city.id) {
     fStore.commit('changeSelectedCity', null)
   } else {
@@ -159,7 +161,7 @@ function getProviderColor(providerName) {
 }
 
 function goToCityPage(city) {
-  router.get(`/${city.country.slug}/${city.slug}`)
+  router.get(`/city?country=${city.country.slug}&city=${city.slug}`)
 }
 const providerAutocomplete = ref('')
 const countryAutocomplete = ref('')
@@ -490,7 +492,6 @@ function selectCountry(country) {
     </div>
     <SelectedCity :providers="props.providers" />
     <div class="">
-      <!-- <Scroller v-if="filteredCities.length" :items="filteredCities" /> -->
       <DynamicScroller
         v-if="filteredCities.length"
         :items="filteredCities"
@@ -537,12 +538,12 @@ function selectCountry(country) {
                   />
                   <InfoPopup v-else class="flex rounded-full py-0.5 hover:drop-shadow" />
                 </div>
-                <div
-                  class="ml-2 flex rounded-full py-0.5 text-blumilk-500 hover:drop-shadow"
-                  @click.stop="goToCityPage(item)"
+                <a
+                  class="ml-2 flex z-50 relative rounded-full py-0.5 text-blumilk-500 hover:drop-shadowc"
+                  :to="`/city/${item.country.slug}/&${item.slug}`"
                 >
                   <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
-                </div>
+                </a>
               </div>
             </div>
             <ProviderIcons :item="item" :providers="props.providers" />

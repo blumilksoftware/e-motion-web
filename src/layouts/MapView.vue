@@ -23,7 +23,7 @@ onMounted(async () => {
   centerToSingleCity()
 
   watch(
-    () => fStore.selectedCountry,
+    () => fStore.state.selectedCountry,
     () => {
       centerToSelectedCountry()
       clearMap()
@@ -32,7 +32,7 @@ onMounted(async () => {
   )
 
   watch(
-    () => fStore.selectedCity,
+    () => fStore.state.selectedCity,
     () => {
       centerToSelectedCity()
     }
@@ -52,20 +52,20 @@ function clearMap() {
   markers.value.clearLayers()
 }
 function centerToSelectedCity() {
-  centerToLocation(fStore.selectedCity, 12)
+  centerToLocation(fStore.state.selectedCity, 12)
 }
 
 function centerToSelectedCountry() {
-  if (fStore.selectedCountry) {
-    switch (fStore.selectedCountry.name) {
+  if (fStore.state.selectedCountry) {
+    switch (fStore.state.selectedCountry.name) {
       case 'Australia':
       case 'Canada':
       case 'China':
       case 'Russia':
-        centerToLocation(fStore.selectedCountry, 2)
+        centerToLocation(fStore.state.selectedCountry, 2)
         break
       default:
-        centerToLocation(fStore.selectedCountry, 6)
+        centerToLocation(fStore.state.selectedCountry, 6)
     }
   }
 }
@@ -74,7 +74,7 @@ function centerToLocation(location, zoom) {
   if (location) {
     map.value.setView([location.latitude, location.longitude], zoom)
   } else {
-    if (fStore.selectedCountry) {
+    if (fStore.state.selectedCountry) {
       centerToSelectedCountry()
     } else {
       map.value.setView([0, 0], 2)
@@ -90,7 +90,8 @@ function centerToSingleCity() {
 function fillMap() {
   markers.value = L.featureGroup()
 
-  const { selectedCountry, selectedProviderName } = fStore
+  const selectedCountry = fStore.state.selectedCountry
+  const selectedProviderName = fStore.state.selectedProviderName
   const filteredCities = filterCities(props.cities, selectedCountry, selectedProviderName)
 
   filteredCities.forEach((city) => {
@@ -105,7 +106,7 @@ function fillMap() {
     marker
       .addTo(markers.value)
       .on('click', () => {
-        const selectedCity = fStore.selectedCity
+        const selectedCity = fStore.state.selectedCity
 
         if (selectedCity && selectedCity.id === city.id) {
           fStore.commit('changeSelectedCity', null)

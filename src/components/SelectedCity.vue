@@ -8,10 +8,10 @@ const props = defineProps({
 })
 
 function showCity(city) {
-  if (fStore.selectedCity && fStore.selectedCity.id === city.id) {
-    fStore.changeSelectedCity(null)
+  if (fStore.state.selectedCity && fStore.state.selectedCity.id === city.id) {
+    fStore.commit('changeSelectedCity', null)
   } else {
-    fStore.changeSelectedCity(city)
+    fStore.commit('changeSelectedCity', city)
   }
 }
 
@@ -22,42 +22,42 @@ function goToCityPage(city) {
 
 <template>
   <div
-    v-if="fStore.selectedCity"
+    v-if="fStore.state.selectedCity"
     class="group mb-4 flex origin-left cursor-pointer flex-col justify-between gap-x-6 rounded-lg border border-gray-100 shadow-md transition-all duration-500 ease-out hover:shadow-lg hover:drop-shadow-xl sm:flex-row md:items-center"
-    @click="showCity(fStore.selectedCity)"
+    @click="showCity(fStore.state.selectedCity)"
   >
     <div
       class="flex w-full justify-between px-2 py-6 pb-1 sm:flex-col sm:justify-start sm:pb-4 lg:px-3"
     >
       <div class="flex w-max items-center">
-        <i :class="fStore.selectedCity.country.iso" class="flat flag huge shrink-0" />
+        <i :class="`fi-${fStore.state.selectedCity.country.iso}`" class="flat fi h-9 w-12 shrink-0" />
 
         <div class="ml-3 flex flex-col justify-start">
           <p
             class="mr-2 origin-left break-all rounded-full font-bold transition-all duration-500 ease-out group-hover:text-gray-500"
           >
-            {{ fStore.selectedCity.name }}
+            {{ fStore.state.selectedCity.name }}
           </p>
           <p class="break-all text-xs font-semibold text-blumilk-500">
-            {{ fStore.selectedCity.country.name }}
+            {{ fStore.state.selectedCity.country.name }}
           </p>
         </div>
       </div>
       <div class="mt-0 flex w-fit items-center justify-end sm:mt-1 sm:justify-start">
         <div class="mt-2 flex rounded-full text-gray-600 sm:ml-[64px]">
-          <div
-            class="flex items-center rounded-full py-0.5 text-blumilk-500 hover:drop-shadow"
-            @click.stop="goToCityPage(fStore.selectedCity)"
+          <a
+            class="flex items-center rounded-full z-50 relative py-0.5 text-blumilk-500 hover:drop-shadow"
+            :to="`/city/${fStore.state.selectedCity.country.slug}/${fStore.state.selectedCity.slug}`"
           >
             <InformationCircleIcon class="h-8 w-8 hover:drop-shadow sm:h-6 sm:w-6" />
             <p class="ml-1 hidden text-xs font-medium sm:flex">
-              {{ __('Check details') }}
+              {{ $t('Check details') }}
             </p>
-          </div>
+          </a>
         </div>
       </div>
     </div>
 
-    <ProviderIcons :item="fStore.selectedCity" :providers="props.providers" />
+    <ProviderIcons :item="fStore.state.selectedCity" :providers="props.providers" />
   </div>
 </template>
