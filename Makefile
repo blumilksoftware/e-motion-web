@@ -15,10 +15,6 @@ img-clean:
 stop:
 	docker compose down
 
-prune:
-	make stop
-	docker system prune -a
-
 lint:
 	docker exec -it e-motion-web npm run lint
 
