@@ -23,7 +23,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/Pages/Landing/Index.vue')
+    // component: () => import('@/Pages/Landing/Index.vue')
+    component: HomeView
   },
   {
     path: '/admin',
@@ -50,6 +51,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/AdminDashboardView.vue')
       }
     ]
+  },
+  {
+    path: '/city?country=:country&city=:city',
+    component: () => import('@/Pages/City/Index.vue')
   },
   {
     path: '/about',

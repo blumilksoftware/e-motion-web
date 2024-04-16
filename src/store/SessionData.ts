@@ -8,6 +8,7 @@ interface state {
   auth:{
     token: string | null
     isAdmin: boolean
+    isAuth: boolean
   }
 }
 const store = createStore({
@@ -15,7 +16,8 @@ const store = createStore({
     locale: getCookie('locale') || (defaultLocale as string),
     auth: {
       token: null,
-      isAdmin: false
+      isAdmin: false,
+      isAuth: false
     }
   },
   mutations: {
@@ -26,7 +28,12 @@ const store = createStore({
     logout(state: state) {
       state.auth.token = null
       state.auth.isAdmin = false
-    }
+    },
+    login(state: state, response: { [key: string]: string }) {
+      state.auth.token = response['access_token']
+      state.auth.isAdmin = response['0'].toString().includes('HasAdminRole')? true : false;
+      state.auth.isAuth = true
+    },
   },
   actions: {},
   getters: {}

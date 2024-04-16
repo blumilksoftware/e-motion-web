@@ -19,7 +19,7 @@ function getProviderURLs(providerName) {
   urls.android_url =  provider.android_url ? provider.android_url : null
   urls.ios_url = provider.ios_url ? provider.ios_url : null
   console.log(provider)
-} 
+}
 
 if (window.location.pathname !== '/') {
   document.addEventListener('click', function (event) {
@@ -45,7 +45,7 @@ if (window.location.pathname !== '/') {
         urls.transparent = false
       }
       console.log('clicked on provider icon')
-      console.log(urls) 
+      console.log(urls)
     }
   })
 }

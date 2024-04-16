@@ -76,16 +76,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-[100vh-64px] flex-col">
     <div class=" flex grow flex-col lg:flex-row">
       <div v-if="isDesktop || !shouldShowMap" class="grow lg:w-1/2">
-        <Info
-          v-if="showInfo && !isAuth"
-          @create-account="nav.toggleCreateAccountOption()"
-          @try-it-out="switchPanel"
-        />
-
-        <div v-else class="w-full">
+        <div class="w-full overflow-auto">
           <SearchPanel
             v-if="dataIsFetched"
             :cities="data.cities"
@@ -101,7 +95,7 @@ onUnmounted(() => {
           v-if="dataIsFetched"
           :key="fStore.state.selectedProviderName"
           :cities="data.cities"
-          class="z-10"
+          class="z-10 fixed bottom-0 right-0"
         />
         <div
           v-else

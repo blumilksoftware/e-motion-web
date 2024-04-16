@@ -14,22 +14,24 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon,
+  EyeSlashIcon
 } from '@heroicons/vue/24/outline'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
 const isLoginFormSelected = ref(false)
 const isPasswordVisible = ref(false)
 const isAdmin = computed(() => store.state.auth.isAdmin)
-const isAuth = (computed(() => store.state.auth.token)!='')
-const countCitiesWithoutAssignedCountry = ref(1)
-const countCitiesWithoutCoordinates = ref(1)
+const isAuth = computed(() => store.state.auth.isAuth)
+const countCitiesWithoutAssignedCountry = ref(0)
+const countCitiesWithoutCoordinates = ref(0)
 
 //  TODO: scripts
 
-
 const login = () => {
-  console.log('login')
+  axios.post('/login', loginForm.value).then(() => {
+    store.commit('login', response.data['access_token'], response.data['0'])
+    toggleAuthDialog()
+  })
 }
 const register = () => {
   console.log('register')
@@ -41,43 +43,55 @@ const togglePasswordVisibility = () => {
   console.log('togglePasswordVisibility')
 }
 const toggleAuthOption = () => {
-  console.log('toggleAuthOption')
+
 }
 const toggleAuthDialog = () => {
-  console.log('toggleAuthDialog')
+  isAuthDialogOpened.value = !isAuthDialogOpened.value
+  isLoginFormSelected.value = true
 }
 const toggleMobileMenu = () => {
   isMobileMenuOpened.value = !isMobileMenuOpened.value
 }
 const logout = () => {
-  console.log('logout')
+  store.commit('logout')
 }
 
 const loginForm = ref({
   email: '',
   password: '',
+  errors: {
+    loginError: ''
+  }
 })
 const registerForm = useForm({
   name: '',
   email: '',
-  password: '',
+  password: ''
 })
 const navigation = [
   {
     name: 'Home',
-    to: '/',
+    to: '/'
   },
   {
     name: 'About',
-    to: '/about',
+    to: '/about'
   },
+  {
+    name: 'Prices',
+    to: '/prices'
+  },
+  {
+    name: 'Rules',
+    to: '/Rules'
+  }
 ]
 </script>
 
 <template>
-  <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between relative items-center flex">
+  <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between fixed top-0 items-center flex">
     <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
-      <img src="/logo.svg" class="h-10 inline-block float-start">
+      <img src="/logo.svg" class="h-10 inline-block float-start" />
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -100,6 +114,14 @@ const navigation = [
         v-if="countCitiesWithoutAssignedCountry || countCitiesWithoutCoordinates"
         class="flex items-center text-xs font-bold text-rose-500"
       >
+        <router-link
+          v-for="item in navigation"
+          :key="item.name"
+          :to="item.to"
+          class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
+        >
+          {{ $t(item.name) }}
+        </router-link>
         <router-link
           v-if="countCitiesWithoutAssignedCountry"
           to="/admin/cities"
@@ -146,7 +168,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -157,7 +179,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -180,21 +202,21 @@ const navigation = [
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo">
+                <img class="size-10" src="@/assets/logo.png" alt="github logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo">
+                <img class="size-10" src="@/assets/logo.png" alt="google logo" />
               </button>
             </div>
           </div>
@@ -226,7 +248,7 @@ const navigation = [
               type="text"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -237,7 +259,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -249,7 +271,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -295,7 +317,7 @@ const navigation = [
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
         </router-link>
         <button
           type="button"
@@ -383,28 +405,28 @@ const navigation = [
       </div>
     </DialogPanel>
   </Dialog>
-  <div class="w-full h-[calc(100vh-64px)] overflow-hidden relative">
+  <div class="w-full h-[calc(100vh-64px)] mt-16">
     <router-view />
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+// #app {
+//   font-family: Avenir, Helvetica, Arial, sans-serif;
+//   -webkit-font-smoothing: antialiased;
+//   -moz-osx-font-smoothing: grayscale;
+//   text-align: center;
+//   color: #2c3e50;
+// }
 
 nav {
   a {
     font-weight: bold;
     color: #2c3e50;
 
-    // &.router-link-exact-active {
-    //   color: #42b983;
-    // }
+    &.router-link-exact-active {
+      color: #42b983;
+    }
   }
 }
 </style>

@@ -10,6 +10,8 @@ import { breakpointsTailwind, onClickOutside, useBreakpoints } from '@vueuse/cor
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import SelectedCity from '@/components/SelectedCity.vue'
 import ProviderIcons from '@/components/ProviderIcons.vue'
+import Scroller from '@/Pages/Landing//Scroller.vue'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const props = defineProps({
@@ -26,9 +28,9 @@ const props = defineProps({
     default: () => []
   }
 })
-const isAuth = computed(() => store.state.auth.token)!=null
+const isAuth = computed(() => store.state.auth.token) != null
 const filteredCities = computed(() => {
-  const selectedCountryId = fStore.state.selectedCountry ? fStore.selectedCountry.id : null
+  const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
   const selectedProviderName = fStore.state.selectedProviderName
 
   if (selectedCountryId === null && selectedProviderName === null) {
@@ -264,7 +266,7 @@ function selectCountry(country) {
         >
           <div class="flex w-12 shrink-0 items-center justify-center rounded-l-md bg-gray-100 py-3">
             <i
-              class="large flat flag"
+              class="large flat fi"
               :class="[country.iso, country.isSelected ? 'animate-bounce pb-0' : 'pb-3']"
             />
           </div>
@@ -324,8 +326,8 @@ function selectCountry(country) {
               <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <i
                   v-if="fStore.state.selectedCountry"
-                  class="flat flag !h-[18px] !w-[27px]"
-                  :class="fStore.state.selectedCountry.iso"
+                  class="flat rounded fi !h-[21px] !w-[28px]"
+                  :class="`fi-${fStore.state.selectedCountry.iso}`"
                 />
                 <FlagIcon v-else class="ml-1 size-6 text-gray-800" />
               </div>
@@ -360,7 +362,7 @@ function selectCountry(country) {
               tabindex="-1"
               @click="selectCountry(country)"
             >
-              <i :class="country.iso" class="flat flag !h-[18px] !w-[27px]" />
+              <i :class="`fi-${country.iso}`" class="flat fi !h-[21px] !w-[28px] rounded" />
               <span class="ml-2 block truncate text-sm">{{ country.name }}</span>
             </li>
             <li
@@ -487,63 +489,69 @@ function selectCountry(country) {
       <p class="text-slate-500">{{ $t('Results found') }}: {{ filteredCities.length }}</p>
     </div>
     <SelectedCity :providers="props.providers" />
-    <DynamicScroller
-      v-if="filteredCities.length"
-      :items="filteredCities"
-      :min-item-size="100"
-      key-field="id"
-      page-mode
-    >
-      <template #default="{ item, active }">
-        <DynamicScrollerItem
-          :size-dependencies="[item.name]"
-          :item="item"
-          :active="active"
-          :class="fStore.state.selectedCity ? 'opacity-25 saturate-50' : ''"
-          class="group flex origin-left cursor-pointer flex-col justify-between gap-x-6 border-b transition-all duration-500 ease-out hover:brightness-105 hover:drop-shadow-xl sm:flex-row md:items-center"
-          @click="showCity(item)"
-        >
-          <div
-            class="flex w-full justify-between px-2 py-6 pb-1 sm:flex-col sm:justify-start sm:pb-4 lg:px-3"
+    <div class="">
+      <!-- <Scroller v-if="filteredCities.length" :items="filteredCities" /> -->
+      <DynamicScroller
+        v-if="filteredCities.length"
+        :items="filteredCities"
+        :min-item-size="100"
+        key-field="id"
+        page-mode
+      >
+        <template #default="{ item, active }">
+          <DynamicScrollerItem
+            :size-dependencies="[item.name]"
+            :item="item"
+            :active="active"
+            :class="fStore.state.selectedCity ? 'opacity-25 saturate-50' : ''"
+            class="group flex origin-left cursor-pointer flex-col justify-between gap-x-6 border-b transition-all duration-500 ease-out hover:brightness-105 hover:drop-shadow-xl sm:flex-row md:items-center"
+            @click="showCity(item)"
           >
-            <div class="flex w-max items-center">
-              <i :class="item.country.iso" class="flat flag huge shrink-0" />
-              <div class="ml-3 flex flex-col justify-start">
-                <p
-                  class="mr-2 origin-left break-all rounded-full font-bold transition-all duration-500 ease-out group-hover:text-gray-500"
-                >
-                  {{ item.name }}
-                </p>
-                <p class="break-all text-xs font-semibold text-blumilk-500">
-                  {{ item.country.name }}
-                </p>
-              </div>
-            </div>
             <div
-              class="mt-0 flex w-fit items-center justify-end sm:ml-[64px] sm:mt-1 sm:justify-start"
+              class="flex w-full justify-between px-2 py-6 pb-1 sm:flex-col sm:justify-start sm:pb-4 lg:px-3"
             >
-              <div class="hover:drop-shadow">
-                <FavoriteButton
-                  v-if="isAuth"
-                  class="flex rounded-full py-0.5 hover:drop-shadow"
-                  :cityid="item.id"
+              <div class="flex w-max items-center">
+                <i
+                  :class="`fi-${item.country.iso}`"
+                  class="flat fi w-12 h-9 shrink-0 rounded shadow"
                 />
-                <InfoPopup v-else class="flex rounded-full py-0.5 hover:drop-shadow" />
+                <div class="ml-3 flex flex-col justify-start">
+                  <p
+                    class="mr-2 origin-left break-all rounded-full font-bold transition-all duration-500 ease-out group-hover:text-gray-500"
+                  >
+                    {{ item.name }}
+                  </p>
+                  <p class="break-all text-xs font-semibold text-blumilk-500">
+                    {{ item.country.name }}
+                  </p>
+                </div>
               </div>
               <div
-                class="ml-2 flex rounded-full py-0.5 text-blumilk-500 hover:drop-shadow"
-                @click.stop="goToCityPage(item)"
+                class="mt-0 flex w-fit items-center justify-end sm:ml-[64px] sm:mt-1 sm:justify-start"
               >
-                <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
+                <div class="hover:drop-shadow">
+                  <FavoriteButton
+                    v-if="isAuth"
+                    class="flex rounded-full py-0.5 hover:drop-shadow"
+                    :cityid="item.id"
+                  />
+                  <InfoPopup v-else class="flex rounded-full py-0.5 hover:drop-shadow" />
+                </div>
+                <div
+                  class="ml-2 flex rounded-full py-0.5 text-blumilk-500 hover:drop-shadow"
+                  @click.stop="goToCityPage(item)"
+                >
+                  <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
+                </div>
               </div>
             </div>
-          </div>
-          <ProviderIcons :item="item" :providers="props.providers" />
-        </DynamicScrollerItem>
-      </template>
-    </DynamicScroller>
-    <p v-else class="mt-8 flex justify-center font-medium text-gray-800">
-      {{ $t(`Didn't find any providers.`) }}
-    </p>
+            <ProviderIcons :item="item" :providers="props.providers" />
+          </DynamicScrollerItem>
+        </template>
+      </DynamicScroller>
+      <p v-else class="mt-8 flex justify-center font-medium text-gray-800">
+        {{ $t(`Didn't find any providers.`) }}
+      </p>
+    </div>
   </div>
 </template>
