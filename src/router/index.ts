@@ -23,8 +23,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    // component: () => import('@/Pages/Landing/Index.vue')
-    component: HomeView
+    component: () => import('@/Pages/Landing/Index.vue')
+    // component: HomeView
   },
   {
     path: '/admin',

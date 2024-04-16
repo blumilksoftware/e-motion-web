@@ -9,7 +9,6 @@ import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 import SearchPanelScaffolding from '@/layouts/SearchPanelScaffolding.vue'
 
-
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const showInfo = ref(true)
 const isMobile = ref(breakpoints.smaller('lg'))
@@ -20,10 +19,10 @@ function switchPanel() {
   showInfo.value = !showInfo.value
 }
 
-function switchMap() {
-  shouldShowMap.value = !shouldShowMap.value
+const map = ref(false)
+function toggleMap() {
+  map.value = !map.value
 }
-
 const nav = ref(null)
 
 const page = usePage()
@@ -76,10 +75,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex h-[100vh-64px] flex-col">
-    <div class=" flex grow flex-col lg:flex-row">
-      <div v-if="isDesktop || !shouldShowMap" class="grow lg:w-1/2">
-        <div class="w-full overflow-auto">
+  <div class="flex h-full relative overflow-hidden flex-col">
+    <div class="flex grow flex-col lg:flex-row">
+      <div
+        class="size-full grow rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white"
+        :class="!map ? 'left-0' : '-left-full'"
+      >
+        <div class="w-full h-full overflow-auto">
           <SearchPanel
             v-if="dataIsFetched"
             :cities="data.cities"
@@ -90,7 +92,10 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div v-if="isDesktop || shouldShowMap" class="h-full lg:w-1/2">
+      <div
+        class="size-full rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:right-0 bg-white"
+        :class="map ? 'right-0' : '-right-full'"
+      >
         <MapView
           v-if="dataIsFetched"
           :key="fStore.state.selectedProviderName"
@@ -130,4 +135,11 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
+  <button
+    class="fixed z-50 lg:hidden bottom-8 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"
+    :title="!map ? $t('showMap') : $t('hideMap')"
+    @click="toggleMap()"
+  >
+    <MapIcon class="size-6" aria-hidden="true" />
+  </button>
 </template>
