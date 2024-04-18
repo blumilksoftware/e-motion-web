@@ -12,7 +12,7 @@ onMounted(() => {
     () => fStore.state.dataIsFetched,
     () => {
       map.value = false
-    }
+    },
   )
 })
 const data = reactive(fStore.state.citiesWithProviders)
@@ -31,7 +31,6 @@ const data = reactive(fStore.state.citiesWithProviders)
     :class="map ? 'right-0' : '-right-full'"
   >
     <map-view v-if="fStore.state.dataIsFetched" :key="fStore.state.selectedProviderName" :cities="data.cities" />
-
   </div>
   <button
     class="fixed z-10 lg:hidden bottom-16 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"

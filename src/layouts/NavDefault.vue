@@ -4,7 +4,7 @@ import LangSwitch from '@/components/LangSwitch.vue' // @ is an alias to /src
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { useForm } from '@inertiajs/vue3'
-import store from '@/store/SessionData.ts'
+import store from '@/store/SessionData'
 import {
   Bars3Icon,
   XMarkIcon,
@@ -14,8 +14,9 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
 } from '@heroicons/vue/24/outline'
+import axios from 'axios'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
 const isLoginFormSelected = ref(false)
@@ -28,8 +29,8 @@ const countCitiesWithoutCoordinates = ref(0)
 //  TODO: scripts
 
 const login = () => {
-  axios.post('/login', loginForm.value).then(() => {
-    store.commit('login', response.data['access_token'], response.data['0'])
+  axios.post('/login', loginForm.value).then((response) => {
+    store.commit('login', response.data.access_token, response.data['0'])
     toggleAuthDialog()
   })
 }
@@ -42,9 +43,7 @@ const socialMediaLogin = (provider: string) => {
 const togglePasswordVisibility = () => {
   console.log('togglePasswordVisibility')
 }
-const toggleAuthOption = () => {
-
-}
+const toggleAuthOption = () => {}
 const toggleAuthDialog = () => {
   isAuthDialogOpened.value = !isAuthDialogOpened.value
   isLoginFormSelected.value = true
@@ -60,38 +59,39 @@ const loginForm = ref({
   email: '',
   password: '',
   errors: {
-    loginError: ''
-  }
+    loginError: '',
+  },
+  processing: false,
 })
 const registerForm = useForm({
   name: '',
   email: '',
-  password: ''
+  password: '',
 })
 const navigation = [
   {
     name: 'Home',
-    to: '/'
+    to: '/',
   },
   {
     name: 'About',
-    to: '/about'
+    to: '/about',
   },
   {
     name: 'Prices',
-    to: '/prices'
+    to: '/prices',
   },
   {
     name: 'Rules',
-    to: '/Rules'
-  }
+    to: '/Rules',
+  },
 ]
 </script>
 
 <template>
   <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between fixed top-0 items-center flex">
     <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
-      <img src="/logo.svg" class="h-10 inline-block float-start" />
+      <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -168,7 +168,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -179,7 +179,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -202,21 +202,21 @@ const navigation = [
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="github logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="google logo">
               </button>
             </div>
           </div>
@@ -248,7 +248,7 @@ const navigation = [
               type="text"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -259,7 +259,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -271,7 +271,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -317,7 +317,7 @@ const navigation = [
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
         </router-link>
         <button
           type="button"
@@ -405,8 +405,12 @@ const navigation = [
       </div>
     </DialogPanel>
   </Dialog>
-  <div class="w-full h-[calc(100vh-64px)] mt-16">
-    <router-view />
+  <div class="w-full h-[calc(100vh-64px)] fixed bottom-0">
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 

@@ -4,7 +4,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import fStore from '@/store/FilterStore'
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 const mapContainer = ref(null)
 const map = ref(null)
@@ -12,7 +12,7 @@ const markers = ref(null)
 
 const props = defineProps({
   cities: Array,
-  isCityPage: Boolean
+  isCityPage: Boolean,
 })
 onMounted(async () => {
   await nextTick()
@@ -28,14 +28,14 @@ onMounted(async () => {
       centerToSelectedCountry()
       clearMap()
       fillMap()
-    }
+    },
   )
 
   watch(
     () => fStore.state.selectedCity,
     () => {
       centerToSelectedCity()
-    }
+    },
   )
 })
 
@@ -45,7 +45,7 @@ function buildMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18
+    maxZoom: 18,
   }).addTo(map.value)
 }
 function clearMap() {
@@ -58,14 +58,14 @@ function centerToSelectedCity() {
 function centerToSelectedCountry() {
   if (fStore.state.selectedCountry) {
     switch (fStore.state.selectedCountry.name) {
-      case 'Australia':
-      case 'Canada':
-      case 'China':
-      case 'Russia':
-        centerToLocation(fStore.state.selectedCountry, 2)
-        break
-      default:
-        centerToLocation(fStore.state.selectedCountry, 6)
+    case 'Australia':
+    case 'Canada':
+    case 'China':
+    case 'Russia':
+      centerToLocation(fStore.state.selectedCountry, 2)
+      break
+    default:
+      centerToLocation(fStore.state.selectedCountry, 6)
     }
   }
 }
@@ -100,7 +100,7 @@ function fillMap() {
       weight: 1,
       color: '#6F90C6',
       fillColor: '#527ABA',
-      fillOpacity: 1
+      fillOpacity: 1,
     })
 
     marker
@@ -115,7 +115,7 @@ function fillMap() {
         }
       })
       .bindTooltip(
-        `<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`
+        `<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`,
       )
   })
 

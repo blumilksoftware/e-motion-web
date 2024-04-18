@@ -1,16 +1,18 @@
 <script setup>
 import { PaperAirplaneIcon, PencilIcon, StarIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { router, useForm, usePage } from '@inertiajs/vue3'
+import { useForm, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import DeleteModal from './DeleteModal.vue'
 // import toast from 'vue-toastification'
 import ErrorMessage from './ErrorMessage.vue'
+import {toast} from 'vue3-toastify'
+import store from '@/store/SessionData'
 
-const isAdmin = computed(() => page.props.auth.isAdmin)
+const isAdmin = computed(() => store.state.auth.isAdmin)
 // const toast = useToast()
 const page = usePage()
-const user = computed(() => page.props.auth.user)
+const user = computed(() => store.state.auth.user)
 
 const props = defineProps({
   opinion: Object,
@@ -92,7 +94,7 @@ const emptyRatingError = ref('')
     </p>
     <StarIcon v-for="index in maxRating"
               :key="index"
-              :class="{ 'fill-yellow-400': index <= props.opinion.rating }" class="h-4 w-4 text-yellow-400"
+              :class="{ 'fill-yellow-400': index <= props.opinion.rating }" class="size-4 text-yellow-400"
     />
   </div>
   <p class="mr-1 text-xs font-light text-blumilk-500">
@@ -103,21 +105,21 @@ const emptyRatingError = ref('')
     {{ opinion.content }}
   </div>
 
-  <div v-if="user.id === props.opinion.user.id || isAdmin" class="mt-1 flex justify-end">
+  <!-- <div v-if="user.id === opinion.user.id || isAdmin" class="mt-1 flex justify-end">
     <button v-if="user.id === props.opinion.user.id" class="flex px-1 hover:drop-shadow" @click="toggleUpdateOpinionDialog">
       <PencilIcon class="h-5 w-5 text-blumilk-500 hover:drop-shadow sm:h-4 sm:w-4" />
     </button>
     <button class="flex px-1 hover:drop-shadow" @click="toggleDeleteOpinionDialog">
       <TrashIcon class="ml-1 h-5 w-5 text-blumilk-500 hover:drop-shadow sm:h-4 sm:w-4" />
     </button>
-  </div>
+  </div> -->
 
   <div v-if="isUpdateOpinionDialogOpened" class="fixed inset-0 z-50 flex items-center bg-black/50">
     <div ref="updateOpinionDialog" class="mx-auto w-11/12 rounded-lg bg-white shadow-lg sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3">
       <div class="flex flex-col">
         <div class="flex justify-end">
           <button class="w-fit px-4 pt-4" @click.stop="toggleUpdateOpinionDialog">
-            <XMarkIcon class="h-6 w-6" />
+            <XMarkIcon class="size-6" />
           </button>
         </div>
 
@@ -130,7 +132,7 @@ const emptyRatingError = ref('')
             <StarIcon
               v-for="index in maxRating"
               :key="index"
-              class="h-6 w-6 cursor-pointer text-yellow-400"
+              class="size-6 cursor-pointer text-yellow-400"
               :class="{ 'fill-yellow-400': index <= updateOpinionForm.rating }"
               @click="setRating(index)"
             />
@@ -146,7 +148,7 @@ const emptyRatingError = ref('')
 
           <button :disabled="!updateOpinionForm.isDirty" :class="updateOpinionForm.isDirty ? 'bg-emerald-500 hover:bg-emerald-600 ' : 'bg-gray-400 hover:bg-gray-500'" class="mt-2 flex w-full items-center justify-center rounded-lg p-3 text-xs font-medium text-white sm:w-fit sm:px-4 sm:py-2">
             {{ __('Send') }}
-            <PaperAirplaneIcon class="ml-2 h-4 w-4" />
+            <PaperAirplaneIcon class="ml-2 size-4" />
           </button>
         </form>
       </div>

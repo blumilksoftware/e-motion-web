@@ -1,7 +1,8 @@
 <script setup>
 import fStore from '@/store/FilterStore'
+import router from '@/router/index.ts'
 import { computed, onMounted, ref, watch } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { usePage } from '@inertiajs/vue3'
 import { TrashIcon, XMarkIcon, MapIcon } from '@heroicons/vue/24/outline'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
@@ -17,16 +18,16 @@ const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const props = defineProps({
   cities: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   providers: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   countries: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 const isAuth = computed(() => store.state.auth.token) != null
 const filteredCities = computed(() => {
@@ -39,15 +40,15 @@ const filteredCities = computed(() => {
     return props.cities.filter((city) => city.country.id === selectedCountryId)
   } else if (selectedCountryId === null && selectedProviderName !== null) {
     return props.cities.filter((city) =>
-      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName)
+      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName),
     )
   } else {
     return props.cities.filter(
       (city) =>
         city.country.id === selectedCountryId &&
         city.cityProviders.some(
-          (cityProvider) => cityProvider.provider_name === selectedProviderName
-        )
+          (cityProvider) => cityProvider.provider_name === selectedProviderName,
+        ),
     )
   }
 })
@@ -61,8 +62,8 @@ const filteredProviders = computed(() => {
       props.cities.some(
         (city) =>
           city.country.id === selectedCountryId &&
-          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name)
-      )
+          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name),
+      ),
     )
   }
 })
@@ -74,7 +75,7 @@ const filteredCountries = computed(() => {
   for (const city of props.cities) {
     const cityProviders = city.cityProviders
     const hasProvider = cityProviders.some(
-      (cityProvider) => cityProvider.provider_name === selectedProviderName
+      (cityProvider) => cityProvider.provider_name === selectedProviderName,
     )
     cityMap.set(city.country.id, cityMap.get(city.country.id) || false || hasProvider)
   }
@@ -82,7 +83,7 @@ const filteredCountries = computed(() => {
   return props.countries.map((country) => ({
     ...country,
     hasProvider: selectedProviderName === null ? true : cityMap.get(country.id) || false,
-    isSelected: country.id === selectedCountryId
+    isSelected: country.id === selectedCountryId,
   }))
 })
 
@@ -161,7 +162,8 @@ function getProviderColor(providerName) {
 }
 
 function goToCityPage(city) {
-  router.get(`/city?country=${city.country.slug}&city=${city.slug}`)
+  router.push(`/city/${city.country.slug}/${city.slug}`)
+  // get(`/city?country=${city.country.slug}&city=${city.slug}`)
 }
 const providerAutocomplete = ref('')
 const countryAutocomplete = ref('')
@@ -188,13 +190,13 @@ onMounted(() => {
     () => fStore.state.selectedProviderName,
     () => {
       rememberProviderAutocompleteValue()
-    }
+    },
   )
   watch(
     () => fStore.state.selectedCountry,
     () => {
       rememberCountryAutocompleteValue()
-    }
+    },
   )
   watch(
     () => providerAutocomplete.value,
@@ -202,7 +204,7 @@ onMounted(() => {
       if (providerAutocomplete.value === '') {
         fStore.commit('changeSelectedProvider', null)
       }
-    }
+    },
   )
   watch(
     () => countryAutocomplete.value,
@@ -210,7 +212,7 @@ onMounted(() => {
       if (countryAutocomplete.value === '') {
         fStore.commit('changeSelectedCountry', null)
       }
-    }
+    },
   )
 })
 
@@ -225,12 +227,12 @@ function clearCountryAutocompleteInput() {
 }
 const filteredProviderSuggestions = computed(() => {
   return filteredProviders.value.filter((provider) =>
-    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase())
+    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase()),
   )
 })
 const filteredCountrySuggestions = computed(() => {
   return filteredCountries.value.filter((country) =>
-    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase())
+    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase()),
   )
 })
 
@@ -308,7 +310,7 @@ function selectCountry(country) {
               loading="lazy"
               :src="'/providers/' + provider.name.toLowerCase() + '.png'"
               alt=""
-            />
+            >
           </div>
           <div
             class="flex flex-1 items-center justify-between truncate rounded-r-md border-y border-r border-gray-100 bg-white"
@@ -339,7 +341,7 @@ function selectCountry(country) {
                 :class="countryAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('Search country')"
-              />
+              >
             </div>
             <button
               v-if="countryAutocomplete.length"
@@ -393,7 +395,7 @@ function selectCountry(country) {
                     class="w-5"
                     :src="'/providers/' + fStore.state.selectedProviderName.toLowerCase() + '.png'"
                     alt=""
-                  />
+                  >
                 </div>
                 <TruckIcon v-else class="ml-1 size-6 text-gray-800" />
               </div>
@@ -403,7 +405,7 @@ function selectCountry(country) {
                 :class="providerAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('Search provider')"
-              />
+              >
             </div>
             <button
               v-if="providerAutocomplete.length"
@@ -436,7 +438,7 @@ function selectCountry(country) {
                   class="w-5"
                   :src="'/providers/' + provider.name.toLowerCase() + '.png'"
                   alt=""
-                />
+                >
               </div>
               <span class="ml-2 block truncate text-sm">{{ provider.name }}</span>
             </li>
@@ -538,12 +540,15 @@ function selectCountry(country) {
                   />
                   <InfoPopup v-else class="flex rounded-full py-0.5 hover:drop-shadow" />
                 </div>
-                <a
-                  class="ml-2 flex z-50 relative rounded-full py-0.5 text-blumilk-500 hover:drop-shadowc"
-                  :to="`/city/${item.country.slug}/&${item.slug}`"
+                <router-link
+                  class="flex items-center rounded-full z-50 relative py-0.5 text-blumilk-500 hover:drop-shadow"
+                  :to="`/city/${item.country.slug}/${item.slug}`"
                 >
                   <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
-                </a>
+                  <p class="ml-1 hidden text-xs font-medium sm:flex">
+                    {{ $t('Check details') }}
+                  </p>
+                </router-link>
               </div>
             </div>
             <ProviderIcons :item="item" :providers="props.providers" />

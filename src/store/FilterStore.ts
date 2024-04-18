@@ -1,10 +1,10 @@
 import { createStore } from 'vuex'
 
-type state = {
+interface state {
   citiesWithProviders: {
-    cities: Array<any>
-    providers: Array<any>
-    countries: Array<any>
+    cities: any[]
+    providers: any[]
+    countries: any[]
   }
   dataIsFetched: boolean
   selectedCity: any
@@ -16,12 +16,12 @@ const fStore = createStore({
     citiesWithProviders: {
       cities: [],
       providers: [],
-      countries: []
+      countries: [],
     },
     dataIsFetched: false,
     selectedCity: null,
     selectedCountry: null,
-    selectedProviderName: null
+    selectedProviderName: null,
   },
   mutations: {
     saveCitiesWithProviders(state, response) {
@@ -43,10 +43,10 @@ const fStore = createStore({
     changeSelectedProvider(state, providerName) {
       console.log(providerName)
       state.selectedProviderName = providerName
-    }
+    },
   },
   actions: {},
-  getters: {}
+  getters: {},
 })
 
 export default fStore

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MapView from '@/layouts/MapView.vue'
-import fStore from '@/store/FilterStore.ts'
+import fStore from '@/store/FilterStore'
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import SearchPanel from './SearchPanel.vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
@@ -53,7 +53,7 @@ onMounted(() => {
     () => fStore.state.selectedCity,
     () => {
       window.scrollTo(0, 0)
-    }
+    },
   )
 })
 
@@ -81,7 +81,7 @@ onUnmounted(() => {
         class="size-full grow rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white"
         :class="!map ? 'left-0' : '-left-full'"
       >
-        <div class="w-full h-full overflow-auto">
+        <div class="size-full overflow-auto">
           <SearchPanel
             v-if="dataIsFetched"
             :cities="data.cities"
@@ -98,7 +98,7 @@ onUnmounted(() => {
       >
         <MapView
           v-if="dataIsFetched"
-          :key="fStore.state.selectedProviderName"
+          :key="fStore.state.selectedProviderName || undefined"
           :cities="data.cities"
           class="z-10 fixed bottom-0 right-0"
         />
@@ -108,7 +108,7 @@ onUnmounted(() => {
           aria-label="Loading..."
           role="status"
         >
-          <svg class="h-24 w-24 animate-spin" viewBox="3 3 18 18">
+          <svg class="size-24 animate-spin" viewBox="3 3 18 18">
             <path
               class="fill-gray-200"
               d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z"

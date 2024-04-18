@@ -54,7 +54,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/city/:country/:city',
-    component: () => import('@/Pages/City/Index.vue')
+    component: () => import('@/Pages/City/Index.vue'),
+    props: true
   },
   {
     path: '/about',

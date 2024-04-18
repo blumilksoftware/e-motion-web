@@ -2,9 +2,10 @@
 import fStore from '@/store/FilterStore'
 import { InformationCircleIcon } from '@heroicons/vue/24/outline'
 import ProviderIcons from './ProviderIcons.vue'
+import router from '@/router/index'
 
 const props = defineProps({
-  providers: Object
+  providers: Object,
 })
 
 function showCity(city) {
@@ -30,7 +31,10 @@ function goToCityPage(city) {
       class="flex w-full justify-between px-2 py-6 pb-1 sm:flex-col sm:justify-start sm:pb-4 lg:px-3"
     >
       <div class="flex w-max items-center">
-        <i :class="`fi-${fStore.state.selectedCity.country.iso}`" class="flat fi h-9 w-12 shrink-0" />
+        <i
+          :class="`fi-${fStore.state.selectedCity.country.iso}`"
+          class="flat fi h-9 w-12 shrink-0"
+        />
 
         <div class="ml-3 flex flex-col justify-start">
           <p
@@ -45,15 +49,15 @@ function goToCityPage(city) {
       </div>
       <div class="mt-0 flex w-fit items-center justify-end sm:mt-1 sm:justify-start">
         <div class="mt-2 flex rounded-full text-gray-600 sm:ml-[64px]">
-          <a
+          <router-link
             class="flex items-center rounded-full z-50 relative py-0.5 text-blumilk-500 hover:drop-shadow"
             :to="`/city/${fStore.state.selectedCity.country.slug}/${fStore.state.selectedCity.slug}`"
           >
-            <InformationCircleIcon class="h-8 w-8 hover:drop-shadow sm:h-6 sm:w-6" />
+            <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
             <p class="ml-1 hidden text-xs font-medium sm:flex">
               {{ $t('Check details') }}
             </p>
-          </a>
+          </router-link>
         </div>
       </div>
     </div>

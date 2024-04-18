@@ -1,13 +1,14 @@
 <script>
 export default {
   props: {
-    items: Array
-  }
+    items: Array,
+  },
 }
 </script>
+
 <template>
   <DynamicScroller :items="items" :min-item-size="54" class="scroller">
-    <template v-slot="{ item, index, active }">
+    <template #default="{ item, index, active }">
       <DynamicScrollerItem
         :item="item"
         :active="active"
@@ -15,7 +16,7 @@ export default {
         :data-index="index"
       >
         <div class="avatar">
-          <img :src="item.avatar" :key="item.avatar" alt="avatar" class="image" />
+          <img :key="item.avatar" :src="item.avatar" alt="avatar" class="image">
         </div>
         <div class="text">{{ item.message }}</div>
       </DynamicScrollerItem>
@@ -69,7 +70,7 @@ export default {
               class="ml-2 flex rounded-full py-0.5 text-blumilk-500 hover:drop-shadow"
               @click.stop="goToCityPage(item)"
             >
-              <InformationCircleIcon class="h-8 w-8 hover:drop-shadow sm:h-6 sm:w-6" />
+              <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
             </div>
           </div>
         </div>
@@ -78,6 +79,7 @@ export default {
     </template>
   </DynamicScroller>
 </template>
+
 <style scoped>
 .scroller {
   height: 100%;
