@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
+      - '**.ts'
       - '**.js'
       - '**.vue'
       - 'package.json'
@@ -24,16 +25,22 @@ jobs:
         uses: actions/cache@v4.0.1
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('package.lock') }}
+          key: ${{ runner.os }}-npm-dependencies-${{ hashFiles('package-lock.json') }}
           restore-keys: ${{ runner.os }}-npm-dependencies
 
-      - name: Set up node
+      - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 20
 
       - name: Install npm dependencies
         run: npm install
+
+      - name: Run TypeScript type checking
+        run: npm run type-check
+
+      - name: Run JavaScript tests
+        run: npm run test:unit
 
       - name: Run JS linter
         run: npm run lint
