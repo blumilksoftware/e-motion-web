@@ -11,7 +11,7 @@ import Pagination from '@/Shared/Components/Pagination.vue'
 import PaginationInfo from '@/Shared/Components/PaginationInfo.vue'
 import PrimarySaveButton from '@/Shared/Components/PrimarySaveButton.vue'
 import { useToast } from 'vue-toastification'
-import { __ } from '@/translate'
+import { $t } from '@/translate'
 
 const page = usePage()
 const toast = useToast()
@@ -22,10 +22,10 @@ function storeCountry() {
       storeCountryForm.reset()
       toggleStoreDialog()
       commaInputError.value = ''
-      toast.success(__('Country created successfully.'))
+      toast.success($t('Country created successfully.'))
     },
     onError: () => {
-      toast.error(__('There was an error creating the country.'))
+      toast.error($t('There was an error creating the country.'))
     },
   })
 }
@@ -43,7 +43,7 @@ const commaInputError = ref('')
 function preventCommaInput(event) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = __('Use `.` instead of `,`')
+    commaInputError.value = $t('Use `.` instead of `,`')
   }
 }
 
@@ -114,20 +114,20 @@ function toggleSortDialog() {
 
               <div class="flex flex-col p-6 pt-0">
                 <h1 class="mb-3 text-lg font-bold text-gray-800">
-                  {{ __('Create country') }}
+                  {{ $t('Create country') }}
                 </h1>
 
                 <form class="flex flex-col text-xs font-bold text-gray-600" @submit.prevent="storeCountry">
-                  <label class="mb-1 mt-4">{{ __('Name') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('Name') }}</label>
                   <input v-model="storeCountryForm.name" class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3" type="text" required>
                   <ErrorMessage :message="storeCountryForm.errors.name" />
-                  <label class="mb-1 mt-4">{{ __('Alternative name') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
                   <input v-model="storeCountryForm.alternativeName" class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3" type="text">
                   <ErrorMessage :message="storeCountryForm.errors.alternativeName" />
-                  <label class="mb-1 mt-4">{{ __('Latitude') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
                   <input v-model="storeCountryForm.latitude" class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3" type="text" required @keydown="preventCommaInput">
                   <ErrorMessage :message="storeCountryForm.errors.latitude" />
-                  <label class="mb-1 mt-4">{{ __('Longitude') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
                   <input v-model="storeCountryForm.longitude" class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3" type="text" required @keydown="preventCommaInput">
                   <ErrorMessage :message="storeCountryForm.errors.longitude" />
                   <label class="mb-1 mt-4">ISO</label>
@@ -137,7 +137,7 @@ function toggleSortDialog() {
 
                   <div class="flex w-full justify-end">
                     <PrimarySaveButton>
-                      {{ __('Save') }}
+                      {{ $t('Save') }}
                     </PrimarySaveButton>
                   </div>
                 </form>
@@ -147,7 +147,7 @@ function toggleSortDialog() {
 
           <div class="mb-3 mt-4 flex flex-wrap items-center justify-end md:justify-between">
             <button class="mr-1 rounded bg-blumilk-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blumilk-400 md:py-2" @click="toggleStoreDialog">
-              {{ __('Create country') }}
+              {{ $t('Create country') }}
             </button>
 
             <div class="m-1 flex w-full rounded-md shadow-sm md:w-fit">
@@ -155,7 +155,7 @@ function toggleSortDialog() {
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <MagnifyingGlassIcon class="size-5 text-gray-800" />
                 </div>
-                <input v-model.trim="searchInput" type="text" class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5" :placeholder="__('Search country')">
+                <input v-model.trim="searchInput" type="text" class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5" :placeholder="$t('Search country')">
               </div>
               <button v-if="searchInput.length" type="button" class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blumilk-25" @click="clearInput">
                 <XMarkIcon class="size-5" />
@@ -174,7 +174,7 @@ function toggleSortDialog() {
             <div class="relative inline-block text-left">
               <div>
                 <button ref="sortDialog" class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" aria-expanded="false" aria-haspopup="true" @click="toggleSortDialog">
-                  {{ __('Sort') }}
+                  {{ $t('Sort') }}
                   <ChevronDownIcon class="ml-1 size-5" />
                 </button>
               </div>
@@ -185,7 +185,7 @@ function toggleSortDialog() {
                                :href="option.href" class="block px-4 py-2 text-sm text-gray-500 hover:text-blumilk-400" role="menuitem" tabindex="-1"
                   >
                     <span :class="{'font-medium text-blumilk-400': page.url.startsWith(option.href) || ((page.url === '/admin/countries' || page.url.startsWith('/admin/countries?search=') || page.url.startsWith('/admin/countries?page=')) && option.href.startsWith('/admin/countries?order=latest'))}">
-                      {{ __(option.name) }}
+                      {{ $t(option.name) }}
                     </span>
                   </InertiaLink>
                 </div>
@@ -198,16 +198,16 @@ function toggleSortDialog() {
               <thead>
                 <tr>
                   <th scope="col" class="py-3.5 pl-5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:table-cell">
-                    {{ __('Name') }}
+                    {{ $t('Name') }}
                   </th>
                   <th scope="col" class="table-cell py-3.5 text-left text-sm font-semibold text-gray-900">
-                    {{ __('Alternative name') }}
+                    {{ $t('Alternative name') }}
                   </th>
                   <th scope="col" class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 xl:table-cell">
-                    {{ __('Latitude') }}
+                    {{ $t('Latitude') }}
                   </th>
                   <th scope="col" class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 xl:table-cell">
-                    {{ __('Longitude') }}
+                    {{ $t('Longitude') }}
                   </th>
                   <th scope="col" class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 xl:table-cell">
                     ISO
@@ -223,7 +223,7 @@ function toggleSortDialog() {
           </div>
           <div v-else>
             <p class="mt-6 text-lg font-medium text-gray-500">
-              {{ __(`Sorry we couldn't find any countries.`) }}
+              {{ $t(`Sorry we couldn't find any countries.`) }}
             </p>
           </div>
           <Pagination :meta="props.countries.meta" :links="props.countries.links" />

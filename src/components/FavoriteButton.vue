@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { router } from '@inertiajs/vue3'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
 import { HeartIcon as SolidHeartIcon } from '@heroicons/vue/24/solid'
 import { HeartIcon as OutlineHeartIcon } from '@heroicons/vue/24/outline'
+import { i18n } from '@/main'
+import { apiUrl } from '@/main'
+import { isAutoAccessorPropertyDeclaration } from 'typescript'
+const $t = i18n.global.t
 
 const props = defineProps({
   cityid: {
@@ -16,15 +19,16 @@ const props = defineProps({
 })
 
 const result = ref(null)
-const url = `/favorites/${props.cityid}`
+const url = `${apiUrl}/api/favorites/${props.cityid}`
 const intersectionTarget = ref(null)
+console.log(url)
 
 const fetchData = async () => {
   try {
     const response = await axios.get(url)
     result.value = response.data
   } catch (error) {
-    toast.error(__('There was an error fetching data'))
+    toast.error($t('There was an error fetching data'))
   }
 }
 
@@ -34,7 +38,7 @@ const toggleFavorite = async () => {
       await fetchData()
     }
 
-    await router.post('/favorites', {
+    await axios.post(`${apiUrl}/api/favorites`, {
       city_id: props.cityid,
     }, {
       preserveScroll: true,
@@ -42,12 +46,12 @@ const toggleFavorite = async () => {
     result.value = !result.value
 
     if (result.value === false) {
-      toast.info(__('City removed from favorites.'))
+      toast.info($t('City removed from favorites.'))
     } else if (result.value === true) {
-      toast.success(__('City added to favorites.'))
+      toast.success($t('City added to favorites.'))
     }
   } catch (error) {
-    toast.error(__('There was an error'))
+    toast.error($t('There was an error'))
   }
 }
 

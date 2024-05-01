@@ -11,8 +11,9 @@ import { breakpointsTailwind, onClickOutside, useBreakpoints } from '@vueuse/cor
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import SelectedCity from '@/components/SelectedCity.vue'
 import ProviderIcons from '@/components/ProviderIcons.vue'
-import Scroller from '@/Pages/Landing//Scroller.vue'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import store from '@/store/SessionData'
+import { reactive } from 'vue'
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const props = defineProps({
@@ -28,8 +29,11 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  isAuth: {
+    type: Boolean,
+    default: true,
+  },
 })
-const isAuth = computed(() => store.state.auth.token) != null
 const filteredCities = computed(() => {
   const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
   const selectedProviderName = fStore.state.selectedProviderName
@@ -340,7 +344,7 @@ function selectCountry(country) {
                 type="text"
                 :class="countryAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:py-3 sm:text-sm sm:leading-6"
-                :placeholder="$t('Search country')"
+                :placeholder="$t('Search_country')"
               >
             </div>
             <button
@@ -373,7 +377,7 @@ function selectCountry(country) {
               v-if="!filteredCountrySuggestions.length"
               class="relative flex cursor-default select-none items-center p-2 text-gray-900"
             >
-              {{ $t(`Didn't find anything. Just empty space.`) }}
+              {{ $t(`nothing_found`) }}
             </li>
           </ul>
         </div>
@@ -404,7 +408,7 @@ function selectCountry(country) {
                 type="text"
                 :class="providerAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:py-3 sm:text-sm sm:leading-6"
-                :placeholder="$t('Search provider')"
+                :placeholder="$t('Search_provider')"
               >
             </div>
             <button
@@ -446,7 +450,7 @@ function selectCountry(country) {
               v-if="!filteredProviderSuggestions.length"
               class="relative flex cursor-default select-none items-center p-2 text-gray-900"
             >
-              {{ $t(`Didn't find anything. Just empty space.`) }}
+              {{ $t(`nothing_found`) }}
             </li>
           </ul>
         </div>
@@ -462,7 +466,7 @@ function selectCountry(country) {
         @click="changeFilter"
       >
         <FunnelIcon class="mr-1 size-4" />
-        {{ $t('Change filters') }}
+        {{ $t('Change_filters') }}
       </button>
       <div
         :class="[
@@ -477,7 +481,7 @@ function selectCountry(country) {
           @click="clearMap"
         >
           <MapIcon class="mr-1 size-4" />
-          {{ $t('Clear map') }}
+          {{ $t('Clear_map') }}
         </button>
         <button
           v-if="fStore.state.selectedCountry !== null || fStore.state.selectedProviderName !== null"
@@ -485,12 +489,12 @@ function selectCountry(country) {
           @click="clearFilters"
         >
           <TrashIcon class="mr-1 size-4" />
-          {{ $t('Clear filters') }}
+          {{ $t('Clear_filters') }}
         </button>
       </div>
     </div>
     <div class="mb-4 mt-2 w-full px-2 lg:px-3">
-      <p class="text-slate-500">{{ $t('Results found') }}: {{ filteredCities.length }}</p>
+      <p class="text-slate-500">{{ $t('Results_found') }}: {{ filteredCities.length }}</p>
     </div>
     <SelectedCity :providers="props.providers" />
     <div class="">
@@ -546,7 +550,7 @@ function selectCountry(country) {
                 >
                   <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
                   <p class="ml-1 hidden text-xs font-medium sm:flex">
-                    {{ $t('Check details') }}
+                    {{ $t('Check_details') }}
                   </p>
                 </router-link>
               </div>
@@ -556,7 +560,7 @@ function selectCountry(country) {
         </template>
       </DynamicScroller>
       <p v-else class="mt-8 flex justify-center font-medium text-gray-800">
-        {{ $t(`Didn't find any providers.`) }}
+        {{ $t(`no_providers`) }}
       </p>
     </div>
   </div>

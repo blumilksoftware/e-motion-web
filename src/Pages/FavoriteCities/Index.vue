@@ -13,7 +13,7 @@ import FavoriteButton from '@/Shared/Components/FavoriteButton.vue'
 import InfoPopup from '@/Shared/Components/InfoPopup.vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { useFilterStore } from '@/Shared/Stores/FilterStore'
-import { __ } from '@/translate'
+import { $t } from '@/translate'
 import SelectedCity from '../../Shared/Components/SelectedCity.vue'
 import ProviderIcons from '../../Shared/Components/ProviderIcons.vue'
 
@@ -77,7 +77,7 @@ onUnmounted(() => {
       <div v-if="isDesktop || !shouldShowMap" class="grow lg:w-1/2">
         <div class="mx-auto mt-4 flex w-11/12 flex-col sm:mt-12">
           <h1 class="mb-2 px-2 text-3xl font-bold md:mb-10 md:text-4xl">
-            {{ __('Favorite cities') }}
+            {{ $t('Favorite cities') }}
           </h1>
 
           <SelectedCity :providers="props.providers" />
@@ -127,7 +127,7 @@ onUnmounted(() => {
           </DynamicScroller>
 
           <p v-else class="mt-3 flex px-2 text-lg font-medium text-gray-500">
-            {{ __(`Didn't find anything. Just empty space.`) }}
+            {{ $t(`Didn't find anything. Just empty space.`) }}
           </p>
         </div>
       </div>

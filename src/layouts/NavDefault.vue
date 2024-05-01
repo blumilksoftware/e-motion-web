@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import LangSwitch from '@/components/LangSwitch.vue' // @ is an alias to /src
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
@@ -14,23 +14,66 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon,
+  EyeSlashIcon
 } from '@heroicons/vue/24/outline'
 import axios from 'axios'
+import { toast } from 'vue3-toastify'
+import { getCookie } from '@/cookies/getCookie'
+import { get } from '@vueuse/core'
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
 const isLoginFormSelected = ref(false)
 const isPasswordVisible = ref(false)
-const isAdmin = computed(() => store.state.auth.isAdmin)
-const isAuth = computed(() => store.state.auth.isAuth)
+const isAdmin = ref(false)
+const isAuth = ref(false)
 const countCitiesWithoutAssignedCountry = ref(0)
 const countCitiesWithoutCoordinates = ref(0)
+if(getCookie('isAuth')==='true'){
+  console.log('true')
+  store.commit('login', {
+    token: getCookie('token'),
+    isAdmin: getCookie('isAdmin'),
+    isAuth: getCookie('isAuth')
+  })
+  axios.defaults.headers.common['Authorization'] = `Bearer ${getCookie('token')}`
+} else {
+  console.log('false')
+
+}
 
 //  TODO: scripts
-
+onMounted(async () => {
+  watch(
+    () => store.state.auth.isAdmin,
+    () => {
+      isAdmin.value = store.state.auth.isAdmin
+    }
+  )
+  watch(
+    () => store.state.auth.isAuth,
+    () => {
+      isAuth.value = store.state.auth.isAuth
+    }
+  )
+  watch(
+    () => store.state.auth.token,
+    () => {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.auth.token}`
+      console.log(axios.defaults.headers)
+    }
+  )
+  watch(
+    () => store.state.auth.cities,
+    () => {
+      countCitiesWithoutAssignedCountry.value = store.state.auth.cities.noCountry
+      countCitiesWithoutCoordinates.value = store.state.auth.cities.noCoords
+    }
+  )
+})
 const login = () => {
-  axios.post('/login', loginForm.value).then((response) => {
-    store.commit('login', response.data.access_token, response.data['0'])
+  console.log(loginForm.value)
+  axios.post('https://dev.escooters.blumilk.pl/api/login', loginForm.value).then((response) => {
+    store.commit('login', response.data)
     toggleAuthDialog()
   })
 }
@@ -41,57 +84,62 @@ const socialMediaLogin = (provider: string) => {
   console.log('socialMediaLogin', provider)
 }
 const togglePasswordVisibility = () => {
-  console.log('togglePasswordVisibility')
+  isPasswordVisible.value = !isPasswordVisible.value
 }
 const toggleAuthOption = () => {}
 const toggleAuthDialog = () => {
   isAuthDialogOpened.value = !isAuthDialogOpened.value
   isLoginFormSelected.value = true
+  closeMobileMenu
 }
 const toggleMobileMenu = () => {
   isMobileMenuOpened.value = !isMobileMenuOpened.value
 }
 const logout = () => {
+  axios.post('https://dev.escooters.blumilk.pl/api/logout', {
+    Authorization: store.state.auth.token
+  })
   store.commit('logout')
+  toast.success('You have been logged out')
 }
 
 const loginForm = ref({
   email: '',
   password: '',
   errors: {
-    loginError: '',
+    loginError: ''
   },
-  processing: false,
+  processing: false
 })
 const registerForm = useForm({
   name: '',
   email: '',
-  password: '',
+  password: ''
 })
 const navigation = [
   {
     name: 'Home',
-    to: '/',
+    to: '/'
   },
   {
     name: 'About',
-    to: '/about',
-  },
-  {
-    name: 'Prices',
-    to: '/prices',
-  },
-  {
-    name: 'Rules',
-    to: '/Rules',
-  },
+    to: '/about'
+  }
 ]
+//after clicking any of the links, the mobile menu will close
+const closeMobileMenu = () => {
+  isMobileMenuOpened.value = false
+}
 </script>
 
 <template>
   <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between fixed top-0 items-center flex">
-    <router-link to="/" class="flex items-center space-x-2 text-2xl font-bold">
-      <img src="/logo.svg" class="h-10 inline-block float-start">
+    <router-link
+      @click="closeMobileMenu"
+      to="/"
+      class="flex items-center space-x-2 text-2xl font-bold"
+    >
+      <img src="/logo.svg" class="h-10 inline-block float-start" />
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -110,18 +158,18 @@ const navigation = [
       </button>
     </div>
     <div class="hidden items-center md:flex md:gap-x-12">
+      <router-link
+        v-for="item in navigation"
+        :key="item.name"
+        :to="item.to"
+        class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
+      >
+        {{ $t(item.name) }}
+      </router-link>
       <div
         v-if="countCitiesWithoutAssignedCountry || countCitiesWithoutCoordinates"
         class="flex items-center text-xs font-bold text-rose-500"
       >
-        <router-link
-          v-for="item in navigation"
-          :key="item.name"
-          :to="item.to"
-          class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
-        >
-          {{ $t(item.name) }}
-        </router-link>
         <router-link
           v-if="countCitiesWithoutAssignedCountry"
           to="/admin/cities"
@@ -142,7 +190,7 @@ const navigation = [
       <router-link v-if="isAdmin" to="/admin/cities" class="font-bold">
         <computer-desktop-icon class="size-8" />
       </router-link>
-      <button>
+      <button @click="closeMobileMenu">
         <arrow-right-start-on-rectangle-icon v-if="isAuth" class="size-8" @click="logout" />
         <user-circle-icon v-else class="size-8" @click="toggleAuthDialog" />
       </button>
@@ -168,7 +216,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -179,7 +227,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -193,30 +241,30 @@ const navigation = [
           </div>
           <ErrorMessage :message="loginForm.errors.loginError" />
           <div>
-            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800">{{
-              $t('You can also login by:')
-            }}</label>
+            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800"
+              >{{ $t('altlogin') }}:</label
+            >
             <div class="flex items-center justify-center space-x-5">
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo">
+                <img class="size-10" src="@/assets/logo.png" alt="github logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo">
+                <img class="size-10" src="@/assets/logo.png" alt="google logo" />
               </button>
             </div>
           </div>
@@ -225,7 +273,7 @@ const navigation = [
               type="submit"
               class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
             >
-              {{ $t('Log in') }}
+              {{ $t('Login') }}
             </button>
           </div>
         </form>
@@ -235,7 +283,7 @@ const navigation = [
           @click="toggleAuthOption"
         >
           {{ $t('Don`t have an account?') }}
-          <span class="font-normal">{{ $t('Sign up') }}</span>
+          <span class="font-normal">{{ $t('Signup') }}</span>
         </button>
       </div>
 
@@ -248,7 +296,7 @@ const navigation = [
               type="text"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -259,7 +307,7 @@ const navigation = [
               type="email"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -271,7 +319,7 @@ const navigation = [
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -289,7 +337,7 @@ const navigation = [
               type="submit"
               class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
             >
-              {{ $t('Sign up') }}
+              {{ $t('Signup') }}
             </button>
           </div>
         </form>
@@ -298,8 +346,8 @@ const navigation = [
           class="mt-6 text-xs font-light"
           @click="toggleAuthOption"
         >
-          {{ $t('Already have an account?') }}
-          <span class="font-normal">{{ $t('Log in') }}</span>
+          {{ $t('hasaccount') }}?
+          <span class="font-normal">{{ $t('Login') }}</span>
         </button>
       </div>
     </div>
@@ -316,8 +364,8 @@ const navigation = [
       class="fixed inset-y-0 right-0 z-30 w-full overflow-y-auto border-b-2 bg-white px-6 py-3 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
     >
       <div class="flex items-center justify-between sm:justify-end">
-        <router-link to="/">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
+        <router-link to="/" @click="closeMobileMenu">
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
         </router-link>
         <button
           type="button"
@@ -333,6 +381,7 @@ const navigation = [
           <div class="space-y-4 pt-6">
             <div class="space-y-2 py-6">
               <router-link
+                @click="closeMobileMenu"
                 v-for="item in navigation"
                 :key="item.name"
                 :to="item.to"
@@ -346,7 +395,7 @@ const navigation = [
               v-if="countCitiesWithoutAssignedCountry || countCitiesWithoutCoordinates"
               class="flex flex-col items-start text-sm font-bold text-rose-500"
             >
-              <router-link
+              <router-link @click="closeMobileMenu"
                 v-if="countCitiesWithoutAssignedCountry"
                 to="/admin/cities"
                 class="flex items-center"
@@ -355,7 +404,7 @@ const navigation = [
                 {{ $t('Cities_no_country') }}:
                 {{ countCitiesWithoutAssignedCountry }}
               </router-link>
-              <router-link
+              <router-link @click="closeMobileMenu"
                 v-if="countCitiesWithoutCoordinates"
                 to="/admin/cities?order=empty-coordinates"
                 class="mt-5 flex items-center"
@@ -368,7 +417,7 @@ const navigation = [
 
             <div class="pb-6">
               <button v-if="isAdmin" class="-mx-3 mb-4 flex w-full font-semibold text-gray-800">
-                <router-link
+                <router-link @click="closeMobileMenu"
                   v-if="isAdmin"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   to="/admin/cities"
@@ -377,27 +426,28 @@ const navigation = [
                   <span class="ml-2">{{ $t('Admin_panel') }}</span>
                 </router-link>
               </button>
-              <button class="-mx-3 flex w-full font-semibold text-gray-800">
+              <button @click="closeMobileMenu" class="-mx-3 flex w-full font-semibold text-gray-800">
                 <span
                   v-if="isAuth"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   @click="logout"
                 >
                   <ArrowRightStartOnRectangleIcon class="size-6" />
-                  <span class="ml-2">{{ $t('Log out') }}</span>
+                  <span class="ml-2">{{ $t('Logout') }}</span>
                 </span>
 
                 <span
+
                   v-if="!isAuth"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
                   @click="toggleAuthDialog"
                 >
                   <UserCircleIcon class="size-6" />
-                  <span class="ml-2">{{ $t('Log in') }}</span>
+                  <span class="ml-2">{{ $t('Login') }}</span>
                 </span>
               </button>
               <div class="mx-auto flex items-center pt-8">
-                <LangSwitch class="text-2xl" />
+                <LangSwitch class="text-2xl" @click="closeMobileMenu"/>
               </div>
             </div>
           </div>

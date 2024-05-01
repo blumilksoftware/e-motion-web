@@ -8,7 +8,7 @@ import {
   XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon,
+  ArrowDownIcon
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
@@ -32,7 +32,7 @@ const rules = reactive({ pl: '', en: '' })
 // fetchRegulations()
 defineProps({
   city: String,
-  country: String,
+  country: String
 })
 let data = {
   city: {
@@ -52,12 +52,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: '',
+      updated_at: ''
     },
-    cityOpinions: [],
+    cityOpinions: []
   },
   providers: [],
-  cityOpinions: [],
+  cityOpinions: []
 }
 fetchCityData()
 const map = ref(false)
@@ -88,7 +88,7 @@ onUnmounted(() => {
 const opinionForm = useForm({
   rating: 0,
   content: '',
-  city_id: data.city.id,
+  city_id: data.city.id
 })
 
 const maxRating = 5
@@ -98,7 +98,6 @@ function setRating(starIndex: number) {
 }
 
 function fetchCityData() {
-  console.log(`https://dev.escooters.blumilk.pl/api/${$route.params.country}/${$route.params.city}`)
   axios
     .get(`https://dev.escooters.blumilk.pl/api/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
@@ -106,24 +105,21 @@ function fetchCityData() {
     })
     .finally(() => {
       dataIsFetched.value = true
-      console.log(data)
     })
 }
 function toggleRegulations() {
   regulationsOpen.value = !regulationsOpen.value
 }
-console.log(window.location.pathname)
 function fetchRegulations() {
   // read current url and get country and city name
 
   axios
     .get(
-      `https://dev.escooters.blumilk.pl/api/rules/${$route.params.country}/${$route.params.city}`,
+      `https://dev.escooters.blumilk.pl/api/rules/${$route.params.country}/${$route.params.city}`
     )
     .then((response) => {
       rules.pl = response.data.rulesPL
       rules.en = response.data.rulesEN
-      console.log($route.query.page)
     })
     .catch(() => {
       toast.error($t('There was an error fetching rules.'))
@@ -145,7 +141,7 @@ function createOpinion() {
       onError: () => {
         toast.error($t('There was an error adding your opinion.'))
         emptyRatingError.value = ''
-      },
+      }
     })
   }
 }
@@ -154,8 +150,9 @@ function createOpinion() {
 <template>
   <div v-if="dataIsFetched" class="flex h-screen flex-col">
     <div class="flex grow flex-col lg:flex-row">
-      <div class="size-full grow rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white"
-           :class="!map ? 'left-0' : '-left-full'"
+      <div
+        class="size-full grow rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:left-0 bg-white"
+        :class="!map ? 'left-0' : '-left-full'"
       >
         <div class="mx-auto mt-4 flex w-11/12 flex-col sm:mt-12">
           <div class="flex items-end justify-between md:items-center">
@@ -174,7 +171,10 @@ function createOpinion() {
           </div>
 
           <div class="mt-3 flex items-center">
-            <i class="flat flag large ml-1" :class="data.city.country.iso" />
+            <i
+              class="flat fi h-9 w-12 shadow rounded ml-1"
+              :class="`fi-${data.city.country.iso}`"
+            />
             <h2 class="ml-2 text-xl font-medium text-blumilk-500">
               {{ data.city.country.name }}
             </h2>
@@ -183,8 +183,9 @@ function createOpinion() {
             {{ data.city.latitude }}, {{ data.city.longitude }}
           </h2>
           <ProviderIcons class="pt-4" :item="data.city" :providers="data.providers" />
+
           <div
-            class="regulations relative overflow-hidden rounded border-DEFAULT border-solid border-gray-200 px-3"
+            class="regulations relative overflow-hidden rounded border border-solid border-gray-200 px-3"
           >
             <div
               class="my-3 flex cursor-pointer items-center text-2xl font-bold text-gray-700"
@@ -202,7 +203,7 @@ function createOpinion() {
                 :class="regulationsOpen ? 'show' : ''"
                 class="overflow-scroll transition"
               >
-                <i class="animate-pulse text-gray-400">{{ $t('loading_rules_info') }}...</i>
+                <p class="animate-pulse text-gray-400">{{ $t('loading_rules_info') }}...</p>
               </div>
               <div
                 v-else
@@ -214,6 +215,7 @@ function createOpinion() {
               </div>
             </div>
           </div>
+
           <form v-if="isAuth" class="mt-8 flex flex-col" @submit.prevent="createOpinion">
             <p class="mb-2 text-xs font-medium text-gray-700">
               {{ $t('Add opinion') }}
@@ -311,3 +313,18 @@ function createOpinion() {
     </div>
   </div>
 </template>
+<style>
+.rotated {
+  transform: rotate(180deg);
+}
+.regulations>div:nth-child(2).show {
+  max-height: 1000px;
+  transition: max-height 0.5s ease-in-out;
+}
+.regulations>div:nth-child(2) {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+</style>

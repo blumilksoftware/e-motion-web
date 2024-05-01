@@ -56,7 +56,11 @@ const navigation = [
       </ul>
     </div>
   </div>
-  <div class="w-full absolute bottom-0 right-0 h-[calc(100%-128px)] md:w-2/3 lg:w-3/4 xl:w-5/6 sm:h-[calc(100%-64px)]">
-    <router-view class="size-full" />
+  <div class="w-full absolute bottom-0 right-0 h-[calc(100%-64px)] md:w-2/3 lg:w-3/4 xl:w-5/6 sm:h-full">
+    <router-view v-slot="{ Component }">
+  <transition>
+    <component :is="Component" />
+  </transition>
+</router-view>
   </div>
 </template>

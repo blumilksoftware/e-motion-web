@@ -13,5 +13,10 @@
   "Search": "Szukaj",
   "Admin_panel": "Panel administracyjny",
   "showMap": "Pokaż mapę",
-  "hideMap": "Ukryj mapę"
+  "hideMap": "Ukryj mapę",
+  "Search_country": "Szukaj kraju",
+  "Search_provider": "Szukaj dostawcy",
+  "Results_found": "Znaleziono wyników",
+  "Change_filters": "Zmień filtry",
+  "Check_details": "Sprawdź szczegóły"
 }

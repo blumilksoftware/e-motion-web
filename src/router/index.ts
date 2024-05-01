@@ -32,11 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'cities',
-        component: AdminCitiesView
+        component: () => import('@/Pages/Cities/Index.vue')
       },
       {
         path: 'countries',
-        component: AdminCountriesView
+        component: () => import('@/Pages/Countries/Index.vue')
       },
       {
         path: '',
@@ -44,11 +44,11 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'importers',
-        component: () => import('@/views/AdminImportersView.vue')
+        component: () => import('@/Pages/Importers/Index.vue')
       },
       {
         path: 'dashboard',
-        component: () => import('@/views/AdminDashboardView.vue')
+        component: () => import('@/Pages/Dashboard/Index.vue')
       }
     ]
   },

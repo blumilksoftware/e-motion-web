@@ -10,6 +10,7 @@ import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 import exp from 'constants'
 
+const apiUrl = 'https://dev.escooters.blumilk.pl'
 const i18n = createI18n({
   messages,
   locale: getCookie('locale') || defaultLocale,
@@ -25,4 +26,4 @@ createApp(App)
     // ... other options
   } as ToastContainerOptions)
   .mount('#app')
-export { i18n }
+export { i18n, apiUrl }

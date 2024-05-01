@@ -8,6 +8,7 @@ import { XMarkIcon, MapIcon } from '@heroicons/vue/24/outline'
 import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 import SearchPanelScaffolding from '@/layouts/SearchPanelScaffolding.vue'
+import store from '@/store/SessionData'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const showInfo = ref(true)
@@ -26,7 +27,7 @@ function toggleMap() {
 const nav = ref(null)
 
 const page = usePage()
-const isAuth = ref(true)
+const isAuth = ref(false)
 
 const dataIsFetched = ref(false)
 
@@ -53,6 +54,12 @@ onMounted(() => {
     () => fStore.state.selectedCity,
     () => {
       window.scrollTo(0, 0)
+    },
+  )
+  watch(
+    () => store.state.auth.isAuth,
+    () => {
+      isAuth.value = store.state.auth.isAuth
     },
   )
 })
@@ -87,6 +94,7 @@ onUnmounted(() => {
             :cities="data.cities"
             :providers="data.providers"
             :countries="data.countries"
+            :isAuth="isAuth"
           />
           <SearchPanelScaffolding v-else />
         </div>

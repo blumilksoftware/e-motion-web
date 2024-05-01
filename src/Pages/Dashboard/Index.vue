@@ -1,10 +1,10 @@
 <script setup>
-import AdminNavigation from '@/Shared/Layout/AdminNavigation.vue'
-import { usePage } from '@inertiajs/inertia-vue3'
-import { __ } from '@/translate'
 import { onMounted, ref } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js/auto'
 import { Doughnut } from 'vue-chartjs'
+import { i18n } from '@/main'
+
+const $t = i18n.global.t
 
 onMounted(() => {
   ChartJS.register(ArcElement, Tooltip, Legend)
@@ -99,7 +99,7 @@ const chartOptions = {
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ __('Users count') }}
+                {{ $t('Users count') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ usersCount }}
@@ -107,7 +107,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ __('Cities with providers') }}
+                {{ $t('Cities with providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ citiesWithProvidersCount }}
@@ -115,7 +115,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ __('Countries with providers') }}
+                {{ $t('Countries with providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ countriesWithCitiesWithProvidersCount }}
@@ -123,7 +123,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ __('Providers count') }}
+                {{ $t('Providers count') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ providersCount }}
@@ -135,7 +135,7 @@ const chartOptions = {
         <div class="mt-8 flex w-full flex-col lg:mt-6 lg:flex-row lg:justify-end">
           <div class="w-full px-3 lg:w-1/2">
             <h1 class="mx-2 mb-2 text-2xl font-bold text-gray-700">
-              {{ __('Number of cities where the provider is available') }}
+              {{ $t('Number of cities where the provider is available') }}
             </h1>
 
             <div class="flex flex-wrap">
