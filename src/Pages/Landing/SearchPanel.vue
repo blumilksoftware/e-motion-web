@@ -100,10 +100,6 @@ function filterCountry(country) {
     fStore.commit('changeSelectedCountry', country)
     fStore.commit('changeSelectedProvider', null)
   }
-
-  if (!isIconFilterEnabled.value) {
-    toggleCountryList()
-  }
 }
 
 function filterProvider(providerName) {
@@ -113,10 +109,6 @@ function filterProvider(providerName) {
     fStore.commit('changeSelectedProvider', null)
   } else {
     fStore.commit('changeSelectedProvider', providerName)
-  }
-
-  if (!isIconFilterEnabled.value) {
-    toggleProviderList()
   }
 }
 
@@ -148,11 +140,6 @@ onClickOutside(providerList, () => (isProviderListOpened.value = false))
 
 function toggleProviderList() {
   isProviderListOpened.value = !isProviderListOpened.value
-}
-const isIconFilterEnabled = ref(false)
-
-function changeFilter() {
-  isIconFilterEnabled.value = !isIconFilterEnabled.value
 }
 
 function clearMap() {
@@ -257,76 +244,6 @@ function selectCountry(country) {
 <template>
   <div class="mx-auto mt-4 flex w-11/12 flex-col sm:mt-12">
     <div class="px-2 lg:px-3">
-      <h1 v-if="isIconFilterEnabled" class="mb-1 text-[11px] font-medium text-gray-600">
-        {{ $t('Countries') }}
-      </h1>
-      <ul
-        v-if="isIconFilterEnabled"
-        role="list"
-        class="scrollbar flex space-x-2 overflow-x-auto pb-2"
-      >
-        <li
-          v-for="country in filteredCountries"
-          :key="country.id"
-          class="col-span-1 flex cursor-pointer rounded-md"
-          :class="{ 'opacity-25': !country.hasProvider }"
-          @click="filterCountry(country)"
-        >
-          <div class="flex w-12 shrink-0 items-center justify-center rounded-l-md bg-gray-100 py-3">
-            <i
-              class="large flat fi"
-              :class="[country.iso, country.isSelected ? 'animate-bounce pb-0' : 'pb-3']"
-            />
-          </div>
-          <div
-            class="flex flex-1 items-center justify-between truncate rounded-r-md border-y border-r border-gray-100 bg-white"
-          >
-            <div class="flex-1 truncate px-3 text-sm">
-              <span class="text-xs font-medium text-gray-600">{{ country.name }}</span>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <h1 v-if="isIconFilterEnabled" class="mb-1 mt-4 text-[11px] font-medium text-gray-600">
-        {{ $t('Providers') }}
-      </h1>
-      <ul
-        v-if="isIconFilterEnabled"
-        role="list"
-        class="scrollbar flex space-x-2 overflow-x-auto pb-2"
-      >
-        <li
-          v-for="provider in filteredProviders"
-          :key="provider.name"
-          class="col-span-1 flex cursor-pointer rounded-md"
-          :class="{
-            'opacity-25':
-              fStore.state.selectedProviderName !== null &&
-              fStore.state.selectedProviderName !== provider.name
-          }"
-          @click="filterProvider(provider.name)"
-        >
-          <div
-            :style="{ 'background-color': provider.color }"
-            class="flex h-10 w-12 shrink-0 items-center justify-center rounded-l-md px-2 py-3"
-          >
-            <img
-              loading="lazy"
-              :src="'/providers/' + provider.name.toLowerCase() + '.png'"
-              alt=""
-            >
-          </div>
-          <div
-            class="flex flex-1 items-center justify-between truncate rounded-r-md border-y border-r border-gray-100 bg-white"
-          >
-            <div class="flex-1 truncate px-3 text-sm">
-              <span class="text-xs font-medium text-gray-600">{{ provider.name }}</span>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div v-if="!isIconFilterEnabled" class="px-2 lg:px-3">
       <div ref="countryList" class="relative">
         <div class="cursor-pointer rounded" @click="toggleCountryList">
           <div class="flex w-full rounded-xl shadow-sm">
@@ -382,7 +299,7 @@ function selectCountry(country) {
           </ul>
         </div>
       </div>
-      <div v-if="!isIconFilterEnabled" ref="providerList" class="relative mt-4">
+      <div ref="providerList" class="relative mt-4">
         <div class="cursor-pointer rounded" @click="toggleProviderList">
           <div class="flex w-full rounded-xl shadow-sm">
             <div class="relative flex grow items-stretch focus-within:z-10">
@@ -454,43 +371,6 @@ function selectCountry(country) {
             </li>
           </ul>
         </div>
-      </div>
-    </div>
-    <div
-      :class="isDesktop ? 'justify-between' : 'justify-end'"
-      class="mb-4 mt-2 flex w-full flex-wrap px-2 lg:px-3"
-    >
-      <button
-        v-if="isDesktop && filteredCities.length"
-        class="mr-1 mt-2 flex size-fit items-center rounded-lg border border-gray-300 px-4 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
-        @click="changeFilter"
-      >
-        <FunnelIcon class="mr-1 size-4" />
-        {{ $t('Change_filters') }}
-      </button>
-      <div
-        :class="[
-          isDesktop ? 'flex-col' : 'w-full',
-          fStore.state.selectedCity ? 'justify-between' : 'justify-end'
-        ]"
-        class="flex"
-      >
-        <button
-          v-if="fStore.state.selectedCity !== null"
-          class="mt-2 flex w-fit items-center rounded-lg border border-gray-300 px-4 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
-          @click="clearMap"
-        >
-          <MapIcon class="mr-1 size-4" />
-          {{ $t('Clear_map') }}
-        </button>
-        <button
-          v-if="fStore.state.selectedCountry !== null || fStore.state.selectedProviderName !== null"
-          class="mt-2 flex w-fit items-center rounded-lg border border-gray-300 px-4 py-2 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
-          @click="clearFilters"
-        >
-          <TrashIcon class="mr-1 size-4" />
-          {{ $t('Clear_filters') }}
-        </button>
       </div>
     </div>
     <div class="mb-4 mt-2 w-full px-2 lg:px-3">

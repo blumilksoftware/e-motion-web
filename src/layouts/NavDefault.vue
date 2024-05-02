@@ -86,7 +86,9 @@ const socialMediaLogin = (provider: string) => {
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value
 }
-const toggleAuthOption = () => {}
+const toggleAuthOption = () => {
+  isLoginFormSelected.value = !isLoginFormSelected.value
+}
 const toggleAuthDialog = () => {
   isAuthDialogOpened.value = !isAuthDialogOpened.value
   isLoginFormSelected.value = true
@@ -111,19 +113,24 @@ const loginForm = ref({
   },
   processing: false
 })
-const registerForm = useForm({
+const registerForm = ref({
   name: '',
   email: '',
-  password: ''
+  password: '',
+  errors: {
+    name: '',
+    email: '',
+    password: ''
+  },
 })
 const navigation = [
   {
-    name: 'Home',
+    name: 'Prices',
     to: '/'
   },
   {
-    name: 'About',
-    to: '/about'
+    name: 'Rules',
+    to: '/'
   }
 ]
 //after clicking any of the links, the mobile menu will close
@@ -214,7 +221,7 @@ const closeMobileMenu = () => {
             <input
               v-model="loginForm.email"
               type="email"
-              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
             />
           </div>
@@ -225,7 +232,7 @@ const closeMobileMenu = () => {
             <input
               v-model="loginForm.password"
               :type="isPasswordVisible ? 'text' : 'password'"
-              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
             />
             <button
@@ -235,7 +242,7 @@ const closeMobileMenu = () => {
             >
               <component
                 :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
-                class="size-6 text-blumilk-400"
+                class="size-6 text-blue-400"
               />
             </button>
           </div>
@@ -271,7 +278,7 @@ const closeMobileMenu = () => {
           <div class="flex w-full md:w-fit">
             <button
               type="submit"
-              class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
+              class="w-full rounded-lg bg-blue-500 p-4 font-semibold text-white hover:bg-blue-600 md:py-2"
             >
               {{ $t('Login') }}
             </button>
@@ -294,8 +301,8 @@ const closeMobileMenu = () => {
             <input
               v-model="registerForm.name"
               type="text"
-              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
-              required
+              class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
+              requirederror
             />
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
@@ -305,7 +312,7 @@ const closeMobileMenu = () => {
             <input
               v-model="registerForm.email"
               type="email"
-              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
             />
             <ErrorMessage :message="registerForm.errors.email" />
@@ -317,7 +324,7 @@ const closeMobileMenu = () => {
             <input
               v-model="registerForm.password"
               :type="isPasswordVisible ? 'text' : 'password'"
-              class="w-full rounded-lg border-blumilk-200 py-3 md:p-2"
+              class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
             />
             <button
@@ -327,7 +334,7 @@ const closeMobileMenu = () => {
             >
               <component
                 :is="!isPasswordVisible ? EyeIcon : EyeSlashIcon"
-                class="size-6 text-blumilk-400"
+                class="size-6 text-blue-400"
               />
             </button>
           </div>
@@ -335,14 +342,13 @@ const closeMobileMenu = () => {
           <div class="flex w-full md:w-fit">
             <button
               type="submit"
-              class="w-full rounded-lg bg-blumilk-500 p-4 font-semibold text-white hover:bg-blumilk-600 md:py-2"
+              class="w-full rounded-lg bg-blue-500 p-4 font-semibold text-white hover:bg-blue-600 md:py-2"
             >
               {{ $t('Signup') }}
             </button>
           </div>
         </form>
         <button
-          :disabled="registerForm.processing"
           class="mt-6 text-xs font-light"
           @click="toggleAuthOption"
         >
@@ -385,7 +391,7 @@ const closeMobileMenu = () => {
                 v-for="item in navigation"
                 :key="item.name"
                 :to="item.to"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-blumilk-25"
+                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-blue-25"
               >
                 {{ $t(item.name) }}
               </router-link>
@@ -419,7 +425,7 @@ const closeMobileMenu = () => {
               <button v-if="isAdmin" class="-mx-3 mb-4 flex w-full font-semibold text-gray-800">
                 <router-link @click="closeMobileMenu"
                   v-if="isAdmin"
-                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   to="/admin/cities"
                 >
                   <ComputerDesktopIcon class="size-6" />
@@ -429,7 +435,7 @@ const closeMobileMenu = () => {
               <button @click="closeMobileMenu" class="-mx-3 flex w-full font-semibold text-gray-800">
                 <span
                   v-if="isAuth"
-                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   @click="logout"
                 >
                   <ArrowRightStartOnRectangleIcon class="size-6" />
@@ -439,7 +445,7 @@ const closeMobileMenu = () => {
                 <span
 
                   v-if="!isAuth"
-                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blumilk-25"
+                  class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   @click="toggleAuthDialog"
                 >
                   <UserCircleIcon class="size-6" />
