@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
 import {
   PencilIcon,
   TrashIcon,
@@ -9,11 +8,11 @@ import {
   ChevronDownIcon,
   FolderIcon
 } from '@heroicons/vue/24/outline'
-import ErrorMessage from '@/components/ErrorMessage.vue'
+// import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import SecondarySaveButton from '@/components/SecondarySaveButton.vue'
 import toast from 'vue3-toastify'
-import { i18n } from '@/main'
+import { apiUrl, i18n } from '@/main'
 import DeleteModal from '@/components/DeleteModal.vue'
 import L from 'leaflet'
 
@@ -47,7 +46,7 @@ const props = defineProps({
 })
 const country = props.city.country ?? ''
 const destroyCity = (cityId) => {
-  router.delete(`/admin/cities/${cityId}`, {
+  axios.delete(`/admin/cities/${cityId}`, {
     onSuccess: () => {
       toast.success($t('City deleted successfully.'))
       showDeleteModal.value = false
@@ -56,19 +55,25 @@ const destroyCity = (cityId) => {
 }
 
 function updateCity(cityId) {
-  updateCityForm.patch(`/admin/cities/${cityId}`, {
-    onSuccess: () => {
-      toggleEditDialog()
-      toast.success($t('City updated successfully.'))
-    }
-  })
+  axios
+    .put(`${apiUrl}/api/admin/cities/${cityId}`, updateCityForm)
+    .then((response) => {
+      if (response.status === 200) {
+        toast.success($t('City updated successfully.'))
+        toggleEditDialog()
+      }
+    })
+    .catch((error) => {
+      toast.error($t('There was an error updating the city.'))
+      console.error(error)
+    })
 }
 
-const updateCityForm = useForm({
+const updateCityForm = {
   name: props.city.name,
   latitude: props.city.latitude,
   longitude: props.city.longitude
-})
+}
 
 const storeAlternativeCityNameErrors = ref([])
 
@@ -198,52 +203,47 @@ function readMapMarker() {
 }
 const marker = ref(null)
 function showMap() {
-  //use leaflet with draggable marker
-  map.value.setView(
-    [
-      updateCityForm.latitude ? updateCityForm.latitude : 0,
-      updateCityForm.longitude ? updateCityForm.longitude : 0
-    ],
-    12
-  )
-  map.value.invalidateSize()
-  setTimeout(() => {
-    map.value.invalidateSize()
-  }, 1)
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18
-  }).addTo(map.value)
-  if (!marker.value) {
-    marker.value = L.marker(
+  if (map.value) {
+    ;(map.value as L.Map).setView(
       [
-        updateCityForm.latitude ? updateCityForm.latitude : 0,
-        updateCityForm.longitude ? updateCityForm.longitude : 0
+        parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
+        parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
       ],
-      {
-        draggable: 1,
-        autoPan: 1,
-        autoPanPadding: [70, 70]
-      }
-    ).addTo(map.value)
+      12
+    )
+    map.value.invalidateSize()
+    setTimeout(() => {
+      map.value.invalidateSize()
+    }, 1)
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+      maxZoom: 18
+    }).addTo(map.value)
+    if (!marker.value) {
+      marker.value = L.marker(
+        [
+          updateCityForm.latitude ? updateCityForm.latitude : 0,
+          updateCityForm.longitude ? updateCityForm.longitude : 0
+        ],
+        {
+          draggable: 1,
+          autoPan: 1,
+          autoPanPadding: [70, 70]
+        }
+      ).addTo(map.value)
+    }
+    isMapDialogOpen.value = true
   }
-  isMapDialogOpen.value = true
 }
 function hideMap(save: Boolean) {
-  //read the coordinates from the marker and update the form
   if (save) {
     readMapMarker()
   }
   isMapDialogOpen.value = false
 }
-//import leaflet map and put it in the #map element
 import 'leaflet/dist/leaflet.css'
-import { isMap } from 'util/types'
-
-// ...
-
-// ...
+import axios from 'axios'
 </script>
 
 <template>
@@ -393,7 +393,7 @@ import { isMap } from 'util/types'
             type="text"
             required
           />
-          <ErrorMessage :message="updateCityForm.errors.name" />
+          <ErrorMessage :message="updateCityForm" />
           <div class="flex flex-grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
@@ -404,7 +404,7 @@ import { isMap } from 'util/types'
                 required
                 @keydown="preventCommaInput"
               />
-              <ErrorMessage :message="updateCityForm.errors.latitude" />
+              <!-- <ErrorMessage :message="updateCityForm.errors.latitude" /> -->
             </div>
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
@@ -415,7 +415,7 @@ import { isMap } from 'util/types'
                 required
                 @keydown="preventCommaInput"
               />
-              <ErrorMessage :message="updateCityForm.errors.longitude" />
+              <!-- <ErrorMessage :message="updateCityForm.errors.longitude" /> -->
             </div>
           </div>
           <div class="flex w-full justify-end">
@@ -470,7 +470,7 @@ import { isMap } from 'util/types'
               type="text"
               required
             />
-            <ErrorMessage :message="storeAlternativeCityNameErrors.name" />
+            <!-- <ErrorMessage :message="storeAlternativeCityNameErrors.name" /> -->
             <div class="flex w-full justify-end">
               <SecondarySaveButton>
                 {{ $t('Save') }}
