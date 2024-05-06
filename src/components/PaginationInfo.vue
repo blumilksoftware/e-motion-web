@@ -1,5 +1,5 @@
 <script setup>
-import { i18n } from '@/main';
+import { i18n } from '@/main'
 const $t = i18n.global.t
 const props = defineProps({
   meta: Object,

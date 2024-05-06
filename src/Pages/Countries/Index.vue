@@ -1,20 +1,19 @@
 <script setup>
-import Country from '../../Shared/Components/Country.vue'
+import Country from '@/components/Country.vue'
 import { router, useForm, usePage } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
-import AdminNavigation from '@/Shared/Layout/AdminNavigation.vue'
 import { MagnifyingGlassIcon, XMarkIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
-import ErrorMessage from '@/Shared/Components/ErrorMessage.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import { debounce } from 'lodash/function'
-import Pagination from '@/Shared/Components/Pagination.vue'
-import PaginationInfo from '@/Shared/Components/PaginationInfo.vue'
-import PrimarySaveButton from '@/Shared/Components/PrimarySaveButton.vue'
-import { useToast } from 'vue-toastification'
-import { $t } from '@/translate'
+import Pagination from '@/components/Pagination.vue'
+import PaginationInfo from '@/components/PaginationInfo.vue'
+import PrimarySaveButton from '@/components/PrimarySaveButton.vue'
+import toast from 'vue3-toastify'
+import { apiUrl, i18n } from '@/main'
+const $t = i18n.global.t
 
 const page = usePage()
-const toast = useToast()
 
 function storeCountry() {
   storeCountryForm.post('/admin/countries/', {
@@ -47,16 +46,23 @@ function preventCommaInput(event) {
   }
 }
 
+import axios from 'axios'
+
 const props = defineProps({
-  countries: {
-    type: Object,
-    default: null,
-  },
   errors: {
     type: Object,
     default: null,
   },
 })
+const countries = ref({})
+axios
+  .get(`${apiUrl}/api/admin/countries`)
+  .then((response) => {
+    countries.value = response.data.countries
+  })
+  .catch((error) => {
+    console.error(error)
+  })
 
 const isStoreDialogOpened = ref(false)
 const storeDialog = ref(null)

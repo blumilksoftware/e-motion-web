@@ -9,7 +9,16 @@ import { ref } from 'vue'
 import { i18n } from '@/main'
 const $t = i18n.global.t
 
-const importInfo = ref([])
+const importInfo = ref<ImportInfo[]>([])
+
+interface ImportInfo {
+  id: number | null
+  who_runs_it: string | null
+  status: string | null
+  created_at: string | null
+  updated_at: string | null
+  import_info_details: Object | null
+}
 const codes = ref([])
 const providers = ref([])
 
@@ -26,12 +35,12 @@ axios
 
 function runImporters() {
   axios.post(`${apiUrl}/api/run-importers`)
-  toast.success($t('Importers started.'))
+  toast.success($t('importers_started'))
 }
 
 function runRules() {
   axios.get(`${apiUrl}/api/import-rules/0`)
-  toast.success($t('Rules import started.'))
+  toast.success($t('rules_import_started'))
 }
 </script>
 
@@ -44,13 +53,13 @@ function runRules() {
             class="my-5 mr-10 w-fit rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
             @click="runImporters"
           >
-            {{ $t('Run importers') }}
+            {{ $t('run_import') }}
           </button>
           <button
             class="my-5 w-fit rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
             @click="runRules"
           >
-            {{ $t('Run rules import') }}
+            {{ $t('run_rules_import') }}
           </button>
         </div>
 
@@ -63,19 +72,19 @@ function runRules() {
                   scope="col"
                   class="table-cell py-3.5 pl-2 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-5"
                 >
-                  {{ $t('Who') }}
+                  {{ $t('who') }}
                 </th>
                 <th
                   scope="col"
                   class="table-cell p-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  {{ $t('When') }}
+                  {{ $t('when') }}
                 </th>
                 <th
                   scope="col"
                   class="table-cell py-3.5 pl-1 text-left text-sm font-semibold text-gray-900"
                 >
-                  {{ $t('Status') }}
+                  {{ $t('status') }}
                 </th>
               </tr>
             </thead>
@@ -91,7 +100,7 @@ function runRules() {
           </table>
         </div>
         <p v-else class="mt-6 flex text-lg font-medium text-gray-500">
-          {{ $t(`Didn't find anything. Just empty space.`) }}
+          {{ $t(`did_not_find_anything`) }}
         </p>
 
         <!-- <Pagination :meta="importInfo.meta" :links="importInfo.links" /> -->

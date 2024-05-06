@@ -55,6 +55,11 @@ const store = createStore({
         setCookie('isAuth', 'true', 1)
       }
     },
+    restore(state: state) {
+      state.auth.token = getCookie('token')
+      state.auth.isAdmin = getCookie('isAdmin') === 'true' ? true : false
+      state.auth.isAuth = getCookie('isAuth') === 'true' ? true : false
+    },
     setCities(state: state, payload: { citiesNoCoords: number; citiesNoCountry: number }) {
       state.auth.cities.noCoords = payload.citiesNoCoords
       state.auth.cities.noCountry = payload.citiesNoCountry

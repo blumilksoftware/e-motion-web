@@ -1,13 +1,13 @@
 <script setup>
 import City from '@/components/City.vue'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, reactive } from 'vue'
 import {
   TrashIcon,
   MagnifyingGlassIcon,
   ChevronDownIcon,
   PlusCircleIcon,
   PencilSquareIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
@@ -25,7 +25,7 @@ const $t = i18n.global.t
 const cities = ref({})
 const providers = ref({})
 const countries = ref({})
-const citiesWithoutAssignedCountry = ref({})
+const citiesWithoutAssignedCountry = reactive({})
 
 axios
   .get(`${apiUrl}/api/admin/cities`)
@@ -53,12 +53,12 @@ const commaInputError = ref('')
 function storeCity() {
   commaInputError.value = ''
   axios
-    .post('/admin/cities', storeCityForm)
+    .post(`${apiUrl}/api/admin/cities`, storeCityForm)
     .then(() => {
-      storeCityForm.name = ''
-      storeCityForm.latitude = ''
-      storeCityForm.longitude = ''
-      storeCityForm.country_id = ''
+      storeCityForm.value.name = ''
+      storeCityForm.value.latitude = ''
+      storeCityForm.value.longitude = ''
+      storeCityForm.value.country_id = ''
       toggleStoreDialog()
       toast.success($t('City created successfully.'))
     })
@@ -72,7 +72,7 @@ const storeCityForm = ref({
   name: '',
   latitude: '',
   longitude: '',
-  country_id: ''
+  country_id: '',
 })
 
 const isStoreDialogOpened = ref(false)
@@ -98,14 +98,14 @@ watch(
     axios
       .get(`/admin/cities?search=${searchInput.value}`, {
         preserveState: true,
-        replace: true
+        replace: true,
       })
       .then(() => {})
       .catch((error) => {
         console.error(error)
       })
   }, 300),
-  { deep: true }
+  { deep: true },
 )
 
 function clearInput() {
@@ -113,11 +113,11 @@ function clearInput() {
 }
 
 const sortingOptions = [
-  { name: 'Latest', href: '/admin/cities?order=latest' },
-  { name: 'Oldest', href: '/admin/cities?order=oldest' },
-  { name: 'By name', href: '/admin/cities?order=name' },
-  { name: 'By providers', href: '/admin/cities?order=providers' },
-  { name: 'By country', href: '/admin/cities?order=country' }
+  { name: 'Latest', to: '/admin/cities?order=latest' },
+  { name: 'Oldest', to: '/admin/cities?order=oldest' },
+  { name: 'By name', to: '/admin/cities?order=name' },
+  { name: 'By providers', to: '/admin/cities?order=providers' },
+  { name: 'By country', to: '/admin/cities?order=country' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -132,7 +132,7 @@ const isCityWithoutCountriesListDialogOpened = ref(false)
 const cityWithoutCountriesListDialog = ref(null)
 onClickOutside(
   cityWithoutCountriesListDialog,
-  () => (isCityWithoutCountriesListDialogOpened.value = false)
+  () => (isCityWithoutCountriesListDialogOpened.value = false),
 )
 
 function toggleCityWithoutCountriesListDialog() {
@@ -141,7 +141,7 @@ function toggleCityWithoutCountriesListDialog() {
 
 function deleteCityWithoutAssignedCountry(city) {
   axios
-    .delete(`/delete-city-without-assigned-country/${city.id}`)
+    .delete(`${apiUrl}/api/delete-city-without-assigned-country/${city.id}`)
     .then(() => {
       toast.success($t('City deleted successfully.'))
     })
@@ -152,7 +152,7 @@ function deleteCityWithoutAssignedCountry(city) {
 
 function deleteAllCitiesWithoutCountry() {
   axios
-    .post('/delete-all-cities-without-assigned-country')
+    .post(`${apiUrl}/api/delete-all-cities-without-assigned-country`)
     .then(() => {
       toast.success($t('Cities deleted successfully.'))
     })
@@ -222,7 +222,7 @@ const filteredCitiesWithoutCountry = computed(() => {
 
                             <div class="flex flex-col p-6 pt-0">
                               <h1 class="mb-3 text-lg font-bold text-gray-800">
-                                {{ $t('Create city') }}
+                                {{ $t('create_city') }}
                               </h1>
 
                               <form
@@ -235,7 +235,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                                   type="text"
                                   required
-                                />
+                                >
                                 <ErrorMessage :message="storeCityForm.errors.name" />
 
                                 <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
@@ -245,7 +245,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   type="text"
                                   required
                                   @keydown="preventCommaInput"
-                                />
+                                >
                                 <ErrorMessage :message="storeCityForm.errors.latitude" />
 
                                 <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
@@ -255,7 +255,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   type="text"
                                   required
                                   @keydown="preventCommaInput"
-                                />
+                                >
                                 <ErrorMessage :message="storeCityForm.errors.longitude" />
                                 <p v-if="commaInputError" class="text-xs text-rose-600">
                                   {{ commaInputError }}
@@ -293,7 +293,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                             class="mr-1 rounded bg-blumilk-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blumilk-400 md:py-2"
                             @click="toggleStoreDialog"
                           >
-                            {{ $t('Create city') }}
+                            {{ $t('create_city') }}
                           </button>
 
                           <div class="m-1 flex w-full rounded-md shadow-sm md:w-fit">
@@ -307,8 +307,8 @@ const filteredCitiesWithoutCountry = computed(() => {
                                 v-model.trim="searchInput"
                                 type="text"
                                 class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
-                                :placeholder="$t('Search city')"
-                              />
+                                :placeholder="$t('search_city')"
+                              >
                             </div>
                             <button
                               v-if="searchInput.length"
@@ -339,14 +339,14 @@ const filteredCitiesWithoutCountry = computed(() => {
                           v-if="countCitiesWithoutCoordinates"
                           class="scrollbar my-2 flex w-full justify-start overflow-auto"
                         >
-                          <InertiaLink
-                            :href="'/admin/cities?order=empty-coordinates'"
+                          <router-link
+                            :to="'/admin/cities?order=empty-coordinates'"
                             class="flex items-center rounded border border-rose-500 bg-white p-2 text-sm font-medium text-rose-500 hover:bg-rose-50"
                           >
                             <PencilSquareIcon class="mr-1 size-5" />
                             {{ $t('Cities with no coordinates assigned') }}:
                             {{ countCitiesWithoutCoordinates }}
-                          </InertiaLink>
+                          </router-link>
                         </div>
 
                         <div v-if="isCityWithoutCountriesListDialogOpened" class="flex flex-col">
@@ -379,8 +379,8 @@ const filteredCitiesWithoutCountry = computed(() => {
                                         v-model.trim="searchCityWithoutCountryInput"
                                         type="text"
                                         class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
-                                        :placeholder="$t('Search city')"
-                                      />
+                                        :placeholder="$t('search_city')"
+                                      >
                                     </div>
                                     <button
                                       v-if="searchCityWithoutCountryInput.length"
@@ -484,10 +484,10 @@ const filteredCitiesWithoutCountry = computed(() => {
                               tabindex="-1"
                             >
                               <div class="py-1" role="none">
-                                <InertiaLink
+                                <router-link
                                   v-for="option in sortingOptions"
-                                  :key="option.href"
-                                  :href="option.href"
+                                  :key="option.to"
+                                  :to="option.to"
                                   class="block px-4 py-2 text-sm text-gray-500 hover:text-blumilk-400"
                                   role="menuitem"
                                   tabindex="-1"
@@ -495,16 +495,16 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   <span
                                     :class="{
                                       'font-medium text-blumilk-400':
-                                        page.url.startsWith(option.href) ||
+                                        page.url.startsWith(option.to) ||
                                         ((page.url === '/admin/cities' ||
                                           page.url.startsWith('/admin/cities?search=') ||
                                           page.url.startsWith('/admin/cities?page=')) &&
-                                          option.href.startsWith('/admin/cities?order=latest'))
+                                          option.to.startsWith('/admin/cities?order=latest'))
                                     }"
                                   >
                                     {{ $t(option.name) }}
                                   </span>
-                                </InertiaLink>
+                                </router-link>
                               </div>
                             </div>
                           </div>
@@ -567,7 +567,7 @@ const filteredCitiesWithoutCountry = computed(() => {
 
               <div class="flex flex-col p-6 pt-0">
                 <h1 class="mb-3 text-lg font-bold text-gray-800">
-                  {{ $t('Create city') }}
+                  {{ $t('create_city') }}
                 </h1>
 
                 <form
@@ -580,7 +580,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                     class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <ErrorMessage :message="storeCityForm.errors.name" />
 
                   <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
@@ -590,7 +590,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
+                  >
                   <ErrorMessage :message="storeCityForm.errors.latitude" />
 
                   <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
@@ -600,7 +600,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
+                  >
                   <ErrorMessage :message="storeCityForm.errors.longitude" />
                   <p v-if="commaInputError" class="text-xs text-rose-600">
                     {{ commaInputError }}
@@ -636,7 +636,7 @@ const filteredCitiesWithoutCountry = computed(() => {
               class="mr-1 rounded bg-blumilk-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blumilk-400 md:py-2"
               @click="toggleStoreDialog"
             >
-              {{ $t('Create city') }}
+              {{ $t('create_city') }}
             </button>
 
             <div class="m-1 flex w-full rounded-md shadow-sm md:w-fit">
@@ -648,8 +648,8 @@ const filteredCitiesWithoutCountry = computed(() => {
                   v-model.trim="searchInput"
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
-                  :placeholder="$t('Search city')"
-                />
+                  :placeholder="$t('search_city')"
+                >
               </div>
               <button
                 v-if="searchInput.length"
@@ -679,15 +679,14 @@ const filteredCitiesWithoutCountry = computed(() => {
             v-if="countCitiesWithoutCoordinates"
             class="scrollbar my-2 flex w-full justify-start overflow-auto"
           >
-            <InertiaLink
-              :href="'/admin/cities?order=empty-coordinates'"
+            <router-link
+              :to="'/admin/cities?order=empty-coordinates'"
               class="flex items-center rounded border border-rose-500 bg-white p-2 text-sm font-medium text-rose-500 hover:bg-rose-50"
             >
               <PencilSquareIcon class="mr-1 size-5" />
               {{ $t('Cities with no coordinates assigned') }}: {{ countCitiesWithoutCoordinates }}
-            </InertiaLink>
+            </router-link>
           </div>
-
 
           <div v-if="isCityWithoutCountriesListDialogOpened" class="flex flex-col">
             <div class="fixed inset-0 z-10 flex items-center bg-black/50 py-8">
@@ -716,8 +715,8 @@ const filteredCitiesWithoutCountry = computed(() => {
                           v-model.trim="searchCityWithoutCountryInput"
                           type="text"
                           class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
-                          :placeholder="$t('Search city')"
-                        />
+                          :placeholder="$t('search_city')"
+                        >
                       </div>
                       <button
                         v-if="searchCityWithoutCountryInput.length"
@@ -818,10 +817,10 @@ const filteredCitiesWithoutCountry = computed(() => {
                 tabindex="-1"
               >
                 <div class="py-1" role="none">
-                  <InertiaLink
+                  <router-link
                     v-for="option in sortingOptions"
-                    :key="option.href"
-                    :href="option.href"
+                    :key="option.to"
+                    :to="option.to"
                     class="block px-4 py-2 text-sm text-gray-500 hover:text-blumilk-400"
                     role="menuitem"
                     tabindex="-1"
@@ -829,16 +828,16 @@ const filteredCitiesWithoutCountry = computed(() => {
                     <span
                       :class="{
                         'font-medium text-blumilk-400':
-                          page.url.startsWith(option.href) ||
+                          page.url.startsWith(option.to) ||
                           ((page.url === '/admin/cities' ||
                             page.url.startsWith('/admin/cities?search=') ||
                             page.url.startsWith('/admin/cities?page=')) &&
-                            option.href.startsWith('/admin/cities?order=latest'))
+                            option.to.startsWith('/admin/cities?order=latest'))
                       }"
                     >
                       {{ $t(option.name) }}
                     </span>
-                  </InertiaLink>
+                  </router-link>
                 </div>
               </div>
             </div>

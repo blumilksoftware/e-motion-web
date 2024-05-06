@@ -27,7 +27,7 @@ function toggleMap() {
 const nav = ref(null)
 
 const page = usePage()
-const isAuth = ref(false)
+const isAuth = ref(store.state.auth.isAuth)
 
 const dataIsFetched = ref(false)
 
@@ -64,9 +64,6 @@ onMounted(() => {
   )
 })
 
-const shouldShowButton = computed(() => {
-  return (!showInfo.value && isMobile.value) || (isAuth.value && isMobile.value)
-})
 
 const buttonIcon = computed(() => {
   return shouldShowMap.value ? XMarkIcon : MapIcon
@@ -94,7 +91,7 @@ onUnmounted(() => {
             :cities="data.cities"
             :providers="data.providers"
             :countries="data.countries"
-            :isAuth="isAuth"
+            :is-auth="isAuth"
           />
           <SearchPanelScaffolding v-else />
         </div>
@@ -127,7 +124,7 @@ onUnmounted(() => {
             />
           </svg>
           <p class="mt-4 text-xs font-medium text-gray-400">
-            {{ $t('Filling map with providers...') }}
+            {{ $t('filling_map') }}
           </p>
         </div>
       </div>
@@ -138,6 +135,7 @@ onUnmounted(() => {
     :title="!map ? $t('showMap') : $t('hideMap')"
     @click="toggleMap()"
   >
-    <MapIcon class="size-6" aria-hidden="true" />
+    <MapIcon v-if="!map" class="size-6" aria-hidden="true" />
+    <XMarkIcon v-else class="size-6" aria-hidden="true" />
   </button>
 </template>

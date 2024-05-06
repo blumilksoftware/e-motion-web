@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
-import { i18n } from '@/main';
+import { i18n } from '@/main'
 const $t = i18n.global.t
 const options = { hour: 'numeric', minute: 'numeric', second: 'numeric' }
 
@@ -16,11 +16,11 @@ const status = computed(() => {
   const importDetails = props.info.import_info_details
 
   if (importDetails.length === 0) {
-    return 'Success'
+    return 'success'
   } else if (importDetails.some(item => item.code === '400' || item.code === '204')) {
-    return 'Error'
+    return 'error'
   } else {
-    return 'Warning'
+    return 'warning'
   }
 })
 
@@ -37,7 +37,7 @@ function toggleImportDialog() {
 </script>
 
 <template>
-  <tr :class="(status === 'Success') || (info.status !== 'finished') ? '' : 'hover:bg-gray-100' "
+  <tr :class="(status === 'success') || (info.status !== 'finished') ? '' : 'hover:bg-gray-100' "
       class="border-t"
   >
     <td class="table-cell break-all py-3.5 pl-2 text-xs capitalize text-gray-500 sm:pl-6">
@@ -54,7 +54,7 @@ function toggleImportDialog() {
     >
       <div class="flex">
         <div class="w-fit rounded-full p-1">
-          <div class="h-1.5 w-1.5 rounded-full bg-current" />
+          <div class="size-1.5 rounded-full bg-current" />
         </div>
         <div class="text-xs font-medium">
           {{ $t(status) }}
@@ -66,7 +66,7 @@ function toggleImportDialog() {
     >
       <div class="flex">
         <div class="flex w-fit animate-pulse rounded-full p-1">
-          <div class="h-1.5 w-1.5 rounded-full bg-current" />
+          <div class="size-1.5 rounded-full bg-current" />
         </div>
         <div class="text-xs font-medium capitalize">
           {{ $t(info.status) }}
@@ -83,12 +83,12 @@ function toggleImportDialog() {
       <div ref="importDialog" class="scrollbar mx-auto h-fit max-h-full w-11/12 overflow-y-auto rounded-lg bg-white pb-6 sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3">
         <div class="flex w-full justify-end">
           <button class="px-4 pt-4" @click="toggleImportDialog">
-            <XMarkIcon class="h-6 w-6" />
+            <XMarkIcon class="size-6" />
           </button>
         </div>
 
         <div class="flex flex-col">
-          <div class="h-full w-full flex-col px-6">
+          <div class="size-full flex-col px-6">
             <div class="mb-4 flex flex-col">
               <p class="text-xs capitalize text-gray-400">
                 {{ info.who_runs_it }}
@@ -108,7 +108,7 @@ function toggleImportDialog() {
                     :style="{'background-color': provider.color}"
                     class="mr-2 flex h-9 w-fit items-center justify-center rounded p-1"
                   >
-                    <img :src="`/images/providers/${provider.name.toLowerCase()}.png`" alt="" class="w-12">
+                    <img :src="`/providers/${provider.name.toLowerCase()}.png`" alt="" class="w-12">
                   </div>
                 </div>
               </div>
@@ -118,13 +118,13 @@ function toggleImportDialog() {
                   <p class="font-normal">
                     {{ $t(code.description) }}
                   </p>
-                  <InertiaLink v-if="detail.code === 419" href="/admin/cities?order=empty-coordinates" class="font-medium">
-                    {{ $t('Check list of cities with no coordinates.') }}
-                  </InertiaLink>
+                  <router-link v-if="detail.code === 419" to="/admin/cities?order=empty-coordinates" class="font-medium">
+                    {{ $t('list_of_cities_no_coords') }}
+                  </router-link>
 
-                  <InertiaLink v-if="detail.code === 420" href="/admin/cities" class="font-medium">
-                    {{ $t('Check list of cities with no country assigned') }}
-                  </InertiaLink>
+                  <router-link v-if="detail.code === 420" to="/admin/cities" class="font-medium">
+                    {{ $t('list_of_cities_no_country') }}
+                  </router-link>
                 </div>
               </div>
             </div>

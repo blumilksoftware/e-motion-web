@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 const props = defineProps({
   item: Object,
   providers: Object,
-  apps: Object
+  apps: Object,
 })
 
 function getProviderColor(providerName) {
@@ -51,7 +51,7 @@ const urls = reactive({
   android_url: null,
   ios_url: null,
   hidden: true,
-  transparent: true
+  transparent: true,
 })
 </script>
 
@@ -75,7 +75,7 @@ const urls = reactive({
           class="w-7 lg:w-8"
           :src="'/providers/' + cityProvider.provider_name.toLowerCase() + '.png'"
           alt=""
-        />
+        >
       </div>
     </div>
     <div class="provider-buttons border border-solid bg-white shadow-lg">
@@ -88,7 +88,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400 shadow-inner"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="" />
+        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="">
         <p class="provider-text text-lg font-semibold text-white hover:underline">Web</p>
       </a>
       <a
@@ -97,7 +97,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="" />
+        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="">
         <p class="provider-text text-lg font-semibold text-white hover:underline">Android</p>
       </a>
       <a
@@ -106,7 +106,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="" />
+        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="">
         <p class="provider-text text-lg font-semibold text-white hover:underline">AppStore</p>
       </a>
     </div>
@@ -119,6 +119,7 @@ const urls = reactive({
     />
   </div>
 </template>
+
 <style>
 .provider-buttons {
   position: absolute;

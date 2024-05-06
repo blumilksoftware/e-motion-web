@@ -21,14 +21,13 @@ const props = defineProps({
 const result = ref(null)
 const url = `${apiUrl}/api/favorites/${props.cityid}`
 const intersectionTarget = ref(null)
-console.log(url)
 
 const fetchData = async () => {
   try {
     const response = await axios.get(url)
     result.value = response.data
   } catch (error) {
-    toast.error($t('There was an error fetching data'))
+    toast.error($t('fetching_error'))
   }
 }
 

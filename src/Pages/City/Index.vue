@@ -8,7 +8,7 @@ import {
   XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon
+  ArrowDownIcon,
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
@@ -32,7 +32,7 @@ const rules = reactive({ pl: '', en: '' })
 // fetchRegulations()
 defineProps({
   city: String,
-  country: String
+  country: String,
 })
 let data = {
   city: {
@@ -52,12 +52,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: ''
+      updated_at: '',
     },
-    cityOpinions: []
+    cityOpinions: [],
   },
   providers: [],
-  cityOpinions: []
+  cityOpinions: [],
 }
 fetchCityData()
 const map = ref(false)
@@ -88,7 +88,7 @@ onUnmounted(() => {
 const opinionForm = useForm({
   rating: 0,
   content: '',
-  city_id: data.city.id
+  city_id: data.city.id,
 })
 
 const maxRating = 5
@@ -115,7 +115,7 @@ function fetchRegulations() {
 
   axios
     .get(
-      `https://dev.escooters.blumilk.pl/api/rules/${$route.params.country}/${$route.params.city}`
+      `https://dev.escooters.blumilk.pl/api/rules/${$route.params.country}/${$route.params.city}`,
     )
     .then((response) => {
       rules.pl = response.data.rulesPL
@@ -141,7 +141,7 @@ function createOpinion() {
       onError: () => {
         toast.error($t('There was an error adding your opinion.'))
         emptyRatingError.value = ''
-      }
+      },
     })
   }
 }
@@ -299,7 +299,7 @@ function createOpinion() {
             />
           </svg>
           <p class="mt-4 text-xs font-medium text-gray-400">
-            {{ $t('Filling map with providers...') }}
+            {{ $t('filling_map') }}
           </p>
         </div>
       </div>
@@ -313,6 +313,7 @@ function createOpinion() {
     </div>
   </div>
 </template>
+
 <style>
 .rotated {
   transform: rotate(180deg);

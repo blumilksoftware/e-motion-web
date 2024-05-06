@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, reactive } from 'vue'
 import LangSwitch from '@/components/LangSwitch.vue' // @ is an alias to /src
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
@@ -14,64 +14,57 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
 } from '@heroicons/vue/24/outline'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
 import { getCookie } from '@/cookies/getCookie'
 import { get } from '@vueuse/core'
+store.commit('restore')
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
 const isLoginFormSelected = ref(false)
 const isPasswordVisible = ref(false)
-const isAdmin = ref(false)
-const isAuth = ref(false)
-const countCitiesWithoutAssignedCountry = ref(0)
-const countCitiesWithoutCoordinates = ref(0)
-if(getCookie('isAuth')==='true'){
-  console.log('true')
-  store.commit('login', {
-    token: getCookie('token'),
-    isAdmin: getCookie('isAdmin'),
-    isAuth: getCookie('isAuth')
-  })
-  axios.defaults.headers.common['Authorization'] = `Bearer ${getCookie('token')}`
-} else {
-  console.log('false')
-
-}
-
-//  TODO: scripts
+const isAdmin = ref(store.state.auth.isAdmin)
+const isAuth = ref(store.state.auth.isAuth)
+const countCitiesWithoutAssignedCountry = ref(store.state.auth.cities.noCountry)
+const countCitiesWithoutCoordinates = ref(store.state.auth.cities.noCoords)
+axios.defaults.headers.common.Authorization = `Bearer ${store.state.auth.token}`
 onMounted(async () => {
   watch(
     () => store.state.auth.isAdmin,
     () => {
       isAdmin.value = store.state.auth.isAdmin
-    }
+    },
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    }
+    },
   )
   watch(
     () => store.state.auth.token,
     () => {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.auth.token}`
-      console.log(axios.defaults.headers)
-    }
+      axios.defaults.headers.common.Authorization = `Bearer ${store.state.auth.token}`
+    },
   )
   watch(
-    () => store.state.auth.cities,
+    () => store.state.auth.cities.noCoords,
+    () => {
+      countCitiesWithoutCoordinates.value = store.state.auth.cities.noCoords
+    },
+  )
+  watch(
+    () => store.state.auth.cities.noCountry,
     () => {
       countCitiesWithoutAssignedCountry.value = store.state.auth.cities.noCountry
-      countCitiesWithoutCoordinates.value = store.state.auth.cities.noCoords
-    }
+    },
   )
 })
+
+//  TODO: scripts
 const login = () => {
-  console.log(loginForm.value)
   axios.post('https://dev.escooters.blumilk.pl/api/login', loginForm.value).then((response) => {
     store.commit('login', response.data)
     toggleAuthDialog()
@@ -99,7 +92,7 @@ const toggleMobileMenu = () => {
 }
 const logout = () => {
   axios.post('https://dev.escooters.blumilk.pl/api/logout', {
-    Authorization: store.state.auth.token
+    Authorization: store.state.auth.token,
   })
   store.commit('logout')
   toast.success('You have been logged out')
@@ -109,9 +102,9 @@ const loginForm = ref({
   email: '',
   password: '',
   errors: {
-    loginError: ''
+    loginError: '',
   },
-  processing: false
+  processing: false,
 })
 const registerForm = ref({
   name: '',
@@ -120,18 +113,25 @@ const registerForm = ref({
   errors: {
     name: '',
     email: '',
-    password: ''
+    password: '',
   },
 })
 const navigation = [
+  // {
+  //   name: 'Prices',
+  //   to: '/',
+  //   auth: false
+  // },
+  // {
+  //   name: 'Rules',
+  //   to: '/',
+  //   auth: false
+  // },
   {
-    name: 'Prices',
-    to: '/'
+    name: 'Favorites',
+    to: '/favorites',
+    auth: true,
   },
-  {
-    name: 'Rules',
-    to: '/'
-  }
 ]
 //after clicking any of the links, the mobile menu will close
 const closeMobileMenu = () => {
@@ -142,11 +142,11 @@ const closeMobileMenu = () => {
 <template>
   <nav class="w-full z-30 h-16 px-6 py-3 bg-white justify-between fixed top-0 items-center flex">
     <router-link
-      @click="closeMobileMenu"
       to="/"
       class="flex items-center space-x-2 text-2xl font-bold"
+      @click="closeMobileMenu"
     >
-      <img src="/logo.svg" class="h-10 inline-block float-start" />
+      <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -171,7 +171,9 @@ const closeMobileMenu = () => {
         :to="item.to"
         class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
       >
-        {{ $t(item.name) }}
+        <span v-if="!item.auth || isAuth">
+          {{ $t(item.name) }}
+        </span>
       </router-link>
       <div
         v-if="countCitiesWithoutAssignedCountry || countCitiesWithoutCoordinates"
@@ -223,7 +225,7 @@ const closeMobileMenu = () => {
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -234,7 +236,7 @@ const closeMobileMenu = () => {
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -248,30 +250,28 @@ const closeMobileMenu = () => {
           </div>
           <ErrorMessage :message="loginForm.errors.loginError" />
           <div>
-            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800"
-              >{{ $t('altlogin') }}:</label
-            >
+            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800">{{ $t('altlogin') }}:</label>
             <div class="flex items-center justify-center space-x-5">
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="github logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo" />
+                <img class="size-10" src="@/assets/logo.png" alt="google logo">
               </button>
             </div>
           </div>
@@ -289,7 +289,7 @@ const closeMobileMenu = () => {
           class="mt-6 text-xs font-light"
           @click="toggleAuthOption"
         >
-          {{ $t('Don`t have an account?') }}
+          {{ $t('dont_have_account') }}
           <span class="font-normal">{{ $t('Signup') }}</span>
         </button>
       </div>
@@ -303,7 +303,7 @@ const closeMobileMenu = () => {
               type="text"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               requirederror
-            />
+            >
             <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
@@ -314,7 +314,7 @@ const closeMobileMenu = () => {
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
             <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
@@ -326,7 +326,7 @@ const closeMobileMenu = () => {
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -348,10 +348,7 @@ const closeMobileMenu = () => {
             </button>
           </div>
         </form>
-        <button
-          class="mt-6 text-xs font-light"
-          @click="toggleAuthOption"
-        >
+        <button class="mt-6 text-xs font-light" @click="toggleAuthOption">
           {{ $t('hasaccount') }}?
           <span class="font-normal">{{ $t('Login') }}</span>
         </button>
@@ -371,7 +368,7 @@ const closeMobileMenu = () => {
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/" @click="closeMobileMenu">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
         </router-link>
         <button
           type="button"
@@ -387,11 +384,11 @@ const closeMobileMenu = () => {
           <div class="space-y-4 pt-6">
             <div class="space-y-2 py-6">
               <router-link
-                @click="closeMobileMenu"
                 v-for="item in navigation"
                 :key="item.name"
                 :to="item.to"
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-blue-25"
+                @click="closeMobileMenu"
               >
                 {{ $t(item.name) }}
               </router-link>
@@ -401,19 +398,21 @@ const closeMobileMenu = () => {
               v-if="countCitiesWithoutAssignedCountry || countCitiesWithoutCoordinates"
               class="flex flex-col items-start text-sm font-bold text-rose-500"
             >
-              <router-link @click="closeMobileMenu"
+              <router-link
                 v-if="countCitiesWithoutAssignedCountry"
                 to="/admin/cities"
                 class="flex items-center"
+                @click="closeMobileMenu"
               >
                 <FlagIcon class="mr-2 size-5 shrink-0" />
                 {{ $t('Cities_no_country') }}:
                 {{ countCitiesWithoutAssignedCountry }}
               </router-link>
-              <router-link @click="closeMobileMenu"
+              <router-link
                 v-if="countCitiesWithoutCoordinates"
                 to="/admin/cities?order=empty-coordinates"
                 class="mt-5 flex items-center"
+                @click="closeMobileMenu"
               >
                 <MapPinIcon class="mr-2 size-5 shrink-0" />
                 {{ $t('Cities_no_coordinates') }}:
@@ -423,16 +422,20 @@ const closeMobileMenu = () => {
 
             <div class="pb-6">
               <button v-if="isAdmin" class="-mx-3 mb-4 flex w-full font-semibold text-gray-800">
-                <router-link @click="closeMobileMenu"
+                <router-link
                   v-if="isAdmin"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   to="/admin/cities"
+                  @click="closeMobileMenu"
                 >
                   <ComputerDesktopIcon class="size-6" />
                   <span class="ml-2">{{ $t('Admin_panel') }}</span>
                 </router-link>
               </button>
-              <button @click="closeMobileMenu" class="-mx-3 flex w-full font-semibold text-gray-800">
+              <button
+                class="-mx-3 flex w-full font-semibold text-gray-800"
+                @click="closeMobileMenu"
+              >
                 <span
                   v-if="isAuth"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
@@ -443,7 +446,6 @@ const closeMobileMenu = () => {
                 </span>
 
                 <span
-
                   v-if="!isAuth"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   @click="toggleAuthDialog"
@@ -453,7 +455,7 @@ const closeMobileMenu = () => {
                 </span>
               </button>
               <div class="mx-auto flex items-center pt-8">
-                <LangSwitch class="text-2xl" @click="closeMobileMenu"/>
+                <LangSwitch class="text-2xl" @click="closeMobileMenu" />
               </div>
             </div>
           </div>
@@ -461,12 +463,8 @@ const closeMobileMenu = () => {
       </div>
     </DialogPanel>
   </Dialog>
-  <div class="w-full h-[calc(100vh-64px)] fixed bottom-0">
-    <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+  <div class="w-full h-[calc(100%-64px)] absolute bottom-0 overflow-hidden">
+    <router-view />
   </div>
 </template>
 

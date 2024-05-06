@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js/auto'
 import { Doughnut } from 'vue-chartjs'
-import { i18n } from '@/main'
+import { apiUrl, i18n } from '@/main'
+import axios from 'axios'
 
 const $t = i18n.global.t
 
@@ -10,37 +11,43 @@ onMounted(() => {
   ChartJS.register(ArcElement, Tooltip, Legend)
 })
 
-const page = usePage()
+const usersCount = ref(0)
+const citiesWithProvidersCount = ref(0)
+const countriesWithCitiesWithProvidersCount = ref(0)
+const providersCount = ref(0)
+const providerCitiesCount = ref([{}])
+const providers = ref([{}])
 
-const props = defineProps({
-  usersCount: {
-    type: Number,
-    default: 0,
-  },
-  citiesWithProvidersCount: {
-    type: Number,
-    default: 0,
-  },
-  countriesWithCitiesWithProvidersCount: {
-    type: Number,
-    default: 0,
-  },
-  providersCount: {
-    type: Number,
-    default: 0,
-  },
-  providerCitiesCount: {
-    type: Object,
-    default: () => ({}),
-  },
-  providers: {
-    type: Object,
-    default: () => ({}),
-  },
+axios.get(`${apiUrl}/api/admin/dashboard`).then((response) => {
+  usersCount.value = response.data.usersCount
+  citiesWithProvidersCount.value = response.data.citiesWithProvidersCount
+  countriesWithCitiesWithProvidersCount.value = response.data.countriesWithCitiesWithProvidersCount
+  providersCount.value = response.data.providersCount
+  providerCitiesCount.value = response.data.providerCitiesCount
+  providers.value = response.data.providers
+  const labels = []
+  const backgroundColors = []
+  const data = []
+
+  providerCitiesCount.value.forEach((provider) => {
+    labels.push(provider.name)
+    backgroundColors.push(getProviderColor(provider.name))
+    data.push(provider.count)
+  })
+
+  chartData.value = {
+    labels: labels,
+    datasets: [
+      {
+        backgroundColor: backgroundColors,
+        data: data,
+      },
+    ],
+  }
 })
 
 function getProviderColor(providerName) {
-  const provider = props.providers.find((provider) => provider.name === providerName)
+  const provider = providers.value.find((provider) => provider.name === providerName)
 
   return provider ? provider.color : ''
 }
@@ -60,7 +67,7 @@ onMounted(() => {
   const backgroundColors = []
   const data = []
 
-  props.providerCitiesCount.forEach((provider) => {
+  providerCitiesCount.value.forEach((provider) => {
     labels.push(provider.name)
     backgroundColors.push(getProviderColor(provider.name))
     data.push(provider.count)
@@ -91,15 +98,14 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="flex h-full min-h-screen flex-col md:flex-row">
-    <AdminNavigation :url="page.url" />
-    <div class="flex w-full md:justify-end">
-      <div class="mt-16 flex size-full flex-col md:mt-0 md:w-2/3 lg:w-3/4 xl:w-5/6">
+  <div class="flex relative min-h-screen flex-col md:flex-row">
+    <div class="flex md:justify-end">
+      <div class="flex size-auto flex-col">
         <div class="p-4">
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ $t('Users count') }}
+                {{ $t('no_users') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ usersCount }}
@@ -107,7 +113,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ $t('Cities with providers') }}
+                {{ $t('cities_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ citiesWithProvidersCount }}
@@ -115,7 +121,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ $t('Countries with providers') }}
+                {{ $t('countries_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ countriesWithCitiesWithProvidersCount }}
@@ -123,7 +129,7 @@ const chartOptions = {
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
               <dt class="truncate text-sm font-medium text-blumilk-500">
-                {{ $t('Providers count') }}
+                {{ $t('no_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
                 {{ providersCount }}
@@ -132,15 +138,15 @@ const chartOptions = {
           </dl>
         </div>
 
-        <div class="mt-8 flex w-full flex-col lg:mt-6 lg:flex-row lg:justify-end">
+        <div class="flex w-full flex-col lg:mt-6 lg:flex-row lg:justify-end">
           <div class="w-full px-3 lg:w-1/2">
             <h1 class="mx-2 mb-2 text-2xl font-bold text-gray-700">
-              {{ $t('Number of cities where the provider is available') }}
+              {{ $t('no_cities_with_providers') }}
             </h1>
 
             <div class="flex flex-wrap">
               <div
-                v-for="provider in props.providerCitiesCount"
+                v-for="provider in providerCitiesCount"
                 :key="provider.name"
                 class="m-2 flex flex-col items-center shadow-lg"
               >
@@ -150,7 +156,7 @@ const chartOptions = {
                 >
                   <img
                     loading="lazy"
-                    :src="'/providers/' + provider.name.toLowerCase() + '.png'"
+                    :src="provider.name ? '/providers/' + provider.name.toLowerCase() + '.png' : ''"
                     alt=""
                   >
                 </div>
