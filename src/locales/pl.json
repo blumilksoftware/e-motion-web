@@ -56,5 +56,7 @@
   "Bad request.": "Złe zapytanie",
   "I'm a teapot.": "Jestem czajnikiem",
   "At least one city has not any coordinates assigned.": "Przynajmniej jednemu miastu nie przypisano żadnych współrzędnych.",
-  "At least one city has not been assigned to any country.": "Przynajmniej jednemu miastu nie przypisano żadnego kraju."
+  "At least one city has not been assigned to any country.": "Przynajmniej jednemu miastu nie przypisano żadnego kraju.",
+  "rules_import_started": "Import regulacji prawnych rozpoczęty",
+  "importers_started": "Importery uruchomione"
 }

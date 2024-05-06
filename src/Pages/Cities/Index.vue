@@ -7,7 +7,7 @@ import {
   ChevronDownIcon,
   PlusCircleIcon,
   PencilSquareIcon,
-  XMarkIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
@@ -21,11 +21,11 @@ import axios from 'axios'
 import { apiUrl } from '@/main'
 import store from '@/store/SessionData'
 const $t = i18n.global.t
-
-const cities = ref({})
-const providers = ref({})
-const countries = ref({})
-const citiesWithoutAssignedCountry = reactive({})
+const url = ref(window.location.pathname)
+const cities = ref([{}])
+const providers = ref([{}])
+const countries = ref([{}])
+const citiesWithoutAssignedCountry = ref([{}])
 
 axios
   .get(`${apiUrl}/api/admin/cities`)
@@ -37,6 +37,7 @@ axios
     let citiesNoCoords = cities.value.filter((city) => !city.latitude || !city.longitude).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
     console.log(citiesNoCoords, citiesNoCountry)
+    console.log(countries)
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
   })
   .catch((error) => {
@@ -44,7 +45,7 @@ axios
   })
 
 const countCitiesWithoutAssignedCountry = ref(store.state.auth.cities.noCountry)
-const countCitiesWithoutCoordinates = computed(store.state.auth.cities.noCoords)
+const countCitiesWithoutCoordinates = ref(store.state.auth.cities.noCoords)
 
 const storeErrors = ref([])
 
@@ -72,7 +73,7 @@ const storeCityForm = ref({
   name: '',
   latitude: '',
   longitude: '',
-  country_id: '',
+  country_id: ''
 })
 
 const isStoreDialogOpened = ref(false)
@@ -98,14 +99,14 @@ watch(
     axios
       .get(`/admin/cities?search=${searchInput.value}`, {
         preserveState: true,
-        replace: true,
+        replace: true
       })
       .then(() => {})
       .catch((error) => {
         console.error(error)
       })
   }, 300),
-  { deep: true },
+  { deep: true }
 )
 
 function clearInput() {
@@ -117,7 +118,7 @@ const sortingOptions = [
   { name: 'Oldest', to: '/admin/cities?order=oldest' },
   { name: 'By name', to: '/admin/cities?order=name' },
   { name: 'By providers', to: '/admin/cities?order=providers' },
-  { name: 'By country', to: '/admin/cities?order=country' },
+  { name: 'By country', to: '/admin/cities?order=country' }
 ]
 
 const isSortDialogOpened = ref(false)
@@ -132,7 +133,7 @@ const isCityWithoutCountriesListDialogOpened = ref(false)
 const cityWithoutCountriesListDialog = ref(null)
 onClickOutside(
   cityWithoutCountriesListDialog,
-  () => (isCityWithoutCountriesListDialogOpened.value = false),
+  () => (isCityWithoutCountriesListDialogOpened.value = false)
 )
 
 function toggleCityWithoutCountriesListDialog() {
@@ -183,7 +184,7 @@ function clearCityWithoutCountryInput() {
 }
 
 const filteredCitiesWithoutCountry = computed(() => {
-  return props.citiesWithoutAssignedCountry.filter((city) => {
+  return citiesWithoutAssignedCountry.filter((city) => {
     return city.city_name.toLowerCase().includes(searchCityWithoutCountryInput.value.toLowerCase())
   })
 })
@@ -192,7 +193,7 @@ const filteredCitiesWithoutCountry = computed(() => {
 <template>
   <div class="flex h-full min-h-screen flex-col md:flex-row">
     <div class="flex w-full md:justify-end">
-      <div class="mt-16 flex size-full flex-col justify-between md:mt-0 md:w-2/3 lg:w-3/4 xl:w-5/6">
+      <div class="mt-16 flex size-full flex-col justify-between md:mt-0">
         <div class="m-4 flex flex-col lg:mx-8">
           <div v-if="isStoreDialogOpened" class="fixed inset-0 z-50 flex items-center bg-black/50">
             <div
@@ -232,30 +233,34 @@ const filteredCitiesWithoutCountry = computed(() => {
                                 <label class="mb-1 mt-4">{{ $t('Name') }}</label>
                                 <input
                                   v-model="storeCityForm.name"
-                                  class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
+                                  class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                                   type="text"
                                   required
-                                >
+                                />
                                 <ErrorMessage :message="storeCityForm.errors.name" />
-
-                                <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
-                                <input
-                                  v-model="storeCityForm.latitude"
-                                  class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
-                                  type="text"
-                                  required
-                                  @keydown="preventCommaInput"
-                                >
-                                <ErrorMessage :message="storeCityForm.errors.latitude" />
-
-                                <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
-                                <input
-                                  v-model="storeCityForm.longitude"
-                                  class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
-                                  type="text"
-                                  required
-                                  @keydown="preventCommaInput"
-                                >
+                                <div class="flex flex-col md:flex-row">
+                                  <div class="flex">
+                                    <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
+                                    <input
+                                      v-model="storeCityForm.latitude"
+                                      class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                                      type="text"
+                                      required
+                                      @keydown="preventCommaInput"
+                                    />
+                                    <ErrorMessage :message="storeCityForm.errors.latitude" />
+                                  </div>
+                                  <div class="flex">
+                                    <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
+                                    <input
+                                      v-model="storeCityForm.longitude"
+                                      class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                                      type="text"
+                                      required
+                                      @keydown="preventCommaInput"
+                                    />
+                                  </div>
+                                </div>
                                 <ErrorMessage :message="storeCityForm.errors.longitude" />
                                 <p v-if="commaInputError" class="text-xs text-rose-600">
                                   {{ commaInputError }}
@@ -264,10 +269,10 @@ const filteredCitiesWithoutCountry = computed(() => {
                                 <select
                                   v-model="storeCityForm.country_id"
                                   required
-                                  class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                                  class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                                 >
                                   <option
-                                    v-for="country in props.countries"
+                                    v-for="country in countries"
                                     :key="country.id"
                                     class="m-6 p-6"
                                     :value="country.id"
@@ -290,7 +295,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                           class="mb-3 mt-4 flex w-full flex-wrap items-center justify-end md:justify-between"
                         >
                           <button
-                            class="mr-1 rounded bg-blumilk-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blumilk-400 md:py-2"
+                            class="mr-1 rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
                             @click="toggleStoreDialog"
                           >
                             {{ $t('create_city') }}
@@ -306,14 +311,14 @@ const filteredCitiesWithoutCountry = computed(() => {
                               <input
                                 v-model.trim="searchInput"
                                 type="text"
-                                class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
+                                class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                                 :placeholder="$t('search_city')"
-                              >
+                              />
                             </div>
                             <button
                               v-if="searchInput.length"
                               type="button"
-                              class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blumilk-25"
+                              class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blue-25"
                               @click="clearInput"
                             >
                               <XMarkIcon class="size-5" />
@@ -378,14 +383,14 @@ const filteredCitiesWithoutCountry = computed(() => {
                                       <input
                                         v-model.trim="searchCityWithoutCountryInput"
                                         type="text"
-                                        class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
+                                        class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                                         :placeholder="$t('search_city')"
-                                      >
+                                      />
                                     </div>
                                     <button
                                       v-if="searchCityWithoutCountryInput.length"
                                       type="button"
-                                      class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blumilk-25"
+                                      class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blue-25"
                                       @click="clearCityWithoutCountryInput"
                                     >
                                       <XMarkIcon class="size-5" />
@@ -417,7 +422,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                       >
                                         {{ city.city_name }}
                                       </p>
-                                      <p class="text-sm font-medium text-blumilk-500">
+                                      <p class="text-sm font-medium text-blue-500">
                                         {{ city.country_name }}
                                       </p>
                                       <div class="flex justify-end">
@@ -454,11 +459,11 @@ const filteredCitiesWithoutCountry = computed(() => {
                         </div>
 
                         <div
-                          :class="props.cities.data.length ? 'justify-between' : 'justify-end'"
+                          :class="cities.data.length ? 'justify-between' : 'justify-end'"
                           class="flex w-full flex-wrap items-center"
                         >
-                          <div v-if="props.cities.data.length" class="w-1/2">
-                            <!-- <PaginationInfo :meta="props.cities.meta" /> -->
+                          <div v-if="cities.data.length" class="w-1/2">
+                            <!-- <PaginationInfo :meta="cities.meta" /> -->
                           </div>
 
                           <div class="relative inline-block text-left">
@@ -488,17 +493,17 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   v-for="option in sortingOptions"
                                   :key="option.to"
                                   :to="option.to"
-                                  class="block px-4 py-2 text-sm text-gray-500 hover:text-blumilk-400"
+                                  class="block px-4 py-2 text-sm text-gray-500 hover:text-blue-400"
                                   role="menuitem"
                                   tabindex="-1"
                                 >
                                   <span
                                     :class="{
-                                      'font-medium text-blumilk-400':
-                                        page.url.startsWith(option.to) ||
-                                        ((page.url === '/admin/cities' ||
-                                          page.url.startsWith('/admin/cities?search=') ||
-                                          page.url.startsWith('/admin/cities?page=')) &&
+                                      'font-medium text-blue-400':
+                                        url.startsWith(option.to) ||
+                                        ((url === '/admin/cities' ||
+                                          url.startsWith('/admin/cities?search=') ||
+                                          url.startsWith('/admin/cities?page=')) &&
                                           option.to.startsWith('/admin/cities?order=latest'))
                                     }"
                                   >
@@ -510,10 +515,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                           </div>
                         </div>
 
-                        <div
-                          v-if="props.cities.data.length"
-                          class="rounded-lg ring-gray-300 sm:ring-1"
-                        >
+                        <div v-if="cities.data.length" class="rounded-lg ring-gray-300 sm:ring-1">
                           <table class="min-w-full">
                             <thead>
                               <tr>
@@ -544,7 +546,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="city in props.cities.data" :key="city.id" class="border-t">
+                              <tr v-for="city in cities.data" :key="city.id" class="border-t">
                                 <City :providers="providers" :city="city" />
                               </tr>
                             </tbody>
@@ -557,7 +559,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                           </p>
                         </div>
 
-                        <!-- <Pagination :meta="props.cities.meta" :links="props.cities.links" /> -->
+                        <!-- <Pagination :meta="cities.meta" :links="cities.links" /> -->
                       </div>
                     </div>
                   </div>
@@ -577,31 +579,36 @@ const filteredCitiesWithoutCountry = computed(() => {
                   <label class="mb-1 mt-4">{{ $t('Name') }}</label>
                   <input
                     v-model="storeCityForm.name"
-                    class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
+                    class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  >
+                  />
                   <ErrorMessage :message="storeCityForm.errors.name" />
+                  <div class="flex flex-col md:flex-row">
+                    <div class="flex">
+                      <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
+                      <input
+                        v-model="storeCityForm.latitude"
+                        class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                        type="text"
+                        required
+                        @keydown="preventCommaInput"
+                      />
+                      <ErrorMessage :message="storeCityForm.errors.latitude" />
+                    </div>
+                    <div class="flex">
+                      <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
+                      <input
+                        v-model="storeCityForm.longitude"
+                        class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                        type="text"
+                        required
+                        @keydown="preventCommaInput"
+                      />
+                      <ErrorMessage :message="storeCityForm.errors.longitude" />
+                    </div>
+                  </div>
 
-                  <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
-                  <input
-                    v-model="storeCityForm.latitude"
-                    class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
-                    type="text"
-                    required
-                    @keydown="preventCommaInput"
-                  >
-                  <ErrorMessage :message="storeCityForm.errors.latitude" />
-
-                  <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
-                  <input
-                    v-model="storeCityForm.longitude"
-                    class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
-                    type="text"
-                    required
-                    @keydown="preventCommaInput"
-                  >
-                  <ErrorMessage :message="storeCityForm.errors.longitude" />
                   <p v-if="commaInputError" class="text-xs text-rose-600">
                     {{ commaInputError }}
                   </p>
@@ -609,10 +616,10 @@ const filteredCitiesWithoutCountry = computed(() => {
                   <select
                     v-model="storeCityForm.country_id"
                     required
-                    class="rounded-md border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                    class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                   >
                     <option
-                      v-for="country in props.countries"
+                      v-for="country in countries"
                       :key="country.id"
                       class="m-6 p-6"
                       :value="country.id"
@@ -633,7 +640,7 @@ const filteredCitiesWithoutCountry = computed(() => {
 
           <div class="mb-3 mt-4 flex w-full flex-wrap items-center justify-end md:justify-between">
             <button
-              class="mr-1 rounded bg-blumilk-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blumilk-400 md:py-2"
+              class="mr-1 rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
               @click="toggleStoreDialog"
             >
               {{ $t('create_city') }}
@@ -647,14 +654,14 @@ const filteredCitiesWithoutCountry = computed(() => {
                 <input
                   v-model.trim="searchInput"
                   type="text"
-                  class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
+                  class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('search_city')"
-                >
+                />
               </div>
               <button
                 v-if="searchInput.length"
                 type="button"
-                class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blumilk-25"
+                class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blue-25"
                 @click="clearInput"
               >
                 <XMarkIcon class="size-5" />
@@ -714,14 +721,14 @@ const filteredCitiesWithoutCountry = computed(() => {
                         <input
                           v-model.trim="searchCityWithoutCountryInput"
                           type="text"
-                          class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blumilk-300 sm:text-sm sm:leading-6 md:py-1.5"
+                          class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                           :placeholder="$t('search_city')"
-                        >
+                        />
                       </div>
                       <button
                         v-if="searchCityWithoutCountryInput.length"
                         type="button"
-                        class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blumilk-25"
+                        class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-blue-25"
                         @click="clearCityWithoutCountryInput"
                       >
                         <XMarkIcon class="size-5" />
@@ -750,7 +757,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                         >
                           {{ city.city_name }}
                         </p>
-                        <p class="text-sm font-medium text-blumilk-500">
+                        <p class="text-sm font-medium text-blue-500">
                           {{ city.country_name }}
                         </p>
                         <div class="flex justify-end">
@@ -787,11 +794,11 @@ const filteredCitiesWithoutCountry = computed(() => {
           </div>
 
           <div
-            :class="cities.data.length ? 'justify-between' : 'justify-end'"
+            :class="cities.length ? 'justify-between' : 'justify-end'"
             class="flex w-full flex-wrap items-center"
           >
-            <div v-if="props.cities.data.length" class="w-1/2">
-              <!-- <PaginationInfo :meta="props.cities.meta" /> -->
+            <div v-if="cities.length" class="w-1/2">
+              <!-- <PaginationInfo :meta="cities.meta" /> -->
             </div>
 
             <div class="relative inline-block text-left">
@@ -821,17 +828,17 @@ const filteredCitiesWithoutCountry = computed(() => {
                     v-for="option in sortingOptions"
                     :key="option.to"
                     :to="option.to"
-                    class="block px-4 py-2 text-sm text-gray-500 hover:text-blumilk-400"
+                    class="block px-4 py-2 text-sm text-gray-500 hover:text-blue-400"
                     role="menuitem"
                     tabindex="-1"
                   >
                     <span
                       :class="{
-                        'font-medium text-blumilk-400':
-                          page.url.startsWith(option.to) ||
-                          ((page.url === '/admin/cities' ||
-                            page.url.startsWith('/admin/cities?search=') ||
-                            page.url.startsWith('/admin/cities?page=')) &&
+                        'font-medium text-blue-400':
+                          url.startsWith(option.to) ||
+                          ((url === '/admin/cities' ||
+                            url.startsWith('/admin/cities?search=') ||
+                            url.startsWith('/admin/cities?page=')) &&
                             option.to.startsWith('/admin/cities?order=latest'))
                       }"
                     >
@@ -843,7 +850,7 @@ const filteredCitiesWithoutCountry = computed(() => {
             </div>
           </div>
 
-          <div v-if="props.cities.data.length" class="rounded-lg ring-gray-300 sm:ring-1">
+          <div v-if="cities.length" class="rounded-lg ring-gray-300 sm:ring-1">
             <table class="min-w-full">
               <thead>
                 <tr>
@@ -874,7 +881,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="city in props.cities.data" :key="city.id" class="border-t">
+                <tr v-for="city in cities" :key="city.id" class="border-t">
                   <City :providers="providers" :city="city" />
                 </tr>
               </tbody>
@@ -887,7 +894,7 @@ const filteredCitiesWithoutCountry = computed(() => {
             </p>
           </div>
 
-          <!-- <Pagination :meta="props.cities.meta" :links="props.cities.links" /> -->
+          <!-- <Pagination :meta="cities.meta" :links="cities.links" /> -->
         </div>
       </div>
     </div>

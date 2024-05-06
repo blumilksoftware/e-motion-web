@@ -28,6 +28,7 @@ axios
     importInfo.value = response.data.importInfo
     codes.value = response.data.codes
     providers.value = response.data.providers
+    console.log(response)
   })
   .catch((error) => {
     console.error(error)
@@ -39,7 +40,7 @@ function runImporters() {
 }
 
 function runRules() {
-  axios.get(`${apiUrl}/api/import-rules/0`)
+  axios.get(`${apiUrl}/api/import-rules`)
   toast.success($t('rules_import_started'))
 }
 </script>

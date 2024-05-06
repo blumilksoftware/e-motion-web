@@ -20,6 +20,7 @@ import axios from 'axios'
 import { toast } from 'vue3-toastify'
 import { getCookie } from '@/cookies/getCookie'
 import { get } from '@vueuse/core'
+import { apiUrl } from '@/main'
 store.commit('restore')
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
@@ -65,7 +66,7 @@ onMounted(async () => {
 
 //  TODO: scripts
 const login = () => {
-  axios.post('https://dev.escooters.blumilk.pl/api/login', loginForm.value).then((response) => {
+  axios.post(`${apiUrl}/api/login`, loginForm.value).then((response) => {
     store.commit('login', response.data)
     toggleAuthDialog()
   })
@@ -91,7 +92,7 @@ const toggleMobileMenu = () => {
   isMobileMenuOpened.value = !isMobileMenuOpened.value
 }
 const logout = () => {
-  axios.post('https://dev.escooters.blumilk.pl/api/logout', {
+  axios.post(`${apiUrl}/api/logout`, {
     Authorization: store.state.auth.token,
   })
   store.commit('logout')

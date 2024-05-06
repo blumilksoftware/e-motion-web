@@ -99,7 +99,7 @@ function setRating(starIndex: number) {
 
 function fetchCityData() {
   axios
-    .get(`https://dev.escooters.blumilk.pl/api/${$route.params.country}/${$route.params.city}`)
+    .get(`${apiUrl}/api/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
       data = response.data
     })
@@ -115,7 +115,7 @@ function fetchRegulations() {
 
   axios
     .get(
-      `https://dev.escooters.blumilk.pl/api/rules/${$route.params.country}/${$route.params.city}`,
+      `${apiUrl}/api/rules/${$route.params.country}/${$route.params.city}`,
     )
     .then((response) => {
       rules.pl = response.data.rulesPL

@@ -9,7 +9,7 @@ import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 import SearchPanelScaffolding from '@/layouts/SearchPanelScaffolding.vue'
 import store from '@/store/SessionData'
-
+import { apiUrl } from '@/main'
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const showInfo = ref(true)
 const isMobile = ref(breakpoints.smaller('lg'))
@@ -34,7 +34,7 @@ const dataIsFetched = ref(false)
 function fetchData() {
   if (!fStore.state.citiesWithProviders.providers.length) {
     axios
-      .get('https://dev.escooters.blumilk.pl/api/providers')
+      .get(`${apiUrl}/api/providers`)
       .then((response) => {
         fStore.commit('saveCitiesWithProviders', response)
       })
