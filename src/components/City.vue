@@ -6,7 +6,8 @@ import {
   TrashIcon,
   XMarkIcon,
   MapIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  FolderIcon
 } from '@heroicons/vue/24/outline'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
@@ -33,7 +34,6 @@ interface City {
   latitude: string
   longitude: string
 }
-
 
 const props = defineProps({
   city: {
@@ -199,19 +199,36 @@ function readMapMarker() {
 const marker = ref(null)
 function showMap() {
   //use leaflet with draggable marker
-  map.value.setView([updateCityForm.latitude?updateCityForm.latitude:0, updateCityForm.longitude?updateCityForm.longitude:0], 13)
+  map.value.setView(
+    [
+      updateCityForm.latitude ? updateCityForm.latitude : 0,
+      updateCityForm.longitude ? updateCityForm.longitude : 0
+    ],
+    12
+  )
+  map.value.invalidateSize()
+  setTimeout(() => {
+    map.value.invalidateSize()
+  }, 1)
+
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
   }).addTo(map.value)
-if(!marker.value) {
-  marker.value = L.marker([updateCityForm.latitude?updateCityForm.latitude:0, updateCityForm.longitude?updateCityForm.longitude:0], {
-    draggable: 1,
-    autoPan: 1,
-    autoPanPadding: [70, 70]
-  }).addTo(map.value)
+  if (!marker.value) {
+    marker.value = L.marker(
+      [
+        updateCityForm.latitude ? updateCityForm.latitude : 0,
+        updateCityForm.longitude ? updateCityForm.longitude : 0
+      ],
+      {
+        draggable: 1,
+        autoPan: 1,
+        autoPanPadding: [70, 70]
+      }
+    ).addTo(map.value)
+  }
   isMapDialogOpen.value = true
-}
 }
 function hideMap(save: Boolean) {
   //read the coordinates from the marker and update the form
@@ -222,6 +239,7 @@ function hideMap(save: Boolean) {
 }
 //import leaflet map and put it in the #map element
 import 'leaflet/dist/leaflet.css'
+import { isMap } from 'util/types'
 
 // ...
 
@@ -489,7 +507,7 @@ import 'leaflet/dist/leaflet.css'
           class="ml-6 flex rounded-lg bg-blumilk-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blumilk-50"
           @click="toggleProvidersForm"
         >
-        <div class="inline-flex">
+          <div class="inline-flex">
             {{ $t('Providers') }}
             <ChevronDownIcon
               class="ml-1 h-5 w-5 transition-transform"
@@ -541,11 +559,13 @@ import 'leaflet/dist/leaflet.css'
 
   <div
     v-show="isMapDialogOpen"
-    class="fixed inset-0 z-20 flex items-center overflow-y-auto bg-black/50"
+    class="fixed inset-0 z-20 flex items-center"
+    :class="isMapDialogOpen ? 'h-full' : 'h:1/2'"
   >
     <div
       ref="mapDialog"
-      class="mx-auto w-11/12 relative rounded-lg bg-white sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 h-1/2 flex flex-col overflow-hidden"
+      class="mx-auto w-11/12 relative rounded-lg bg-white sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col overflow-hidden"
+      :class="isMapDialogOpen ? 'h-1/2' : 'h-0'"
     >
       <div id="mapContainer" ref="mapContainer" class="absolute z-10 size-full" />
 
