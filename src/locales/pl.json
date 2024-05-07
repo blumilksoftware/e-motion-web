@@ -58,5 +58,17 @@
   "At least one city has not any coordinates assigned.": "Przynajmniej jednemu miastu nie przypisano żadnych współrzędnych.",
   "At least one city has not been assigned to any country.": "Przynajmniej jednemu miastu nie przypisano żadnego kraju.",
   "rules_import_started": "Import regulacji prawnych rozpoczęty",
-  "importers_started": "Importery uruchomione"
+  "importers_started": "Importery uruchomione",
+  "save": "Zapisz",
+  "save_coords": "Zapisz współrzędne",
+  "cancel": "Anuluj",
+  "delete": "Usuń",
+  "edit": "Edytuj",
+  "providers": "Dostawcy",
+  "add_alt_name": "Dodaj alternatywną nazwę",
+  "mark_on_map": "Zaznacz na mapie",
+  "longitude": "Długość geograficzna",
+  "latitude": "Szerokość geograficzna",
+  "update_city": "Aktualizuj miasto",
+  "alt_name": "Alternatywna nazwa"
 }

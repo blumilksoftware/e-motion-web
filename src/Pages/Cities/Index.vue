@@ -22,10 +22,10 @@ import { apiUrl } from '@/main'
 import store from '@/store/SessionData'
 const $t = i18n.global.t
 const url = ref(window.location.pathname)
-const cities = ref([{}])
-const providers = ref([{}])
-const countries = ref([{}])
-const citiesWithoutAssignedCountry = ref([{}])
+const cities = ref([])
+const providers = ref([])
+const countries = ref([])
+const citiesWithoutAssignedCountry = ref([])
 
 axios
   .get(`${apiUrl}/api/admin/cities`)
@@ -240,7 +240,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                 <ErrorMessage :message="storeCityForm.errors.name" />
                                 <div class="flex flex-col md:flex-row">
                                   <div class="flex">
-                                    <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
+                                    <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
                                     <input
                                       v-model="storeCityForm.latitude"
                                       class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -251,7 +251,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                     <ErrorMessage :message="storeCityForm.errors.latitude" />
                                   </div>
                                   <div class="flex">
-                                    <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
+                                    <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
                                     <input
                                       v-model="storeCityForm.longitude"
                                       class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -529,13 +529,13 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   scope="col"
                                   class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                                 >
-                                  {{ $t('Longitude') }}
+                                  {{ $t('longitude') }}
                                 </th>
                                 <th
                                   scope="col"
                                   class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                                 >
-                                  {{ $t('Latitude') }}
+                                  {{ $t('latitude') }}
                                 </th>
                                 <th
                                   scope="col"
@@ -586,7 +586,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                   <ErrorMessage :message="storeCityForm.errors.name" />
                   <div class="flex flex-col md:flex-row">
                     <div class="flex">
-                      <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
+                      <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
                       <input
                         v-model="storeCityForm.latitude"
                         class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -597,7 +597,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                       <ErrorMessage :message="storeCityForm.errors.latitude" />
                     </div>
                     <div class="flex">
-                      <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
+                      <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
                       <input
                         v-model="storeCityForm.longitude"
                         class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -864,13 +864,13 @@ const filteredCitiesWithoutCountry = computed(() => {
                     scope="col"
                     class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                   >
-                    {{ $t('Longitude') }}
+                    {{ $t('longitude') }}
                   </th>
                   <th
                     scope="col"
                     class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                   >
-                    {{ $t('Latitude') }}
+                    {{ $t('latitude') }}
                   </th>
                   <th
                     scope="col"

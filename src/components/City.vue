@@ -11,6 +11,7 @@ import {
 // import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import SecondarySaveButton from '@/components/SecondarySaveButton.vue'
+import OverlayButton from '@/components/OverlayButton.vue'
 import toast from 'vue3-toastify'
 import { apiUrl, i18n } from '@/main'
 import DeleteModal from '@/components/DeleteModal.vue'
@@ -48,7 +49,7 @@ const country = props.city.country ?? ''
 const destroyCity = (cityId) => {
   axios.delete(`/admin/cities/${cityId}`, {
     onSuccess: () => {
-      toast.success($t('City deleted successfully.'))
+      toast.success($t('city_delete_success'))
       showDeleteModal.value = false
     }
   })
@@ -59,12 +60,12 @@ function updateCity(cityId) {
     .put(`${apiUrl}/api/admin/cities/${cityId}`, updateCityForm)
     .then((response) => {
       if (response.status === 200) {
-        toast.success($t('City updated successfully.'))
+        toast.success($t('city_update_success'))
         toggleEditDialog()
       }
     })
     .catch((error) => {
-      toast.error($t('There was an error updating the city.'))
+      toast.error($t('city_update_error'))
       console.error(error)
     })
 }
@@ -88,7 +89,7 @@ function storeAlternativeCityName(cityId) {
       onSuccess: () => {
         storeCityAlternativeNameForm.name = ''
         storeAlternativeCityNameErrors.value = []
-        toast.success($t('Alternative city name added successfully.'))
+        toast.success($t('add_alt_name_success'))
       },
       onError: (errors) => {
         storeAlternativeCityNameErrors.value = errors
@@ -104,7 +105,7 @@ const storeCityAlternativeNameForm = reactive({
 
 function destroyAlternativeCityName(alternativeCityNameId) {
   router.delete(`/city-alternative-name/${alternativeCityNameId}`, { replace: true })
-  toast.success($t('Alternative city name deleted successfully.'))
+  toast.success($t('delete_alt_name_success'))
 }
 
 const commaInputError = ref('')
@@ -112,7 +113,7 @@ const commaInputError = ref('')
 function preventCommaInput(event) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = $t('Use `.` instead of `,`')
+    commaInputError.value = $t('should_not_contain_comma')
   }
 }
 const isEditDialogOpened = ref(false)
@@ -135,7 +136,7 @@ onMounted(() => {
   props.city.cityProviders?.forEach((provider) => {
     selectedCityProviders.push(provider.provider_name)
   })
-  buildMap()
+  // buildMap()
 })
 function buildMap() {
   map.value = L.map(mapContainer.value)
@@ -159,7 +160,7 @@ function updateCityProviders(cityId) {
     {
       onSuccess: () => {
         toggleEditDialog()
-        toast.success($t('City providers updated successfully.'))
+        toast.success($t('update_city_providers_success'))
       }
     }
   )
@@ -203,38 +204,44 @@ function readMapMarker() {
 }
 const marker = ref(null)
 function showMap() {
-  if (map.value) {
-    ;(map.value as L.Map).setView(
-      [
-        parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
-        parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
-      ],
-      12
-    )
-    map.value.invalidateSize()
-    setTimeout(() => {
-      map.value.invalidateSize()
-    }, 1)
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-      maxZoom: 18
-    }).addTo(map.value)
-    if (!marker.value) {
-      marker.value = L.marker(
-        [
-          updateCityForm.latitude ? updateCityForm.latitude : 0,
-          updateCityForm.longitude ? updateCityForm.longitude : 0
-        ],
-        {
-          draggable: 1,
-          autoPan: 1,
-          autoPanPadding: [70, 70]
-        }
-      ).addTo(map.value)
-    }
-    isMapDialogOpen.value = true
+  if (!map.value) {
+    buildMap()
   }
+  ;(map.value as L.Map).setView(
+    [
+      parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
+      parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
+    ],
+    12
+  )
+  map.value.invalidateSize()
+  setTimeout(() => {
+    map.value.invalidateSize()
+  }, 1)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    maxZoom: 18
+  }).addTo(map.value)
+  if (!marker.value) {
+    marker.value = L.marker(
+      [
+        updateCityForm.latitude ? updateCityForm.latitude : 0,
+        updateCityForm.longitude ? updateCityForm.longitude : 0
+      ],
+      {
+        draggable: 1,
+        autoPan: 1,
+        autoPanPadding: [70, 70]
+      }
+    ).addTo(map.value)
+  } else {
+    marker.value.setLatLng([
+      updateCityForm.latitude ? updateCityForm.latitude : 0,
+      updateCityForm.longitude ? updateCityForm.longitude : 0
+    ])
+  }
+  isMapDialogOpen.value = true
 }
 function hideMap(save: Boolean) {
   if (save) {
@@ -335,7 +342,7 @@ import axios from 'axios'
         @click="toggleEditDialog"
       >
         <PencilIcon class="h-5 w-8 text-blumilk-500" />
-        {{ $t('Edit') }}
+        {{ $t('edit') }}
       </button>
 
       <button
@@ -343,7 +350,7 @@ import axios from 'axios'
         @click="showDeleteModal = true"
       >
         <TrashIcon class="h-5 w-8 text-rose-500" />
-        {{ $t('Delete') }}
+        {{ $t('delete') }}
       </button>
 
       <DeleteModal
@@ -374,7 +381,7 @@ import axios from 'axios'
           @click="toggleCityForm"
         >
           <div class="inline-flex">
-            {{ $t('Update city') }}
+            {{ $t('update_city') }}
             <ChevronDownIcon
               class="ml-1 h-5 w-5 transition-transform"
               :class="isCityFormOpened ? 'rotate-180' : ''"
@@ -386,7 +393,7 @@ import axios from 'axios'
           class="flex flex-col rounded px-6 text-xs font-bold text-gray-600"
           @submit.prevent="updateCity(city.id)"
         >
-          <label class="mb-1 mt-4">{{ $t('Name') }}</label>
+          <label class="mb-1 mt-4">{{ $t('name') }}</label>
           <input
             v-model="updateCityForm.name"
             class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -396,7 +403,7 @@ import axios from 'axios'
           <ErrorMessage :message="updateCityForm" />
           <div class="flex flex-grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
-              <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
+              <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
               <input
                 v-model="updateCityForm.latitude"
                 class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -407,7 +414,7 @@ import axios from 'axios'
               <!-- <ErrorMessage :message="updateCityForm.errors.latitude" /> -->
             </div>
             <div class="flex flex-col w-full md:w-1/2">
-              <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
+              <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
               <input
                 v-model="updateCityForm.longitude"
                 class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -436,7 +443,7 @@ import axios from 'axios'
 
           <div class="flex w-full justify-end">
             <SecondarySaveButton>
-              {{ $t('Save') }}
+              {{ $t('save') }}
             </SecondarySaveButton>
           </div>
         </form>
@@ -448,7 +455,7 @@ import axios from 'axios'
           @click="toggleAlternativeCityNameForm"
         >
           <div class="inline-flex">
-            {{ $t('Add alternative name') }}
+            {{ $t('add_alt_name') }}
             <ChevronDownIcon
               class="ml-1 h-5 w-5 transition-transform"
               :class="isAlternativeCityNameFormOpened ? 'rotate-180' : ''"
@@ -461,9 +468,7 @@ import axios from 'axios'
           @submit.prevent="storeAlternativeCityName(city.id)"
         >
           <div class="flex flex-col text-xs">
-            <label class="mb-1 mt-4 text-xs font-bold text-gray-600">{{
-              $t('Alternative name')
-            }}</label>
+            <label class="mb-1 mt-4 text-xs font-bold text-gray-600">{{ $t('alt_name') }}</label>
             <input
               v-model="storeCityAlternativeNameForm.name"
               class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -473,7 +478,7 @@ import axios from 'axios'
             <!-- <ErrorMessage :message="storeAlternativeCityNameErrors.name" /> -->
             <div class="flex w-full justify-end">
               <SecondarySaveButton>
-                {{ $t('Save') }}
+                {{ $t('save') }}
               </SecondarySaveButton>
             </div>
           </div>
@@ -508,7 +513,7 @@ import axios from 'axios'
           @click="toggleProvidersForm"
         >
           <div class="inline-flex">
-            {{ $t('Providers') }}
+            {{ $t('providers') }}
             <ChevronDownIcon
               class="ml-1 h-5 w-5 transition-transform"
               :class="isProvidersFormOpened ? 'rotate-180' : ''"
@@ -549,7 +554,7 @@ import axios from 'axios'
           </div>
           <div class="flex w-full justify-end text-xs">
             <SecondarySaveButton @click="updateCityProviders(city.id)">
-              {{ $t('Save') }}
+              {{ $t('save') }}
             </SecondarySaveButton>
           </div>
         </div>
@@ -564,40 +569,17 @@ import axios from 'axios'
   >
     <div
       ref="mapDialog"
-      class="mx-auto w-11/12 relative rounded-lg bg-white sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col overflow-hidden"
-      :class="isMapDialogOpen ? 'h-1/2' : 'h-0'"
+      class="mx-auto w-11/12 h-1/2 relative rounded-lg bg-white sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3 flex flex-col overflow-hidden"
     >
       <div id="mapContainer" ref="mapContainer" class="absolute z-10 size-full" />
 
-      <div class="w-full flex h-16 flex-row absolute bottom-0 left-0 z-20">
-        <button
-          @click="hideMap(false)"
-          type="button"
-          class="flex h-16 w-1/2 place-items-center justify-center bg-gradient-to-b animated-background from-transparent to-black/20 [&>span]:hover:bottom-1 transition-all"
-        >
-          <span
-            class="flex flex-row relative bottom-0 items-center space-x-2 text-white drop-shadow-[0_1.2px_3px_rgba(0,0,0,1)] transition-all"
-          >
-            <span class="font-bold">
-              {{ $t('Cancel') }}
-            </span>
-            <XMarkIcon class="size-5" />
-          </span>
-        </button>
-        <button
-          @click="hideMap(true)"
-          type="button"
-          class="flex h-16 w-1/2 place-items-center justify-center bg-gradient-to-b animated-background from-transparent to-black/20 [&>span]:hover:bottom-1 transition-all"
-        >
-          <span
-            class="flex flex-row relative bottom-0 items-center space-x-2 text-white drop-shadow-[0_1.2px_3px_rgba(0,0,0,1)] transition-all"
-          >
-            <span class="font-bold">
-              {{ $t('Save') }}
-            </span>
-            <FolderIcon class="size-5" />
-          </span>
-        </button>
+      <div class="absolute top-0 right-0 z-20 flex-col">
+        <OverlayButton :hint="$t('cancel')" @click="hideMap(false)">
+          <XMarkIcon class="size-5 translate-x-1/2 translate-y-1/2 absolute" />
+        </OverlayButton>
+        <OverlayButton :hint="$t('save_coords')" @click="hideMap(true)">
+          <FolderIcon class="size-5 translate-x-1/2 translate-y-1/2 absolute" />
+        </OverlayButton>
       </div>
     </div>
   </div>
