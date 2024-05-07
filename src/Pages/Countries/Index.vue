@@ -1,12 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import Country from '@/components/Country.vue'
 import { ref, watch } from 'vue'
 import { MagnifyingGlassIcon, XMarkIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import { debounce } from 'lodash/function'
-import Pagination from '@/components/Pagination.vue'
-import PaginationInfo from '@/components/PaginationInfo.vue'
 import PrimarySaveButton from '@/components/PrimarySaveButton.vue'
 import toast from 'vue3-toastify'
 import { apiUrl, i18n } from '@/main'

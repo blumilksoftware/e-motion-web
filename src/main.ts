@@ -23,7 +23,6 @@ createApp(App)
   .use(i18n)
   .use(Vue3Toasity, {
     autoClose: 3000,
-    // ... other options
   } as ToastContainerOptions)
   .mount('#app')
 export { i18n, apiUrl }

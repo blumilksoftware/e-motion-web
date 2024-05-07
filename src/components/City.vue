@@ -8,17 +8,16 @@ import {
   ChevronDownIcon,
   FolderIcon
 } from '@heroicons/vue/24/outline'
-// import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import SecondarySaveButton from '@/components/SecondarySaveButton.vue'
 import OverlayButton from '@/components/OverlayButton.vue'
-import toast from 'vue3-toastify'
+import { toast } from 'vue3-toastify'
 import { apiUrl, i18n } from '@/main'
 import DeleteModal from '@/components/DeleteModal.vue'
-import L from 'leaflet'
+import L, { Map } from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import axios from 'axios'
 
-const $t = i18n.global.t
-const showDeleteModal = ref(false)
 interface City {
   id: number
   name: string
@@ -30,9 +29,19 @@ interface City {
     id: number
     name: string
     slug: string
+    alternative_name: string
+    iso: string
+    latitude: string
+    longitude: string
   }
   latitude: string
   longitude: string
+}
+
+interface Provider {
+  id: number
+  name: string
+  color: string
 }
 
 const props = defineProps({
@@ -41,21 +50,52 @@ const props = defineProps({
     required: true
   },
   providers: {
-    type: Array as () => any[],
+    type: Object as () => Provider[],
     required: true
   }
 })
-const country = props.city.country ?? ''
-const destroyCity = (cityId) => {
+
+const destroyCity = (cityId: number) => {
   axios.delete(`/admin/cities/${cityId}`, {
-    onSuccess: () => {
-      toast.success($t('city_delete_success'))
-      showDeleteModal.value = false
-    }
+    // onSuccess: () => {
+    //   toast.success($t('city_delete_success'))
+    //   showDeleteModal.value = false
+    // }
   })
 }
+console.log(props.city)
 
-function updateCity(cityId) {
+const updateCityForm = {
+  name: props.city.name,
+  latitude: props.city.latitude,
+  longitude: props.city.longitude
+}
+
+const storeCityAlternativeNameForm = reactive({
+  name: ''
+})
+
+const filteredSelectedCityProviders = computed(() => {
+  return props.providers.filter((provider) => selectedCityProviders.includes(provider.name))
+})
+
+const $t = i18n.global.t
+const showDeleteModal = ref(false)
+const country = props.city.country ?? ''
+const storeAlternativeCityNameErrors = ref([])
+const commaInputError = ref('')
+const isEditDialogOpened = ref(false)
+const editDialog = ref(null)
+const selectedCityProviders: Array<any> = reactive([])
+const isCityFormOpened = ref(false)
+const isProvidersFormOpened = ref(false)
+const isAlternativeCityNameFormOpened = ref(false)
+const map: any = ref(null)
+const mapContainer = ref(null)
+const marker: any = ref(null)
+const isMapDialogOpen = ref(false)
+
+function updateCity(cityId: number) {
   axios
     .put(`${apiUrl}/api/admin/cities/${cityId}`, updateCityForm)
     .then((response) => {
@@ -70,55 +110,35 @@ function updateCity(cityId) {
     })
 }
 
-const updateCityForm = {
-  name: props.city.name,
-  latitude: props.city.latitude,
-  longitude: props.city.longitude
-}
-
-const storeAlternativeCityNameErrors = ref([])
-
-function storeAlternativeCityName(cityId) {
-  router.post(
-    '/city-alternative-name',
-    {
+function storeAlternativeCityName(cityId: number) {
+  axios
+    .post(`${apiUrl}/api/city-alternative-name`, {
       name: storeCityAlternativeNameForm.name,
       city_id: cityId
-    },
-    {
-      onSuccess: () => {
-        storeCityAlternativeNameForm.name = ''
-        storeAlternativeCityNameErrors.value = []
+    })
+    .then((response) => {
+      if (response.status === 201) {
         toast.success($t('add_alt_name_success'))
-      },
-      onError: (errors) => {
-        storeAlternativeCityNameErrors.value = errors
-        toast.error($t('There was an error adding alternative city name.'))
+        storeCityAlternativeNameForm.name = ''
       }
-    }
-  )
+    })
+    .catch((error) => {
+      toast.error($t('add_alt_name_error'))
+      console.error(error)
+    })
 }
 
-const storeCityAlternativeNameForm = reactive({
-  name: ''
-})
-
-function destroyAlternativeCityName(alternativeCityNameId) {
-  router.delete(`/city-alternative-name/${alternativeCityNameId}`, { replace: true })
+function destroyAlternativeCityName(alternativeCityNameId: number) {
+  axios.delete(`/city-alternative-name/${alternativeCityNameId}`)
   toast.success($t('delete_alt_name_success'))
 }
 
-const commaInputError = ref('')
-
-function preventCommaInput(event) {
+function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
     commaInputError.value = $t('should_not_contain_comma')
   }
 }
-const isEditDialogOpened = ref(false)
-const editDialog = ref(null)
-onClickOutside(editDialog, () => (isMapDialogOpen ? '' : (isEditDialogOpened.value = false)))
 
 function toggleEditDialog() {
   isEditDialogOpened.value = !isEditDialogOpened.value
@@ -127,22 +147,17 @@ function toggleEditDialog() {
   isCityFormOpened.value = false
   isAlternativeCityNameFormOpened.value = false
 }
-const selectedCityProviders = reactive([])
-const map = ref(null)
-const mapContainer = ref(null)
-const pinLatitute = ref(null)
-const pinLongitude = ref(null)
-onMounted(() => {
-  props.city.cityProviders?.forEach((provider) => {
-    selectedCityProviders.push(provider.provider_name)
-  })
-  // buildMap()
-})
+
 function buildMap() {
-  map.value = L.map(mapContainer.value)
+  if (!map.value) {
+    if (mapContainer.value) {
+      map.value = L.map(mapContainer.value)
+      console.log(map)
+    }
+  }
 }
 
-function toggleProviderSelection(provider) {
+function toggleProviderSelection(provider: string) {
   if (selectedCityProviders.includes(provider)) {
     const index = selectedCityProviders.indexOf(provider)
     selectedCityProviders.splice(index, 1)
@@ -151,26 +166,20 @@ function toggleProviderSelection(provider) {
   }
 }
 
-function updateCityProviders(cityId) {
-  router.patch(
+function updateCityProviders(cityId: number) {
+  axios.patch(
     `/update-city-providers/${cityId}`,
     {
       providerNames: selectedCityProviders
-    },
-    {
-      onSuccess: () => {
-        toggleEditDialog()
-        toast.success($t('update_city_providers_success'))
-      }
     }
+    // {
+    //   onSuccess: () => {
+    //     toggleEditDialog()
+    //     toast.success($t('update_city_providers_success'))
+    //   }
+    // }
   )
 }
-
-const filteredSelectedCityProviders = computed(() => {
-  return props.providers.filter((provider) => selectedCityProviders.includes(provider.name))
-})
-
-const isCityFormOpened = ref(false)
 
 function toggleCityForm() {
   isCityFormOpened.value = !isCityFormOpened.value
@@ -179,15 +188,11 @@ function toggleCityForm() {
   isProvidersFormOpened.value = false
 }
 
-const isAlternativeCityNameFormOpened = ref(false)
-
 function toggleAlternativeCityNameForm() {
   isAlternativeCityNameFormOpened.value = !isAlternativeCityNameFormOpened.value
   isCityFormOpened.value = false
   isProvidersFormOpened.value = false
 }
-
-const isProvidersFormOpened = ref(false)
 
 function toggleProvidersForm() {
   isProvidersFormOpened.value = !isProvidersFormOpened.value
@@ -195,19 +200,21 @@ function toggleProvidersForm() {
   isCityFormOpened.value = false
   isAlternativeCityNameFormOpened.value = false
 }
-const isMapDialogOpen = ref(false)
+
 function readMapMarker() {
-  //read the coordinates from the marker and update the form
-  const latlng = marker.value.getLatLng()
-  updateCityForm.latitude = latlng.lat
-  updateCityForm.longitude = latlng.lng
+  if (!marker.value) {
+    return
+  }
+  const latlng = (marker.value as L.Marker).getLatLng()
+  updateCityForm.latitude = latlng.lat.toString()
+  updateCityForm.longitude = latlng.lng.toString()
 }
-const marker = ref(null)
+
 function showMap() {
   if (!map.value) {
     buildMap()
   }
-  ;(map.value as L.Map).setView(
+  map.value.setView(
     [
       parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
       parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
@@ -226,12 +233,12 @@ function showMap() {
   if (!marker.value) {
     marker.value = L.marker(
       [
-        updateCityForm.latitude ? updateCityForm.latitude : 0,
-        updateCityForm.longitude ? updateCityForm.longitude : 0
+        parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
+        parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
       ],
       {
-        draggable: 1,
-        autoPan: 1,
+        draggable: true,
+        autoPan: true,
         autoPanPadding: [70, 70]
       }
     ).addTo(map.value)
@@ -243,24 +250,28 @@ function showMap() {
   }
   isMapDialogOpen.value = true
 }
+
 function hideMap(save: Boolean) {
   if (save) {
     readMapMarker()
   }
   isMapDialogOpen.value = false
 }
-import 'leaflet/dist/leaflet.css'
-import axios from 'axios'
+
+onClickOutside(editDialog, () => (isMapDialogOpen ? '' : (isEditDialogOpened.value = false)))
+
+onMounted(() => {
+  props.city.cityProviders?.forEach((provider) => {
+    selectedCityProviders.push(provider.provider_name)
+  })
+})
 </script>
 
 <template>
   <td class="relative py-4 pl-4 text-sm sm:pl-6 sm:pr-3">
     <div class="flex items-center font-medium text-gray-800">
-      <i :class="country.iso" class="flat flag large mr-2 shrink-0" :title="country.name" />
-      <p
-        class="cursor-pointer break-all rounded hover:bg-blumilk-25"
-        @click="goToGoogleMaps(city.latitude, city.longitude)"
-      >
+      <i :class="'fi-' + country.iso" class="fi rounded h-6 w-8 mr-2" :title="country.name" />
+      <p class="cursor-pointer break-all rounded hover:bg-blumilk-25">
         {{ city.name }}
       </p>
     </div>
@@ -411,7 +422,6 @@ import axios from 'axios'
                 required
                 @keydown="preventCommaInput"
               />
-              <!-- <ErrorMessage :message="updateCityForm.errors.latitude" /> -->
             </div>
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
@@ -422,7 +432,6 @@ import axios from 'axios'
                 required
                 @keydown="preventCommaInput"
               />
-              <!-- <ErrorMessage :message="updateCityForm.errors.longitude" /> -->
             </div>
           </div>
           <div class="flex w-full justify-end">
