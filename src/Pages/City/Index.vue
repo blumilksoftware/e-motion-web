@@ -168,10 +168,10 @@ function createOpinion() {
           <h2 class="ml-1 mt-1 text-sm text-gray-400">
             {{ data.city.latitude }}, {{ data.city.longitude }}
           </h2>
-          <ProviderIcons class="pt-4" :item="data.city" :providers="data.providers" />
+          <ProviderIcons :class="'pt-4 relative z-10'" :item="data.city" :providers="data.providers" />
 
           <div
-            class="regulations relative overflow-hidden rounded border border-solid border-gray-200 px-3"
+            class="regulations relative z-0 overflow-hidden rounded border border-solid border-gray-200 px-3"
           >
             <div
               class="my-3 flex cursor-pointer items-center text-2xl font-bold text-gray-700"

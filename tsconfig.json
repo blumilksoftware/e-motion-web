@@ -25,10 +25,12 @@
     "sourceMap": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "declaration": false,
     "paths": {
       "@/*": ["./src/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.vue"]
+
 }

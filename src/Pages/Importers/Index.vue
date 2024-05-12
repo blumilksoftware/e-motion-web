@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Import from '@/components/Import.vue'
-import PaginationInfo from '@/components/PaginationInfo.vue'
-import Pagination from '@/components/Pagination.vue'
 import { toast } from 'vue3-toastify'
 import axios from 'axios'
 import { apiUrl } from '@/main'
@@ -12,9 +10,9 @@ const $t = i18n.global.t
 const importInfo = ref<ImportInfo[]>([])
 
 interface ImportInfo {
-  id: number | null
+  id: number
   who_runs_it: string | null
-  status: string | null
+  status: string
   created_at: string | null
   updated_at: string | null
   import_info_details: Object | null

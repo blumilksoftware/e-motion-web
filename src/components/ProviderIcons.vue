@@ -1,14 +1,14 @@
 <script setup>
-import { reactive } from 'vue'
 const props = defineProps({
   item: Object,
   providers: Object,
   apps: Object
 })
+import { ref, reactive } from 'vue'
 
+const showProviderButtons = ref(false)
 function getProviderColor(providerName) {
   const provider = props.providers.find((provider) => provider.name === providerName)
-
   return provider ? provider.color : ''
 }
 
@@ -24,7 +24,10 @@ if (window.location.pathname.includes('/city')) {
   document.addEventListener('click', function (event) {
     const providerButtons = document.querySelector('.provider-buttons')
 
-    if (!event.target.closest('.provider-buttons') && !event.target.closest('.provider-icon')) {
+    if (
+      !event.target.closest('.provider-buttons > div') &&
+      !event.target.closest('.provider-icon')
+    ) {
       if (document.querySelector('.provider-buttons')) {
         setTimeout(() => {
           document.querySelector('.provider-buttons').classList.remove('show')
@@ -45,6 +48,8 @@ if (window.location.pathname.includes('/city')) {
     }
   })
 }
+const buttonsclass =
+  'text-white after:opacity-0 after:inline-block after:ml-2 after:transition after:border-transparent after:border-l-white  after:translate-y-0.5 after:border-8 after:border-solid after:size-0'
 const urls = reactive({
   pname: null,
   url: null,
@@ -79,67 +84,59 @@ const urls = reactive({
       </div>
     </div>
   </div>
-  <div class="provider-buttons border border-solid bg-white shadow-lg">
-    <p class="text-center text-lg text-blue-500">
-      {{ urls.pname }}
-    </p>
-    <a
-      v-if="urls.url"
-      :href="urls.url"
-      target="_blank"
-      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 shadow-inner"
-    >
-      <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="" />
-      <p class="provider-text text-lg font-semibold text-white hover:underline">Web</p>
-    </a>
-    <a
-      v-if="urls.android_url"
-      :href="urls.android_url"
-      target="_blank"
-      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400"
-    >
-      <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="" />
-      <p class="provider-text text-lg font-semibold text-white hover:underline">Android</p>
-    </a>
-    <a
-      v-if="urls.ios_url"
-      :href="urls.ios_url"
-      target="_blank"
-      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400"
-    >
-      <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="" />
-      <p class="provider-text text-lg font-semibold text-white hover:underline">AppStore</p>
-    </a>
-  </div>
   <div
-    :style="{
-      opacity: urls.transparent ? '0%' : '60%',
-      visibility: urls.hidden ? 'hidden' : 'visible'
-    }"
-    class="decoration absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-white transition-all"
-  />
+    class="provider-buttons block h-[200vh] w-screen fixed -translate-x-1/2 -translate-y-1/2 z-50 bg-black/50"
+  >
+    <div
+      class="z-30 absolute -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 size-fit border border-solid bg-white shadow-lg transition rounded flex-col flex gap-2 margin-2 p-2"
+    >
+      <p class="text-center text-lg text-blue-500">
+        {{ urls.pname }}
+      </p>
+      <a
+        v-if="urls.url"
+        :href="urls.url"
+        target="_blank"
+        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
+      >
+        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="" />
+        <p :class="buttonsclass">Web</p>
+      </a>
+      <a
+        v-if="urls.android_url"
+        :href="urls.android_url"
+        target="_blank"
+        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
+      >
+        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="" />
+        <p :class="buttonsclass">Android</p>
+      </a>
+      <a
+        v-if="urls.ios_url"
+        :href="urls.ios_url"
+        target="_blank"
+        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
+      >
+        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="" />
+        <p :class="buttonsclass">AppStore</p>
+      </a>
+    </div>
+  </div>
 </template>
 
 <style>
-.provider-buttons {
-  position: absolute;
-  transition: all 0.15s ease-in-out;
+/* .provider-buttons {
   opacity: 0;
-  transform: translate(-50%, -50%);
   visibility: hidden;
-  top: 20%;
-  left: 50%;
   padding: 8px;
-  background: white;
-  border-radius: 7px;
   z-index: 50;
-}
-.provider-buttons > a {
-  position: relative;
-  margin-bottom: 4px;
-}
-.provider-buttons > a:last-of-type {
-  margin-bottom: 0;
+  & > a {
+    margin-bottom: 4px;
+    position: relative;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
 }
 .provider-buttons.show {
   transform: translate(-50%, -50%);
@@ -175,5 +172,5 @@ a:hover > .provider-text::after {
 }
 .provider-buttons > a {
   transition: all 0.15s ease-in-out;
-}
+} */
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import fStore from '@/store/FilterStore.ts'
+import fStore from '@/store/FilterStore'
 import MapView from '@/layouts/MapView.vue'
-import { ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { MapIcon } from '@heroicons/vue/24/outline'
 const map = ref(false)
 function toggleMap() {
@@ -30,7 +30,7 @@ const data = reactive(fStore.state.citiesWithProviders)
     class="size-full rounded-lg overflow-hidden lg:w-1/2 transition-all z-0 absolute lg:right-0 bg-white"
     :class="map ? 'right-0' : '-right-full'"
   >
-    <map-view v-if="fStore.state.dataIsFetched" :key="fStore.state.selectedProviderName" :cities="data.cities" />
+    <map-view v-if="fStore.state.dataIsFetched" :key="fStore.state.selectedProviderName ?? ''" :cities="data.cities" />
   </div>
   <button
     class="fixed z-10 lg:hidden bottom-16 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"

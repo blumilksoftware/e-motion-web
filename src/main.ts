@@ -8,7 +8,6 @@ import { createI18n } from 'vue-i18n'
 import { getCookie } from './cookies/getCookie'
 import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
-import exp from 'constants'
 
 const apiUrl = 'https://dev.escooters.blumilk.pl'
 const i18n = createI18n({
