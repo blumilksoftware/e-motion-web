@@ -1,19 +1,17 @@
 <script setup>
 import City from '@/components/City.vue'
-import { computed, ref, watch, reactive } from 'vue'
+import { computed, ref, watch } from 'vue'
 import {
   TrashIcon,
   MagnifyingGlassIcon,
   ChevronDownIcon,
   PlusCircleIcon,
   PencilSquareIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
 import { debounce } from 'lodash/function'
-import Pagination from '@/components/Pagination.vue'
-import PaginationInfo from '@/components/PaginationInfo.vue'
 import PrimarySaveButton from '@/components/PrimarySaveButton.vue'
 import toast from 'vue3-toastify'
 import { i18n } from '@/main'
@@ -39,9 +37,11 @@ axios
     console.log(citiesNoCoords, citiesNoCountry)
     console.log(countries)
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
+    return response // Add this line to return the response
   })
   .catch((error) => {
     console.error(error)
+    throw error // Add this line to throw the error
   })
 
 const countCitiesWithoutAssignedCountry = ref(store.state.auth.cities.noCountry)
@@ -62,6 +62,7 @@ function storeCity() {
       storeCityForm.value.country_id = ''
       toggleStoreDialog()
       toast.success($t('City created successfully.'))
+      return
     })
     .catch((error) => {
       storeErrors.value = error.response.data.errors
@@ -73,7 +74,7 @@ const storeCityForm = ref({
   name: '',
   latitude: '',
   longitude: '',
-  country_id: ''
+  country_id: '',
 })
 
 const isStoreDialogOpened = ref(false)
@@ -99,14 +100,14 @@ watch(
     axios
       .get(`/admin/cities?search=${searchInput.value}`, {
         preserveState: true,
-        replace: true
+        replace: true,
       })
-      .then(() => {})
+      .then(() => {return})
       .catch((error) => {
         console.error(error)
       })
   }, 300),
-  { deep: true }
+  { deep: true },
 )
 
 function clearInput() {
@@ -114,11 +115,11 @@ function clearInput() {
 }
 
 const sortingOptions = [
-  { name: 'Latest', to: '/admin/cities?order=latest' },
-  { name: 'Oldest', to: '/admin/cities?order=oldest' },
-  { name: 'By name', to: '/admin/cities?order=name' },
-  { name: 'By providers', to: '/admin/cities?order=providers' },
-  { name: 'By country', to: '/admin/cities?order=country' }
+  { name: 'latest', to: '/admin/cities?order=latest' },
+  { name: 'oldest', to: '/admin/cities?order=oldest' },
+  { name: 'by_name', to: '/admin/cities?order=name' },
+  { name: 'by_providers', to: '/admin/cities?order=providers' },
+  { name: 'by_country', to: '/admin/cities?order=country' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -133,7 +134,7 @@ const isCityWithoutCountriesListDialogOpened = ref(false)
 const cityWithoutCountriesListDialog = ref(null)
 onClickOutside(
   cityWithoutCountriesListDialog,
-  () => (isCityWithoutCountriesListDialogOpened.value = false)
+  () => (isCityWithoutCountriesListDialogOpened.value = false),
 )
 
 function toggleCityWithoutCountriesListDialog() {
@@ -144,10 +145,11 @@ function deleteCityWithoutAssignedCountry(city) {
   axios
     .delete(`${apiUrl}/api/delete-city-without-assigned-country/${city.id}`)
     .then(() => {
-      toast.success($t('City deleted successfully.'))
+      toast.success($t('delete_city_success'))
+      return
     })
     .catch(() => {
-      toast.error($t('There was an error deleting the city.'))
+      toast.error($t('delete_city_error'))
     })
 }
 
@@ -155,10 +157,10 @@ function deleteAllCitiesWithoutCountry() {
   axios
     .post(`${apiUrl}/api/delete-all-cities-without-assigned-country`)
     .then(() => {
-      toast.success($t('Cities deleted successfully.'))
+      toast.success($t('delete_cities_success'))
     })
     .catch(() => {
-      toast.error($t('There was an error deleting cities.'))
+      toast.error($t('delete_cities_error'))
     })
 }
 
@@ -184,7 +186,7 @@ function clearCityWithoutCountryInput() {
 }
 
 const filteredCitiesWithoutCountry = computed(() => {
-  return citiesWithoutAssignedCountry.filter((city) => {
+  return citiesWithoutAssignedCountry.value.filter((city) => {
     return city.city_name.toLowerCase().includes(searchCityWithoutCountryInput.value.toLowerCase())
   })
 })
@@ -236,7 +238,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                   class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                                   type="text"
                                   required
-                                />
+                                >
                                 <ErrorMessage :message="storeCityForm.errors.name" />
                                 <div class="flex flex-col md:flex-row">
                                   <div class="flex">
@@ -247,7 +249,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                       type="text"
                                       required
                                       @keydown="preventCommaInput"
-                                    />
+                                    >
                                     <ErrorMessage :message="storeCityForm.errors.latitude" />
                                   </div>
                                   <div class="flex">
@@ -258,7 +260,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                       type="text"
                                       required
                                       @keydown="preventCommaInput"
-                                    />
+                                    >
                                   </div>
                                 </div>
                                 <ErrorMessage :message="storeCityForm.errors.longitude" />
@@ -313,7 +315,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                 type="text"
                                 class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                                 :placeholder="$t('search_city')"
-                              />
+                              >
                             </div>
                             <button
                               v-if="searchInput.length"
@@ -385,7 +387,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                                         type="text"
                                         class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                                         :placeholder="$t('search_city')"
-                                      />
+                                      >
                                     </div>
                                     <button
                                       v-if="searchCityWithoutCountryInput.length"
@@ -462,10 +464,6 @@ const filteredCitiesWithoutCountry = computed(() => {
                           :class="cities.data.length ? 'justify-between' : 'justify-end'"
                           class="flex w-full flex-wrap items-center"
                         >
-                          <div v-if="cities.data.length" class="w-1/2">
-                            <!-- <PaginationInfo :meta="cities.meta" /> -->
-                          </div>
-
                           <div class="relative inline-block text-left">
                             <div>
                               <button
@@ -558,8 +556,6 @@ const filteredCitiesWithoutCountry = computed(() => {
                             {{ $t(`Sorry we couldn't find any cities.`) }}
                           </p>
                         </div>
-
-                        <!-- <Pagination :meta="cities.meta" :links="cities.links" /> -->
                       </div>
                     </div>
                   </div>
@@ -582,7 +578,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <ErrorMessage :message="storeCityForm.errors.name" />
                   <div class="flex flex-col md:flex-row">
                     <div class="flex">
@@ -593,7 +589,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                       <ErrorMessage :message="storeCityForm.errors.latitude" />
                     </div>
                     <div class="flex">
@@ -604,7 +600,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                       <ErrorMessage :message="storeCityForm.errors.longitude" />
                     </div>
                   </div>
@@ -656,7 +652,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('search_city')"
-                />
+                >
               </div>
               <button
                 v-if="searchInput.length"
@@ -723,7 +719,7 @@ const filteredCitiesWithoutCountry = computed(() => {
                           type="text"
                           class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                           :placeholder="$t('search_city')"
-                        />
+                        >
                       </div>
                       <button
                         v-if="searchCityWithoutCountryInput.length"
@@ -797,10 +793,6 @@ const filteredCitiesWithoutCountry = computed(() => {
             :class="cities.length ? 'justify-between' : 'justify-end'"
             class="flex w-full flex-wrap items-center"
           >
-            <div v-if="cities.length" class="w-1/2">
-              <!-- <PaginationInfo :meta="cities.meta" /> -->
-            </div>
-
             <div class="relative inline-block text-left">
               <div>
                 <button
@@ -893,8 +885,6 @@ const filteredCitiesWithoutCountry = computed(() => {
               {{ $t(`Sorry we couldn't find any cities.`) }}
             </p>
           </div>
-
-          <!-- <Pagination :meta="cities.meta" :links="cities.links" /> -->
         </div>
       </div>
     </div>

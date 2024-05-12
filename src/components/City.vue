@@ -56,12 +56,15 @@ const props = defineProps({
 })
 
 const destroyCity = (cityId: number) => {
-  axios.delete(`/admin/cities/${cityId}`, {
-    // onSuccess: () => {
-    //   toast.success($t('city_delete_success'))
-    //   showDeleteModal.value = false
-    // }
-  })
+  axios
+    .delete(`${apiUrl}/api/admin/cities/${cityId}`)
+    .then(() => {
+      toast.success($t('city_delete_success'))
+    })
+    .catch(() => {
+      toast.error($t('city_delete_error'))
+    })
+  showDeleteModal.value = false
 }
 console.log(props.city)
 
@@ -86,7 +89,7 @@ const storeAlternativeCityNameErrors = ref([])
 const commaInputError = ref('')
 const isEditDialogOpened = ref(false)
 const editDialog = ref(null)
-const selectedCityProviders: Array<any> = reactive([])
+const selectedCityProviders: any[] = reactive([])
 const isCityFormOpened = ref(false)
 const isProvidersFormOpened = ref(false)
 const isAlternativeCityNameFormOpened = ref(false)
@@ -129,7 +132,7 @@ function storeAlternativeCityName(cityId: number) {
 }
 
 function destroyAlternativeCityName(alternativeCityNameId: number) {
-  axios.delete(`/city-alternative-name/${alternativeCityNameId}`)
+  axios.delete(`${apiUrl}/api/city-alternative-name/${alternativeCityNameId}`)
   toast.success($t('delete_alt_name_success'))
 }
 
@@ -167,18 +170,16 @@ function toggleProviderSelection(provider: string) {
 }
 
 function updateCityProviders(cityId: number) {
-  axios.patch(
-    `/update-city-providers/${cityId}`,
-    {
+  axios
+    .patch(`${apiUrl}/api/update-city-providers/${cityId}`, {
       providerNames: selectedCityProviders
-    }
-    // {
-    //   onSuccess: () => {
-    //     toggleEditDialog()
-    //     toast.success($t('update_city_providers_success'))
-    //   }
-    // }
-  )
+    })
+    .then(() => {
+      toast.success($t('update_providers_success'))
+    })
+    .catch(() => {
+      toast.error($t('update_providers_error'))
+    })
 }
 
 function toggleCityForm() {
@@ -251,14 +252,14 @@ function showMap() {
   isMapDialogOpen.value = true
 }
 
-function hideMap(save: Boolean) {
+function hideMap(save: boolean) {
   if (save) {
     readMapMarker()
   }
   isMapDialogOpen.value = false
 }
 
-onClickOutside(editDialog, () => (isMapDialogOpen ? '' : (isEditDialogOpened.value = false)))
+onClickOutside(editDialog, () => (isMapDialogOpen.value ? '' : (isEditDialogOpened.value = false)))
 
 onMounted(() => {
   props.city.cityProviders?.forEach((provider) => {
@@ -271,7 +272,7 @@ onMounted(() => {
   <td class="relative py-4 pl-4 text-sm sm:pl-6 sm:pr-3">
     <div class="flex items-center font-medium text-gray-800">
       <i :class="'fi-' + country.iso" class="fi rounded h-6 w-8 mr-2" :title="country.name" />
-      <p class="cursor-pointer break-all rounded hover:bg-blumilk-25">
+      <p class="cursor-pointer break-all rounded hover:bg-blue-25">
         {{ city.name }}
       </p>
     </div>
@@ -349,10 +350,10 @@ onMounted(() => {
   >
     <span class="flex flex-wrap">
       <button
-        class="mx-0.5 mb-1 flex w-fit shrink-0 items-center rounded py-1 pr-2 text-blumilk-500 hover:bg-blumilk-25"
+        class="mx-0.5 mb-1 flex w-fit shrink-0 items-center rounded py-1 pr-2 text-blue-500 hover:bg-blue-25"
         @click="toggleEditDialog"
       >
-        <PencilIcon class="h-5 w-8 text-blumilk-500" />
+        <PencilIcon class="h-5 w-8 text-blue-500" />
         {{ $t('edit') }}
       </button>
 
@@ -387,14 +388,14 @@ onMounted(() => {
         </div>
 
         <button
-          :class="isCityFormOpened ? 'bg-blumilk-50' : ''"
-          class="mb-3 ml-6 rounded-lg bg-blumilk-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blumilk-50"
+          :class="isCityFormOpened ? 'bg-blue-50' : ''"
+          class="mb-3 ml-6 rounded-lg bg-blue-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blue-50"
           @click="toggleCityForm"
         >
           <div class="inline-flex">
             {{ $t('update_city') }}
             <ChevronDownIcon
-              class="ml-1 h-5 w-5 transition-transform"
+              class="ml-1 size-5 transition-transform"
               :class="isCityFormOpened ? 'rotate-180' : ''"
             />
           </div>
@@ -407,17 +408,17 @@ onMounted(() => {
           <label class="mb-1 mt-4">{{ $t('name') }}</label>
           <input
             v-model="updateCityForm.name"
-            class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+            class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
           />
           <ErrorMessage :message="updateCityForm" />
-          <div class="flex flex-grow w-full flex-col md:flex-row">
+          <div class="flex grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
               <input
                 v-model="updateCityForm.latitude"
-                class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                 type="text"
                 required
                 @keydown="preventCommaInput"
@@ -427,7 +428,7 @@ onMounted(() => {
               <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
               <input
                 v-model="updateCityForm.longitude"
-                class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                 type="text"
                 required
                 @keydown="preventCommaInput"
@@ -437,8 +438,8 @@ onMounted(() => {
           <div class="flex w-full justify-end">
             <button
               type="button"
+              class="mt-3 flex w-full shrink-0 justify-center rounded border border-blue-500 bg-white px-5 py-3 text-blue-500 hover:bg-blue-50 md:w-fit md:py-2"
               @click="showMap()"
-              class="mt-3 flex w-full shrink-0 justify-center rounded border border-blumilk-500 bg-white px-5 py-3 text-blumilk-500 hover:bg-blumilk-50 md:w-fit md:py-2"
             >
               <span class="flex flex-wrap items-center justify-end space-x-2">
                 <span class="font-bold">
@@ -459,14 +460,14 @@ onMounted(() => {
 
         <br />
         <button
-          :class="isAlternativeCityNameFormOpened ? 'bg-blumilk-50' : ''"
-          class="mb-3 ml-6 rounded-lg bg-blumilk-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blumilk-50"
+          :class="isAlternativeCityNameFormOpened ? 'bg-blue-50' : ''"
+          class="mb-3 ml-6 rounded-lg bg-blue-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blue-50"
           @click="toggleAlternativeCityNameForm"
         >
           <div class="inline-flex">
             {{ $t('add_alt_name') }}
             <ChevronDownIcon
-              class="ml-1 h-5 w-5 transition-transform"
+              class="ml-1 size-5 transition-transform"
               :class="isAlternativeCityNameFormOpened ? 'rotate-180' : ''"
             />
           </div>
@@ -480,7 +481,7 @@ onMounted(() => {
             <label class="mb-1 mt-4 text-xs font-bold text-gray-600">{{ $t('alt_name') }}</label>
             <input
               v-model="storeCityAlternativeNameForm.name"
-              class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+              class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
               type="text"
               required
             />
@@ -500,7 +501,7 @@ onMounted(() => {
             class="ml-6"
           >
             <div
-              class="group flex w-fit cursor-pointer break-all rounded py-1 pl-1 pr-3 text-sm font-bold text-zinc-500 hover:bg-blumilk-25"
+              class="group flex w-fit cursor-pointer break-all rounded py-1 pl-1 pr-3 text-sm font-bold text-zinc-500 hover:bg-blue-25"
               @click="destroyAlternativeCityName(alternativeName.id)"
             >
               <p class="mr-1">
@@ -517,23 +518,20 @@ onMounted(() => {
 
         <br />
         <button
-          :class="isProvidersFormOpened ? 'bg-blumilk-50' : ''"
-          class="ml-6 flex rounded-lg bg-blumilk-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blumilk-50"
+          :class="isProvidersFormOpened ? 'bg-blue-50' : ''"
+          class="ml-6 flex rounded-lg bg-blue-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blue-50"
           @click="toggleProvidersForm"
         >
           <div class="inline-flex">
             {{ $t('providers') }}
             <ChevronDownIcon
-              class="ml-1 h-5 w-5 transition-transform"
+              class="ml-1 size-5 transition-transform"
               :class="isProvidersFormOpened ? 'rotate-180' : ''"
             />
           </div>
         </button>
 
-        <div
-          v-if="isProvidersFormOpened"
-          class="mt-4 flex flex-col rounded border-blumilk-100 px-6"
-        >
+        <div v-if="isProvidersFormOpened" class="mt-4 flex flex-col rounded border-blue-100 px-6">
           <div class="flex flex-wrap">
             <div
               v-for="provider in props.providers"

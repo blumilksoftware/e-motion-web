@@ -1,55 +1,64 @@
 <script setup lang="ts">
 import Country from '@/components/Country.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 import { MagnifyingGlassIcon, XMarkIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
-import ErrorMessage from '@/components/ErrorMessage.vue'
 import { onClickOutside } from '@vueuse/core'
-import { debounce } from 'lodash/function'
+import { debounce } from 'lodash'
 import PrimarySaveButton from '@/components/PrimarySaveButton.vue'
-import toast from 'vue3-toastify'
+import { toast } from 'vue3-toastify'
 import { apiUrl, i18n } from '@/main'
+import axios from 'axios'
 const $t = i18n.global.t
+interface Country {
+  id: number
+  name: string
+  alternativeName: string
+  latitude: string
+  longitude: string
+  iso: string
+  length: number
+}
 
 function storeCountry() {
-  storeCountryForm.post('/admin/countries/', {
-    onSuccess: () => {
-      storeCountryForm.reset()
+  axios.post('/admin/countries/', storeCountryForm)
+    .then(() => {
+      storeCountryForm.name = ''
+      storeCountryForm.alternativeName = ''
+      storeCountryForm.latitude = ''
+      storeCountryForm.longitude = ''
+      storeCountryForm.iso = ''
       toggleStoreDialog()
       commaInputError.value = ''
       toast.success($t('Country created successfully.'))
-    },
-    onError: () => {
+      return
+    })
+    .catch(() => {
       toast.error($t('There was an error creating the country.'))
-    }
-  })
+    })
 }
+
+
+
 const url = window.location.pathname
 const storeCountryForm = {
   name: '',
   alternativeName: '',
   latitude: '',
   longitude: '',
-  iso: ''
+  iso: '',
 }
 
 const commaInputError = ref('')
 
-function preventCommaInput(event) {
+function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
     commaInputError.value = $t('Use `.` instead of `,`')
   }
 }
 
-import axios from 'axios'
 
-const props = defineProps({
-  errors: {
-    type: Object,
-    default: null
-  }
-})
-const countries = ref({})
+const countries: Ref<Country[]> = ref([])
 axios
   .get(`${apiUrl}/api/admin/countries`)
   .then((response) => {
@@ -72,16 +81,16 @@ const searchInput = ref('')
 watch(
   searchInput,
   debounce(() => {
-    router.get(
-      `/admin/countries?search=${searchInput.value}`,
-      {},
-      {
-        preserveState: true,
-        replace: true
-      }
-    )
+    axios
+      .get(
+        `/admin/countries?search=${searchInput.value}`)
+      .then((response) => {
+        countries.value = response.data.countries
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }, 300),
-  { deep: true }
 )
 
 function clearInput() {
@@ -91,7 +100,7 @@ function clearInput() {
 const sortingOptions = [
   { name: 'Latest', href: '/admin/countries?order=latest' },
   { name: 'Oldest', href: '/admin/countries?order=oldest' },
-  { name: 'By name', href: '/admin/countries?order=name' }
+  { name: 'By name', href: '/admin/countries?order=name' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -134,15 +143,13 @@ function toggleSortDialog() {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
-                  <ErrorMessage :message="storeCountryForm.errors.name" />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
                   <input
                     v-model="storeCountryForm.alternativeName"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
-                  />
-                  <ErrorMessage :message="storeCountryForm.errors.alternativeName" />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
                   <input
                     v-model="storeCountryForm.latitude"
@@ -150,8 +157,7 @@ function toggleSortDialog() {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
-                  <ErrorMessage :message="storeCountryForm.errors.latitude" />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
                   <input
                     v-model="storeCountryForm.longitude"
@@ -159,16 +165,14 @@ function toggleSortDialog() {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
-                  <ErrorMessage :message="storeCountryForm.errors.longitude" />
+                  >
                   <label class="mb-1 mt-4">ISO</label>
                   <input
                     v-model="storeCountryForm.iso"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
-                  <ErrorMessage :message="storeCountryForm.errors.iso" />
+                  >
                   <small class="text-rose-600">{{ commaInputError }}</small>
 
                   <div class="flex w-full justify-end">
@@ -199,7 +203,7 @@ function toggleSortDialog() {
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('Search country')"
-                />
+                >
               </div>
               <button
                 v-if="searchInput.length"
@@ -216,10 +220,6 @@ function toggleSortDialog() {
             :class="countries.length ? 'justify-between' : 'justify-end'"
             class="flex w-full flex-wrap items-center"
           >
-            <div v-if="countries.length">
-              <!-- <PaginationInfo :meta="props.countries.meta" /> -->
-            </div>
-
             <div class="relative inline-block text-left">
               <div>
                 <button
@@ -229,7 +229,7 @@ function toggleSortDialog() {
                   aria-haspopup="true"
                   @click="toggleSortDialog"
                 >
-                  {{ $t('Sort') }}
+                  {{ $t('sort') }}
                   <ChevronDownIcon class="ml-1 size-5" />
                 </button>
               </div>

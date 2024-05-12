@@ -54,16 +54,15 @@ onMounted(() => {
     () => fStore.state.selectedCity,
     () => {
       window.scrollTo(0, 0)
-    },
+    }
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    },
+    }
   )
 })
-
 
 const buttonIcon = computed(() => {
   return shouldShowMap.value ? XMarkIcon : MapIcon
@@ -109,7 +108,7 @@ onUnmounted(() => {
         />
         <div
           v-else
-          class="flex h-full flex-col items-center justify-center bg-blumilk-25"
+          class="flex h-full flex-col items-center justify-center bg-blue-25"
           aria-label="Loading..."
           role="status"
         >

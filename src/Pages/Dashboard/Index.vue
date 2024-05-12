@@ -40,9 +40,9 @@ axios.get(`${apiUrl}/api/admin/dashboard`).then((response) => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data,
-      },
-    ],
+        data: data
+      }
+    ]
   }
 })
 
@@ -57,9 +57,9 @@ const chartData = ref({
   datasets: [
     {
       backgroundColor: [],
-      data: [5],
-    },
-  ],
+      data: [5]
+    }
+  ]
 })
 
 onMounted(() => {
@@ -78,9 +78,9 @@ onMounted(() => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data,
-      },
-    ],
+        data: data
+      }
+    ]
   }
 })
 
@@ -91,9 +91,9 @@ const chartOptions = {
   animation: false,
   plugins: {
     legend: {
-      display: false,
-    },
-  },
+      display: false
+    }
+  }
 }
 </script>
 
@@ -104,7 +104,7 @@ const chartOptions = {
         <div class="p-4">
           <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
-              <dt class="truncate text-sm font-medium text-blumilk-500">
+              <dt class="truncate text-sm font-medium text-blue-500">
                 {{ $t('no_users') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
@@ -112,7 +112,7 @@ const chartOptions = {
               </dd>
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
-              <dt class="truncate text-sm font-medium text-blumilk-500">
+              <dt class="truncate text-sm font-medium text-blue-500">
                 {{ $t('cities_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
@@ -120,7 +120,7 @@ const chartOptions = {
               </dd>
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
-              <dt class="truncate text-sm font-medium text-blumilk-500">
+              <dt class="truncate text-sm font-medium text-blue-500">
                 {{ $t('countries_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
@@ -128,7 +128,7 @@ const chartOptions = {
               </dd>
             </div>
             <div class="overflow-hidden rounded-lg border bg-white px-4 py-5 sm:p-6">
-              <dt class="truncate text-sm font-medium text-blumilk-500">
+              <dt class="truncate text-sm font-medium text-blue-500">
                 {{ $t('no_providers') }}
               </dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
@@ -158,12 +158,13 @@ const chartOptions = {
                     loading="lazy"
                     :src="provider.name ? '/providers/' + provider.name.toLowerCase() + '.png' : ''"
                     alt=""
-                  >
+                  />
                 </div>
                 <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50">
                   <span
                     class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700"
-                  >{{ provider.count }}</span>
+                    >{{ provider.count }}</span
+                  >
                 </div>
               </div>
             </div>

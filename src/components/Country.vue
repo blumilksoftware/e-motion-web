@@ -74,7 +74,7 @@ function preventCommaInput(event: KeyboardEvent) {
 
 const isEditDialogOpened = ref(false)
 const editDialog = ref(null)
-onClickOutside(editDialog, () => (isMapDialogOpen ? '' : (isEditDialogOpened.value = false)))
+onClickOutside(editDialog, () => (isMapDialogOpen.value ? '' : (isEditDialogOpened.value = false)))
 
 function toggleEditDialog() {
   isEditDialogOpened.value = !isEditDialogOpened.value
@@ -139,7 +139,7 @@ function showMap() {
   isMapDialogOpen.value = true
 }
 
-function hideMap(save: Boolean) {
+function hideMap(save: boolean) {
   if (save) {
     readMapMarker()
   }
@@ -151,7 +151,7 @@ function hideMap(save: Boolean) {
   <td class="relative py-4 pl-4 text-sm sm:pl-6 sm:pr-3">
     <div class="flex items-center font-medium text-gray-800">
       <i :class="'fi-' + country.iso" class="fi mr-2 h-6 w-8 rounded" />
-      <p class="cursor-pointer break-all rounded hover:bg-blumilk-25">
+      <p class="cursor-pointer break-all rounded hover:bg-blue-25">
         {{ country.name }}
       </p>
     </div>
@@ -180,10 +180,10 @@ function hideMap(save: Boolean) {
   >
     <span class="flex flex-wrap">
       <button
-        class="mx-0.5 mb-1 flex w-fit shrink-0 items-center rounded py-1 pr-2 text-blumilk-500 hover:bg-blumilk-25"
+        class="mx-0.5 mb-1 flex w-fit shrink-0 items-center rounded py-1 pr-2 text-blue-500 hover:bg-blue-25"
         @click="toggleEditDialog"
       >
-        <PencilIcon class="h-5 w-8 text-blumilk-500" />
+        <PencilIcon class="h-5 w-8 text-blue-500" />
         {{ $t('edit') }}
       </button>
 
@@ -224,23 +224,23 @@ function hideMap(save: Boolean) {
           <label class="mb-1">{{ $t('Name') }}</label>
           <input
             v-model="updateCountryForm.name"
-            class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+            class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
           />
           <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
           <input
             v-model="updateCountryForm.alternativeName"
-            class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+            class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
           />
 
-          <div class="flex flex-grow w-full flex-col md:flex-row">
+          <div class="flex grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
               <input
                 v-model="updateCountryForm.latitude"
-                class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                 type="text"
                 required
                 @keydown="preventCommaInput"
@@ -250,7 +250,7 @@ function hideMap(save: Boolean) {
               <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
               <input
                 v-model="updateCountryForm.longitude"
-                class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+                class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
                 type="text"
                 required
                 @keydown="preventCommaInput"
@@ -260,8 +260,8 @@ function hideMap(save: Boolean) {
           <div class="flex w-full justify-end">
             <button
               type="button"
+              class="mt-3 flex w-full shrink-0 justify-center rounded border border-blue-500 bg-white px-5 py-3 text-blue-500 hover:bg-blue-50 md:w-fit md:py-2"
               @click="showMap()"
-              class="mt-3 flex w-full shrink-0 justify-center rounded border border-blumilk-500 bg-white px-5 py-3 text-blumilk-500 hover:bg-blumilk-50 md:w-fit md:py-2"
             >
               <span class="flex flex-wrap items-center justify-end space-x-2">
                 <span class="font-bold">
@@ -274,7 +274,7 @@ function hideMap(save: Boolean) {
           <label class="mb-1 mt-4">ISO</label>
           <input
             v-model="updateCountryForm.iso"
-            class="rounded border border-blumilk-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
+            class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
           />

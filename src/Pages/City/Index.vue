@@ -8,32 +8,24 @@ import {
   XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon,
+  ArrowDownIcon
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import ProviderIcons from '@/components/ProviderIcons.vue'
-import { useForm, usePage } from '@inertiajs/vue3'
-import ErrorMessage from '@/components/ErrorMessage.vue'
-import Pagination from '@/components/Pagination.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
 import Opinion from '@/components/Opinion.vue'
 import axios from 'axios'
 import store from '@/store/SessionData'
 import { toast } from 'vue3-toastify'
-import { i18n } from '@/main'
+import { i18n, apiUrl } from '@/main'
 const $t = i18n.global.t
 const dataIsFetched = ref(false)
 const $route = router.currentRoute.value
-const page = usePage()
 const isAuth = computed(() => store.state.auth.isAuth)
 const regulationsOpen = ref(false)
 const rules = reactive({ pl: '', en: '' })
-// fetchRegulations()
-defineProps({
-  city: String,
-  country: String,
-})
+fetchRegulations()
 let data = {
   city: {
     id: 0,
@@ -52,12 +44,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: '',
+      updated_at: ''
     },
-    cityOpinions: [],
+    cityOpinions: []
   },
   providers: [],
-  cityOpinions: [],
+  cityOpinions: []
 }
 fetchCityData()
 const map = ref(false)
@@ -67,34 +59,22 @@ function toggleMap() {
 const currentLocale = ref(computed(() => store.state.locale))
 const currentRules = ref(computed(() => rules[currentLocale.value as keyof typeof rules]))
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = ref(breakpoints.smaller('lg'))
-const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
-
 const shouldShowMap = ref(false)
-
-function switchMap() {
-  shouldShowMap.value = !shouldShowMap.value
-}
-
-const buttonIcon = computed(() => {
-  return shouldShowMap.value ? XMarkIcon : MapIcon
-})
 
 onUnmounted(() => {
   fStore.commit('changeSelectedCity', null)
 })
 
-const opinionForm = useForm({
-  rating: 0,
+const opinionForm = reactive({
+  rating: '',
   content: '',
-  city_id: data.city.id,
+  city_id: data.city.id
 })
 
-const maxRating = 5
+const maxRating: number = 5
 
 function setRating(starIndex: number) {
-  opinionForm.rating = starIndex
+  opinionForm.rating = starIndex.toString()
 }
 
 function fetchCityData() {
@@ -102,24 +82,25 @@ function fetchCityData() {
     .get(`${apiUrl}/api/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
       data = response.data
+      return
     })
     .finally(() => {
       dataIsFetched.value = true
+    })
+    .catch(() => {
+      toast.error($t('There was an error fetching city data.'))
     })
 }
 function toggleRegulations() {
   regulationsOpen.value = !regulationsOpen.value
 }
 function fetchRegulations() {
-  // read current url and get country and city name
-
   axios
-    .get(
-      `${apiUrl}/api/rules/${$route.params.country}/${$route.params.city}`,
-    )
+    .get(`${apiUrl}/api/rules/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
       rules.pl = response.data.rulesPL
       rules.en = response.data.rulesEN
+      return
     })
     .catch(() => {
       toast.error($t('There was an error fetching rules.'))
@@ -129,20 +110,25 @@ function fetchRegulations() {
 const emptyRatingError = ref('')
 
 function createOpinion() {
-  if (opinionForm.rating === 0) {
+  if (opinionForm.rating === '0') {
     emptyRatingError.value = $t('Please, rate that city')
   } else {
-    opinionForm.post('/opinions', {
-      onSuccess: () => {
-        opinionForm.reset()
+    axios
+      .post(`${apiUrl}/api/opinions`, {
+        rating: opinionForm.rating,
+        content: opinionForm.content,
+        city_id: data.city.id.toString()
+      })
+      .then(() => {
+        opinionForm.content = ''
         toast.success($t('Opinion added successfully.'))
         emptyRatingError.value = ''
-      },
-      onError: () => {
+        return
+      })
+      .catch(() => {
         toast.error($t('There was an error adding your opinion.'))
         emptyRatingError.value = ''
-      },
-    })
+      })
   }
 }
 </script>
@@ -175,7 +161,7 @@ function createOpinion() {
               class="flat fi h-9 w-12 shadow rounded ml-1"
               :class="`fi-${data.city.country.iso}`"
             />
-            <h2 class="ml-2 text-xl font-medium text-blumilk-500">
+            <h2 class="ml-2 text-xl font-medium text-blue-500">
               {{ data.city.country.name }}
             </h2>
           </div>
@@ -225,7 +211,7 @@ function createOpinion() {
                 v-for="index in maxRating"
                 :key="index"
                 class="size-6 cursor-pointer text-yellow-400"
-                :class="{ 'fill-yellow-400': index <= opinionForm.rating }"
+                :class="{ 'fill-yellow-400': index <= parseInt(opinionForm.rating) }"
                 @click="setRating(index)"
               />
             </div>
@@ -236,12 +222,7 @@ function createOpinion() {
               @keydown.enter.prevent="createOpinion"
             />
 
-            <div class="mt-1 flex flex-col">
-              <ErrorMessage :message="emptyRatingError" />
-              <ErrorMessage :message="opinionForm.errors.rating" />
-              <ErrorMessage :message="opinionForm.errors.content" />
-              <ErrorMessage :message="opinionForm.errors.city_id" />
-            </div>
+            <div class="mt-1 flex flex-col" />
 
             <button
               class="mt-2 flex w-full items-center justify-center rounded-lg bg-emerald-500 p-3 text-xs font-medium text-white hover:bg-emerald-600 sm:w-fit sm:px-4 sm:py-2"
@@ -263,12 +244,6 @@ function createOpinion() {
               <Opinion :opinion="opinion" :city-id="data.city.id" />
             </div>
           </div>
-
-          <!-- <Pagination
-            class="mb-6"
-            :meta="data.cityOpinions.meta"
-            :links="data.cityOpinions.links"
-          /> -->
         </div>
       </div>
 
@@ -284,7 +259,7 @@ function createOpinion() {
         />
         <div
           v-else
-          class="flex h-full flex-col items-center justify-center bg-blumilk-25"
+          class="flex h-full flex-col items-center justify-center bg-blue-25"
           aria-label="Loading..."
           role="status"
         >
@@ -318,14 +293,13 @@ function createOpinion() {
 .rotated {
   transform: rotate(180deg);
 }
-.regulations>div:nth-child(2).show {
+.regulations > div:nth-child(2).show {
   max-height: 1000px;
   transition: max-height 0.5s ease-in-out;
 }
-.regulations>div:nth-child(2) {
+.regulations > div:nth-child(2) {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
 }
-
 </style>

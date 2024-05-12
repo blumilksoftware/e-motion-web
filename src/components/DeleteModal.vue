@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
-
+import { i18n } from '@/main'
+const $t = i18n.global.t
 const emits = defineEmits(['close', 'delete'])
 
 const closeModal = () => emits('close')
@@ -27,17 +28,17 @@ const formattedType = computed(() => {
 
 const renderHeader = () => {
   let translationKey = ''
-  translationKey = __('Delete ' + formattedType.value) + ' :name'
+  translationKey = $t('delete_' + formattedType.value)
 
-  return (__(translationKey, { name: props.name })).trim() + '?'
+  return ($t(translationKey)).trim() + ` ${props.name}?`
 }
 
 const renderText = () => {
   let translationKey = ''
-  translationKey = 'This operation cannot be undone.'
+  translationKey = 'unundoable_operation'
 
 
-  return __(translationKey)
+  return $t(translationKey)
 }
 
 const dialogRef = ref(null)
@@ -90,13 +91,13 @@ onClickOutside(dialogRef, () => closeModal())
                           class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                           @click.stop="confirmDelete"
                   >
-                    {{ __('Delete') }}
+                    {{ $t('delete') }}
                   </button>
                   <button ref="cancelButtonRef" type="button"
                           class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                           @click="closeModal"
                   >
-                    {{ __('Cancel') }}
+                    {{ $t('cancel') }}
                   </button>
                 </div>
               </div>

@@ -95,7 +95,7 @@ onUnmounted(() => {
                     >
                       {{ item.name }}
                     </p>
-                    <p class="break-all text-xs font-semibold text-blumilk-500">
+                    <p class="break-all text-xs font-semibold text-blue-500">
                       {{ item.country.name }}
                     </p>
                   </div>
@@ -112,7 +112,7 @@ onUnmounted(() => {
                     <InfoPopup v-else class="flex rounded-full py-0.5 hover:drop-shadow" />
                   </div>
                   <router-link
-                    class="flex items-center rounded-full z-50 relative py-0.5 text-blumilk-500 hover:drop-shadow"
+                    class="flex items-center rounded-full z-50 relative py-0.5 text-blue-500 hover:drop-shadow"
                     :to="`/city/${item.country.slug}/${item.slug}`"
                   >
                     <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
@@ -144,7 +144,7 @@ onUnmounted(() => {
         />
         <div
           v-else
-          class="flex h-full flex-col items-center justify-center bg-blumilk-25"
+          class="flex h-full flex-col items-center justify-center bg-blue-25"
           aria-label="Loading..."
           role="status"
         >

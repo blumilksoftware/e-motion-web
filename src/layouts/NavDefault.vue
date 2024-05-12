@@ -134,7 +134,6 @@ const navigation = [
     auth: true,
   },
 ]
-//after clicking any of the links, the mobile menu will close
 const closeMobileMenu = () => {
   isMobileMenuOpened.value = false
 }

@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 const props = defineProps({
   item: Object,
   providers: Object,
-  apps: Object,
+  apps: Object
 })
 
 function getProviderColor(providerName) {
@@ -51,7 +51,7 @@ const urls = reactive({
   android_url: null,
   ios_url: null,
   hidden: true,
-  transparent: true,
+  transparent: true
 })
 </script>
 
@@ -75,49 +75,49 @@ const urls = reactive({
           class="w-7 lg:w-8"
           :src="'/providers/' + cityProvider.provider_name.toLowerCase() + '.png'"
           alt=""
-        >
+        />
       </div>
     </div>
-    <div class="provider-buttons border border-solid bg-white shadow-lg">
-      <p class="text-center text-lg text-blumilk-500">
-        {{ urls.pname }}
-      </p>
-      <a
-        v-if="urls.url"
-        :href="urls.url"
-        target="_blank"
-        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400 shadow-inner"
-      >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="">
-        <p class="provider-text text-lg font-semibold text-white hover:underline">Web</p>
-      </a>
-      <a
-        v-if="urls.android_url"
-        :href="urls.android_url"
-        target="_blank"
-        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400"
-      >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="">
-        <p class="provider-text text-lg font-semibold text-white hover:underline">Android</p>
-      </a>
-      <a
-        v-if="urls.ios_url"
-        :href="urls.ios_url"
-        target="_blank"
-        class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blumilk-400"
-      >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="">
-        <p class="provider-text text-lg font-semibold text-white hover:underline">AppStore</p>
-      </a>
-    </div>
-    <div
-      :style="{
-        opacity: urls.transparent ? '0%' : '60%',
-        visibility: urls.hidden ? 'hidden' : 'visible'
-      }"
-      class="decoration absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-white transition-all"
-    />
   </div>
+  <div class="provider-buttons border border-solid bg-white shadow-lg">
+    <p class="text-center text-lg text-blue-500">
+      {{ urls.pname }}
+    </p>
+    <a
+      v-if="urls.url"
+      :href="urls.url"
+      target="_blank"
+      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 shadow-inner"
+    >
+      <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="" />
+      <p class="provider-text text-lg font-semibold text-white hover:underline">Web</p>
+    </a>
+    <a
+      v-if="urls.android_url"
+      :href="urls.android_url"
+      target="_blank"
+      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400"
+    >
+      <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="" />
+      <p class="provider-text text-lg font-semibold text-white hover:underline">Android</p>
+    </a>
+    <a
+      v-if="urls.ios_url"
+      :href="urls.ios_url"
+      target="_blank"
+      class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400"
+    >
+      <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="" />
+      <p class="provider-text text-lg font-semibold text-white hover:underline">AppStore</p>
+    </a>
+  </div>
+  <div
+    :style="{
+      opacity: urls.transparent ? '0%' : '60%',
+      visibility: urls.hidden ? 'hidden' : 'visible'
+    }"
+    class="decoration absolute left-1/2 top-1/2 h-screen w-screen -translate-x-1/2 -translate-y-1/2 bg-white transition-all"
+  />
 </template>
 
 <style>
@@ -150,6 +150,7 @@ const urls = reactive({
   scale: 1;
 }
 .provider-text::after {
+  margin-left: 4px;
   content: '';
   display: inline-block;
   border: 8px solid transparent;

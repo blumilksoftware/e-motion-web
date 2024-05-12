@@ -5,7 +5,7 @@ import ProviderIcons from './ProviderIcons.vue'
 import router from '@/router/index'
 
 const props = defineProps({
-  providers: Object,
+  providers: Object
 })
 
 function showCity(city) {
@@ -42,7 +42,7 @@ function goToCityPage(city) {
           >
             {{ fStore.state.selectedCity.name }}
           </p>
-          <p class="break-all text-xs font-semibold text-blumilk-500">
+          <p class="break-all text-xs font-semibold text-blue-500">
             {{ fStore.state.selectedCity.country.name }}
           </p>
         </div>
@@ -50,7 +50,7 @@ function goToCityPage(city) {
       <div class="mt-0 flex w-fit items-center justify-end sm:mt-1 sm:justify-start">
         <div class="mt-2 flex rounded-full text-gray-600 sm:ml-[64px]">
           <router-link
-            class="flex items-center rounded-full z-50 relative py-0.5 text-blumilk-500 hover:drop-shadow"
+            class="flex items-center rounded-full z-50 relative py-0.5 text-blue-500 hover:drop-shadow"
             :to="`/city/${fStore.state.selectedCity.country.slug}/${fStore.state.selectedCity.slug}`"
           >
             <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />

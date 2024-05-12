@@ -6,11 +6,8 @@ const getCurrentYear = () => {
 }
 </script>
 
-
 <template>
   <footer>
-    <div class="bottom-0 text-xs font-thin text-blumilk-600">
-      {{ getCurrentYear() }} &copy; Blumilk
-    </div>
+    <div class="bottom-0 text-xs font-thin text-blue-600">{{ getCurrentYear() }} &copy; blue</div>
   </footer>
 </template>
