@@ -8,7 +8,7 @@ import {
   XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon
+  ArrowDownIcon,
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
@@ -44,12 +44,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: ''
+      updated_at: '',
     },
-    cityOpinions: []
+    cityOpinions: [],
   },
   providers: [],
-  cityOpinions: []
+  cityOpinions: [],
 }
 fetchCityData()
 const map = ref(false)
@@ -68,10 +68,10 @@ onUnmounted(() => {
 const opinionForm = reactive({
   rating: '',
   content: '',
-  city_id: data.city.id
+  city_id: data.city.id,
 })
 
-const maxRating: number = 5
+const maxRating = 5
 
 function setRating(starIndex: number) {
   opinionForm.rating = starIndex.toString()
@@ -117,7 +117,7 @@ function createOpinion() {
       .post(`${apiUrl}/api/opinions`, {
         rating: opinionForm.rating,
         content: opinionForm.content,
-        city_id: data.city.id.toString()
+        city_id: data.city.id.toString(),
       })
       .then(() => {
         opinionForm.content = ''

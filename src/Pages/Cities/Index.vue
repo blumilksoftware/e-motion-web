@@ -34,8 +34,6 @@ axios
     citiesWithoutAssignedCountry.value = response.data.citiesWithoutAssignedCountry
     let citiesNoCoords = cities.value.filter((city) => !city.latitude || !city.longitude).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
-    console.log(citiesNoCoords, citiesNoCountry)
-    console.log(countries)
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
     return response // Add this line to return the response
   })

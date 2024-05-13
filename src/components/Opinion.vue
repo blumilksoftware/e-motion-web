@@ -4,7 +4,7 @@ import {
   PencilIcon,
   StarIcon,
   TrashIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
@@ -20,18 +20,16 @@ import { i18n } from '@/main'
 const $t = i18n.global.t
 const isAdmin = computed(() => store.state.auth.isAdmin)
 const user = computed(() => store.state.auth.userID)
-console.log(user)
 const props = defineProps({
   opinion: Object,
-  cityId: Number
+  cityId: Number,
 })
 
 const updateOpinionForm = useForm({
   rating: props.opinion.rating,
   content: props.opinion.content,
-  city_id: props.cityId
+  city_id: props.cityId,
 })
-console.log(props.opinion)
 function updateOpinion(opinionId) {
   if (updateOpinionForm.rating === 0) {
     emptyRatingError.value = $t('empty_rating_error')
@@ -78,7 +76,7 @@ const dateOptions = {
   month: 'numeric',
   day: 'numeric',
   hour: '2-digit',
-  minute: '2-digit'
+  minute: '2-digit',
 }
 
 const maxRating = 5
@@ -112,10 +110,10 @@ const emptyRatingError = ref('')
 
   <div v-if="user === props.opinion.user.id || isAdmin" class="mt-1 flex justify-end">
     <button v-if="user === props.opinion.user.id" class="flex px-1 hover:drop-shadow" @click="toggleUpdateOpinionDialog">
-      <PencilIcon class="h-5 w-5 text-gray-500 hover:drop-shadow sm:h-4 sm:w-4" />
+      <PencilIcon class="size-5 text-gray-500 hover:drop-shadow sm:size-4" />
     </button>
     <button class="flex px-1 hover:drop-shadow" @click="toggleDeleteOpinionDialog">
-      <TrashIcon class="ml-1 h-5 w-5 text-red-500 hover:drop-shadow sm:h-4 sm:w-4" />
+      <TrashIcon class="ml-1 size-5 text-red-500 hover:drop-shadow sm:size-4" />
     </button>
   </div>
 
@@ -151,8 +149,7 @@ const emptyRatingError = ref('')
             @keydown.enter.prevent="updateOpinion(opinion.id)"
           />
 
-          <div class="mt-1 flex flex-col">
-          </div>
+          <div class="mt-1 flex flex-col" />
 
           <button
             :disabled="!updateOpinionForm.isDirty"

@@ -44,7 +44,7 @@ const storeCountryForm = {
   alternativeName: '',
   latitude: '',
   longitude: '',
-  iso: ''
+  iso: '',
 }
 
 const commaInputError = ref('')
@@ -87,7 +87,7 @@ watch(
       .catch((error) => {
         console.error(error)
       })
-  }, 300)
+  }, 300),
 )
 
 function clearInput() {
@@ -97,7 +97,7 @@ function clearInput() {
 const sortingOptions = [
   { name: 'Latest', href: '/admin/countries?order=latest' },
   { name: 'Oldest', href: '/admin/countries?order=oldest' },
-  { name: 'By name', href: '/admin/countries?order=name' }
+  { name: 'By name', href: '/admin/countries?order=name' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -140,13 +140,13 @@ function toggleSortDialog() {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
                   <input
                     v-model="storeCountryForm.alternativeName"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
-                  />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Latitude') }}</label>
                   <input
                     v-model="storeCountryForm.latitude"
@@ -154,7 +154,7 @@ function toggleSortDialog() {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
+                  >
                   <label class="mb-1 mt-4">{{ $t('Longitude') }}</label>
                   <input
                     v-model="storeCountryForm.longitude"
@@ -162,14 +162,14 @@ function toggleSortDialog() {
                     type="text"
                     required
                     @keydown="preventCommaInput"
-                  />
+                  >
                   <label class="mb-1 mt-4">ISO</label>
                   <input
                     v-model="storeCountryForm.iso"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <small class="text-rose-600">{{ commaInputError }}</small>
 
                   <div class="flex w-full justify-end">
@@ -200,7 +200,7 @@ function toggleSortDialog() {
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('Search country')"
-                />
+                >
               </div>
               <button
                 v-if="searchInput.length"

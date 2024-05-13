@@ -54,13 +54,13 @@ onMounted(() => {
     () => fStore.state.selectedCity,
     () => {
       window.scrollTo(0, 0)
-    }
+    },
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    }
+    },
   )
 })
 

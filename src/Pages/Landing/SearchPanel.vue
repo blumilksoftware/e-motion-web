@@ -19,20 +19,20 @@ const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const props = defineProps({
   cities: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   providers: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   countries: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   isAuth: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 const filteredCities = computed(() => {
   const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
@@ -44,15 +44,15 @@ const filteredCities = computed(() => {
     return props.cities.filter((city) => city.country.id === selectedCountryId)
   } else if (selectedCountryId === null && selectedProviderName !== null) {
     return props.cities.filter((city) =>
-      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName)
+      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName),
     )
   } else {
     return props.cities.filter(
       (city) =>
         city.country.id === selectedCountryId &&
         city.cityProviders.some(
-          (cityProvider) => cityProvider.provider_name === selectedProviderName
-        )
+          (cityProvider) => cityProvider.provider_name === selectedProviderName,
+        ),
     )
   }
 })
@@ -66,8 +66,8 @@ const filteredProviders = computed(() => {
       props.cities.some(
         (city) =>
           city.country.id === selectedCountryId &&
-          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name)
-      )
+          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name),
+      ),
     )
   }
 })
@@ -79,7 +79,7 @@ const filteredCountries = computed(() => {
   for (const city of props.cities) {
     const cityProviders = city.cityProviders
     const hasProvider = cityProviders.some(
-      (cityProvider) => cityProvider.provider_name === selectedProviderName
+      (cityProvider) => cityProvider.provider_name === selectedProviderName,
     )
     cityMap.set(city.country.id, cityMap.get(city.country.id) || false || hasProvider)
   }
@@ -87,7 +87,7 @@ const filteredCountries = computed(() => {
   return props.countries.map((country) => ({
     ...country,
     hasProvider: selectedProviderName === null ? true : cityMap.get(country.id) || false,
-    isSelected: country.id === selectedCountryId
+    isSelected: country.id === selectedCountryId,
   }))
 })
 
@@ -119,8 +119,6 @@ function clearFilters() {
 }
 
 function showCity(city) {
-  console.log(city.id)
-  console.log(fStore.state.selectedCity)
   if (fStore.state.selectedCity && fStore.state.selectedCity.id === city.id) {
     fStore.commit('changeSelectedCity', null)
   } else {
@@ -181,13 +179,13 @@ onMounted(() => {
     () => fStore.state.selectedProviderName,
     () => {
       rememberProviderAutocompleteValue()
-    }
+    },
   )
   watch(
     () => fStore.state.selectedCountry,
     () => {
       rememberCountryAutocompleteValue()
-    }
+    },
   )
   watch(
     () => providerAutocomplete.value,
@@ -195,7 +193,7 @@ onMounted(() => {
       if (providerAutocomplete.value === '') {
         fStore.commit('changeSelectedProvider', null)
       }
-    }
+    },
   )
   watch(
     () => countryAutocomplete.value,
@@ -203,7 +201,7 @@ onMounted(() => {
       if (countryAutocomplete.value === '') {
         fStore.commit('changeSelectedCountry', null)
       }
-    }
+    },
   )
 })
 
@@ -218,12 +216,12 @@ function clearCountryAutocompleteInput() {
 }
 const filteredProviderSuggestions = computed(() => {
   return filteredProviders.value.filter((provider) =>
-    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase())
+    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase()),
   )
 })
 const filteredCountrySuggestions = computed(() => {
   return filteredCountries.value.filter((country) =>
-    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase())
+    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase()),
   )
 })
 
@@ -262,7 +260,7 @@ function selectCountry(country) {
                 :class="countryAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('Search_country')"
-              />
+              >
             </div>
             <button
               v-if="countryAutocomplete.length"
@@ -316,7 +314,7 @@ function selectCountry(country) {
                     class="w-5"
                     :src="'/providers/' + fStore.state.selectedProviderName.toLowerCase() + '.png'"
                     alt=""
-                  />
+                  >
                 </div>
                 <TruckIcon v-else class="ml-1 size-6 text-gray-800" />
               </div>
@@ -326,7 +324,7 @@ function selectCountry(country) {
                 :class="providerAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('Search_provider')"
-              />
+              >
             </div>
             <button
               v-if="providerAutocomplete.length"
@@ -359,7 +357,7 @@ function selectCountry(country) {
                   class="w-5"
                   :src="'/providers/' + provider.name.toLowerCase() + '.png'"
                   alt=""
-                />
+                >
               </div>
               <span class="ml-2 block truncate text-sm">{{ provider.name }}</span>
             </li>

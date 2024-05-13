@@ -26,7 +26,6 @@ axios
     importInfo.value = response.data.importInfo
     codes.value = response.data.codes
     providers.value = response.data.providers
-    console.log(response)
   })
   .catch((error) => {
     console.error(error)

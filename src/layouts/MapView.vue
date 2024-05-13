@@ -17,9 +17,9 @@ interface City {
     name: string
     iso: string
   }
-  cityProviders: {
+  cityProviders: Array<{
     provider_name: string
-  }[]
+  }>
 }
 interface Country {
   id: number
@@ -40,7 +40,7 @@ const props = defineProps({
   isCityPage: {
     type: Boolean,
     default: false,
-  }
+  },
 })
 
 onMounted(async () => {
@@ -93,14 +93,14 @@ function centerToSelectedCity() {
 function centerToSelectedCountry() {
   if (fStore.state.selectedCountry) {
     switch ((fStore.state.selectedCountry as Country).name) {
-      case 'Australia':
-      case 'Canada':
-      case 'China':
-      case 'Russia':
-        centerToLocation(fStore.state.selectedCountry, 2)
-        break
-      default:
-        centerToLocation(fStore.state.selectedCountry, 6)
+    case 'Australia':
+    case 'Canada':
+    case 'China':
+    case 'Russia':
+      centerToLocation(fStore.state.selectedCountry, 2)
+      break
+    default:
+      centerToLocation(fStore.state.selectedCountry, 6)
     }
   }
 }
@@ -146,7 +146,7 @@ function fillMap() {
     marker
       .addTo(markers.value! as L.FeatureGroup<any>)
       .on('click', () => {
-        const selectedCity: City | null = fStore.state.selectedCity ?? null;
+        const selectedCity: City | null = fStore.state.selectedCity ?? null
 
         if (!selectedCity || (selectedCity as City).id !== city.id) {
           fStore.commit('changeSelectedCity', city)

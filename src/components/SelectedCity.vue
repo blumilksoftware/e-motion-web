@@ -5,7 +5,7 @@ import ProviderIcons from './ProviderIcons.vue'
 import router from '@/router/index'
 
 const props = defineProps({
-  providers: Object
+  providers: Object,
 })
 
 function showCity(city) {

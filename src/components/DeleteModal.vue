@@ -14,12 +14,12 @@ const open = ref(true)
 const props = defineProps({
   name: {
     type: String,
-    required: false
+    required: false,
   },
   type: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const formattedType = computed(() => {

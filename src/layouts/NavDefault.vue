@@ -257,21 +257,21 @@ const closeMobileMenu = () => {
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="github logo">
+                <img class="size-10" src="@/assets/github.png" alt="github logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="facebook logo">
+                <img class="size-10" src="@/assets/facebook.png" alt="facebook logo">
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/logo.png" alt="google logo">
+                <img class="size-10" src="@/assets/google.png" alt="google logo">
               </button>
             </div>
           </div>

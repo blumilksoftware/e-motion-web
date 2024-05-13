@@ -3,11 +3,11 @@
     <p class="mb-3 mr-2 h-2 w-16 rounded bg-gray-400 font-bold" />
     <input
       class="mb-2 w-full rounded-md border-0 bg-gray-200 py-2 pl-3 pr-10 text-blue-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:leading-6"
-    />
+    >
     <p class="mb-3 mr-2 mt-5 h-2 w-16 rounded bg-gray-400 font-bold" />
     <input
       class="mb-8 w-full rounded-md border-0 bg-gray-200 py-2 pl-3 pr-10 text-blue-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:leading-6"
-    />
+    >
     <ul class="mt-8 divide-y divide-gray-300" role="list">
       <li class="flex items-start justify-between gap-x-6 py-5">
         <div class="flex flex-auto items-center">
