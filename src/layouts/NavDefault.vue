@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, reactive } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import LangSwitch from '@/components/LangSwitch.vue' // @ is an alias to /src
-import ErrorMessage from '@/components/ErrorMessage.vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
-import { useForm } from '@inertiajs/vue3'
 import store from '@/store/SessionData'
 import {
   Bars3Icon,
@@ -18,8 +16,6 @@ import {
 } from '@heroicons/vue/24/outline'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
-import { getCookie } from '@/cookies/getCookie'
-import { get } from '@vueuse/core'
 import { apiUrl } from '@/main'
 store.commit('restore')
 const isMobileMenuOpened = ref(false)
@@ -64,7 +60,6 @@ onMounted(async () => {
   )
 })
 
-//  TODO: scripts
 const login = () => {
   axios.post(`${apiUrl}/api/login`, loginForm.value).then((response) => {
     store.commit('login', response.data)
@@ -72,7 +67,10 @@ const login = () => {
   })
 }
 const register = () => {
-  console.log('register')
+  axios.post(`${apiUrl}/api/register`, registerForm.value).then((response) => {
+    store.commit('login', response.data)
+    toggleAuthDialog()
+  })
 }
 const socialMediaLogin = (provider: string) => {
   console.log('socialMediaLogin', provider)
@@ -118,16 +116,6 @@ const registerForm = ref({
   },
 })
 const navigation = [
-  // {
-  //   name: 'Prices',
-  //   to: '/',
-  //   auth: false
-  // },
-  // {
-  //   name: 'Rules',
-  //   to: '/',
-  //   auth: false
-  // },
   {
     name: 'Favorites',
     to: '/favorites',
@@ -248,7 +236,6 @@ const closeMobileMenu = () => {
               />
             </button>
           </div>
-          <ErrorMessage :message="loginForm.errors.loginError" />
           <div>
             <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800">{{ $t('altlogin') }}:</label>
             <div class="flex items-center justify-center space-x-5">
@@ -304,7 +291,6 @@ const closeMobileMenu = () => {
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               requirederror
             >
-            <ErrorMessage :message="registerForm.errors.name" />
           </div>
 
           <div>
@@ -315,7 +301,6 @@ const closeMobileMenu = () => {
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
             >
-            <ErrorMessage :message="registerForm.errors.email" />
           </div>
           <div class="relative">
             <label class="mb-1 block text-sm font-semibold text-gray-800">{{
@@ -338,7 +323,6 @@ const closeMobileMenu = () => {
               />
             </button>
           </div>
-          <ErrorMessage :message="registerForm.errors.password" />
           <div class="flex w-full md:w-fit">
             <button
               type="submit"

@@ -28,10 +28,10 @@ const isMapDialogOpen = ref(false)
 
 const destroyCountry = (countryId: number) => {
   axios.delete(`${apiUrl}/api/admin/countries/${countryId}`, {
-    // onSuccess: () => {
-    //   toast.success($t('Country deleted successfully'))
-    //   showDeleteModal.value = false
-    // }
+    onSuccess: () => {
+      toast.success($t('country_delete_success'))
+      showDeleteModal.value = false
+    }
   })
 }
 
@@ -47,12 +47,12 @@ function updateCountry(countryId: number) {
   axios
     .patch(`${apiUrl}/api/admin/countries/${countryId}`, updateCountryForm)
     .then(() => {
-      toast.success($t('Country updated successfully'))
+      toast.success($t('update_country_success'))
       isEditDialogOpened.value = false
       updateData()
     })
     .catch(() => {
-      toast.error($t('Country update failed'))
+      toast.error($t('update_country_error'))
     })
 }
 const updateCountryForm = {
@@ -68,7 +68,7 @@ const commaInputError = ref('')
 function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = $t('Use `.` instead of `,`')
+    commaInputError.value = $t('correct_separation')
   }
 }
 

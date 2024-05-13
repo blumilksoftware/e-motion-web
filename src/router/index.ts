@@ -5,21 +5,6 @@ import AdminCountriesView from '@/views/AdminCountriesView.vue'
 import NavAdminPanel from '@/layouts/NavAdminPanel.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  // {
-  //   path: '/',
-  //   component: HomeView,
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'home',
-  //       component: () => import('@/Pages/Landing/Index.vue')
-  //     },
-  //     {
-  //       path: ':country/:city',
-  //       component: () => import('@/Pages/City/Index.vue')
-  //     }
-  //   ]
-  // },
   {
     path: '/',
     name: 'home',
@@ -62,11 +47,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'about',
     component: () => import('../views/AboutView.vue')
   },
-  // {
-  //   path: '/:pathMatch(.*)*',
-  //   name: 'not-found',
-  //   component: () => import('@/views/NotFoundView.vue')
-  // },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    redirect: { name: 'home' }
+  },
   {
     path: '/favorites',
     name: 'favorites',

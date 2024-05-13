@@ -4,13 +4,17 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js/auto'
 import { Doughnut } from 'vue-chartjs'
 import { apiUrl, i18n } from '@/main'
 import axios from 'axios'
-
+import store from '@/store/SessionData'
+import router from '@/router'
+if (!store.state.auth.isAdmin) {
+  router.push('/')
+}
 const $t = i18n.global.t
 
 onMounted(() => {
   ChartJS.register(ArcElement, Tooltip, Legend)
 })
-
+const dataIsFetched = ref(false)
 const usersCount = ref(0)
 const citiesWithProvidersCount = ref(0)
 const countriesWithCitiesWithProvidersCount = ref(0)
@@ -34,16 +38,19 @@ axios.get(`${apiUrl}/api/admin/dashboard`).then((response) => {
     backgroundColors.push(getProviderColor(provider.name))
     data.push(provider.count)
   })
-
   chartData.value = {
     labels: labels,
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data,
-      },
-    ],
+        data: data
+      }
+    ]
   }
+}).finally(() => {
+  dataIsFetched.value = true
+}).catch((error) => {
+  console.error(error)
 })
 
 function getProviderColor(providerName) {
@@ -57,9 +64,9 @@ const chartData = ref({
   datasets: [
     {
       backgroundColor: [],
-      data: [5],
-    },
-  ],
+      data: [5]
+    }
+  ]
 })
 
 onMounted(() => {
@@ -78,9 +85,9 @@ onMounted(() => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data,
-      },
-    ],
+        data: data
+      }
+    ]
   }
 })
 
@@ -91,14 +98,14 @@ const chartOptions = {
   animation: false,
   plugins: {
     legend: {
-      display: false,
-    },
-  },
+      display: false
+    }
+  }
 }
 </script>
 
 <template>
-  <div class="flex relative min-h-screen flex-col md:flex-row">
+  <div v-if="dataIsFetched" class="flex relative min-h-screen flex-col md:flex-row">
     <div class="flex md:justify-end">
       <div class="flex size-auto flex-col">
         <div class="p-4">
@@ -158,12 +165,13 @@ const chartOptions = {
                     loading="lazy"
                     :src="provider.name ? '/providers/' + provider.name.toLowerCase() + '.png' : ''"
                     alt=""
-                  >
+                  />
                 </div>
                 <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50">
                   <span
                     class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700"
-                  >{{ provider.count }}</span>
+                    >{{ provider.count }}</span
+                  >
                 </div>
               </div>
             </div>

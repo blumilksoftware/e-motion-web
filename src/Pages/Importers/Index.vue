@@ -5,6 +5,10 @@ import axios from 'axios'
 import { apiUrl } from '@/main'
 import { ref } from 'vue'
 import { i18n } from '@/main'
+import router from '@/router'
+if (!store.state.auth.isAdmin) {
+  router.push('/')
+}
 const $t = i18n.global.t
 
 const importInfo = ref<ImportInfo[]>([])

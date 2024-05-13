@@ -84,7 +84,6 @@ const filteredSelectedCityProviders = computed(() => {
 const $t = i18n.global.t
 const showDeleteModal = ref(false)
 const country = props.city.country ?? ''
-const storeAlternativeCityNameErrors = ref([])
 const commaInputError = ref('')
 const isEditDialogOpened = ref(false)
 const editDialog = ref(null)
