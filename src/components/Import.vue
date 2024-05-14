@@ -9,7 +9,7 @@ const options = { hour: 'numeric', minute: 'numeric', second: 'numeric' }
 const props = defineProps({
   info: Object,
   codes: Object,
-  providers: Object,
+  providers: Object
 })
 
 const status = computed(() => {
@@ -17,7 +17,7 @@ const status = computed(() => {
 
   if (importDetails.length === 0) {
     return 'success'
-  } else if (importDetails.some(item => item.code === '400' || item.code === '204')) {
+  } else if (importDetails.some((item) => item.code === '400' || item.code === '204')) {
     return 'error'
   } else {
     return 'warning'
@@ -33,24 +33,29 @@ function toggleImportDialog() {
     isImportDialogOpened.value = !isImportDialogOpened.value
   }
 }
-
 </script>
 
 <template>
-  <tr :class="(status === 'success') || (info.status !== 'finished') ? '' : 'hover:bg-gray-100' "
-      class="border-t"
+  <tr
+    :class="status === 'success' || info.status !== 'finished' ? '' : 'hover:bg-gray-100'"
+    class="border-t"
   >
     <td class="table-cell break-all py-3.5 pl-2 text-xs capitalize text-gray-500 sm:pl-6">
       {{ info.who_runs_it }}
     </td>
     <td class="table-cell break-all px-4 py-3.5 text-xs text-gray-500">
-      {{ new Date(info.created_at).toLocaleDateString("pl-PL", options) }}
+      {{ new Date(info.created_at).toLocaleDateString('pl-PL', options) }}
     </td>
 
-    <td v-if="info.status === 'finished'"
-        :class="[
-          status === 'Success' ? 'text-emerald-400' :
-          status === 'Error' ? 'text-red-600' : 'text-orange-400']"
+    <td
+      v-if="info.status === 'finished'"
+      :class="[
+        status === 'Success'
+          ? 'text-emerald-400'
+          : status === 'Error'
+            ? 'text-red-600'
+            : 'text-orange-400'
+      ]"
     >
       <div class="flex">
         <div class="w-fit rounded-full p-1">
@@ -61,9 +66,7 @@ function toggleImportDialog() {
         </div>
       </div>
     </td>
-    <td v-else
-        class="table-cell items-center py-3.5 text-sm text-gray-500"
-    >
+    <td v-else class="table-cell items-center py-3.5 text-sm text-gray-500">
       <div class="flex">
         <div class="flex w-fit animate-pulse rounded-full p-1">
           <div class="size-1.5 rounded-full bg-current" />
@@ -73,14 +76,21 @@ function toggleImportDialog() {
         </div>
       </div>
     </td>
-    <td v-if="status !== 'Success' && info.status === 'finished'" class="table-cell cursor-pointer pl-1 text-gray-400 hover:text-black" @click="toggleImportDialog">
+    <td
+      v-if="status !== 'Success' && info.status === 'finished'"
+      class="table-cell cursor-pointer pl-1 text-gray-400 hover:text-black"
+      @click="toggleImportDialog"
+    >
       <ChevronDownIcon class="h-5 w-full" />
     </td>
   </tr>
 
   <div v-if="isImportDialogOpened" class="flex flex-col">
     <div class="fixed inset-0 z-10 flex items-center bg-black/50 py-8">
-      <div ref="importDialog" class="scrollbar mx-auto h-fit max-h-full w-11/12 overflow-y-auto rounded-lg bg-white pb-6 sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3">
+      <div
+        ref="importDialog"
+        class="scrollbar mx-auto h-fit max-h-full w-11/12 overflow-y-auto rounded-lg bg-white pb-6 sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-1/3"
+      >
         <div class="flex w-full justify-end">
           <button class="px-4 pt-4" @click="toggleImportDialog">
             <XMarkIcon class="size-6" />
@@ -94,21 +104,31 @@ function toggleImportDialog() {
                 {{ info.who_runs_it }}
               </p>
               <p class="text-sm font-bold text-gray-500">
-                {{ new Date(info.created_at).toLocaleDateString("pl-PL", options) }}
+                {{ new Date(info.created_at).toLocaleDateString('pl-PL', options) }}
               </p>
             </div>
 
-            <div v-for="detail in info.import_info_details" :key="detail.id"
-                 :class="detail.code === 400 ? 'border-red-600 bg-red-100' : 'border-orange-500 bg-orange-100'"
-                 class="mb-4 flex flex-col justify-center rounded border p-2 font-light"
+            <div
+              v-for="detail in info.import_info_details"
+              :key="detail.id"
+              :class="
+                detail.code === 400
+                  ? 'border-red-600 bg-red-100'
+                  : 'border-orange-500 bg-orange-100'
+              "
+              class="mb-4 flex flex-col justify-center rounded border p-2 font-light"
             >
               <div v-for="provider in providers" :key="provider.name">
                 <div v-if="detail.provider_name === provider.name">
                   <div
-                    :style="{'background-color': provider.color}"
+                    :style="{ 'background-color': provider.color }"
                     class="mr-2 flex h-9 w-fit items-center justify-center rounded p-1"
                   >
-                    <img :src="`/providers/${provider.name.toLowerCase()}.png`" alt="" class="w-12">
+                    <img
+                      :src="`/providers/${provider.name.toLowerCase()}.png`"
+                      alt=""
+                      class="w-12"
+                    />
                   </div>
                 </div>
               </div>
@@ -118,7 +138,11 @@ function toggleImportDialog() {
                   <p class="font-normal">
                     {{ $t(code.description) }}
                   </p>
-                  <router-link v-if="detail.code === 419" to="/admin/cities?order=empty-coordinates" class="font-medium">
+                  <router-link
+                    v-if="detail.code === 419"
+                    to="/admin/cities?order=empty-coordinates"
+                    class="font-medium"
+                  >
                     {{ $t('list_of_cities_no_coords') }}
                   </router-link>
 

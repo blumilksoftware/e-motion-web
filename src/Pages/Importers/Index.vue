@@ -104,7 +104,6 @@ function runRules() {
         <p v-else class="mt-6 flex text-lg font-medium text-gray-500">
           {{ $t(`did_not_find_anything`) }}
         </p>
-
       </div>
     </div>
   </div>

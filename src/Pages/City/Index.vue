@@ -8,7 +8,7 @@ import {
   XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon,
+  ArrowDownIcon
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
@@ -44,12 +44,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: '',
+      updated_at: ''
     },
-    cityOpinions: [],
+    cityOpinions: []
   },
   providers: [],
-  cityOpinions: [],
+  cityOpinions: []
 }
 fetchCityData()
 const map = ref(false)
@@ -68,7 +68,7 @@ onUnmounted(() => {
 const opinionForm = reactive({
   rating: '',
   content: '',
-  city_id: data.city.id,
+  city_id: data.city.id
 })
 
 const maxRating = 5
@@ -117,7 +117,7 @@ function createOpinion() {
       .post(`${apiUrl}/api/opinions`, {
         rating: opinionForm.rating,
         content: opinionForm.content,
-        city_id: data.city.id.toString(),
+        city_id: data.city.id.toString()
       })
       .then(() => {
         opinionForm.content = ''
@@ -168,7 +168,11 @@ function createOpinion() {
           <h2 class="ml-1 mt-1 text-sm text-gray-400">
             {{ data.city.latitude }}, {{ data.city.longitude }}
           </h2>
-          <ProviderIcons :class="'pt-4 relative z-10'" :item="data.city" :providers="data.providers" />
+          <ProviderIcons
+            :class="'pt-4 relative z-10'"
+            :item="data.city"
+            :providers="data.providers"
+          />
 
           <div
             class="regulations relative z-0 overflow-hidden rounded border border-solid border-gray-200 px-3"

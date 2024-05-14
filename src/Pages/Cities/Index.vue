@@ -41,7 +41,9 @@ axios
     providers.value = response.data.providers
     countries.value = response.data.countries
     citiesWithoutAssignedCountry.value = response.data.citiesWithoutAssignedCountry
-    let citiesNoCoords = cities.value.filter((city: {latitude: string, longitude: string }) => !city.latitude || !city.longitude).length
+    let citiesNoCoords = cities.value.filter(
+      (city: { latitude: string; longitude: string }) => !city.latitude || !city.longitude
+    ).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
     dataIsFetched.value = true
@@ -51,7 +53,7 @@ axios
     console.error(error)
     throw error
   })
-interface City{
+interface City {
   id: string
   city_name: string
   country_name: string
@@ -110,8 +112,7 @@ onMounted(() => {
     searchInput,
     debounce(() => {
       axios
-        .get(`/admin/cities?search=${searchInput.value}`, {
-        })
+        .get(`/admin/cities?search=${searchInput.value}`, {})
         .then(() => {
           return
         })

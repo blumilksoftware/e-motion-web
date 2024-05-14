@@ -4,8 +4,8 @@ import { defineProps } from 'vue'
 defineProps({
   message: {
     type: String,
-    default: 'error',
-  },
+    default: 'error'
+  }
 })
 </script>
 

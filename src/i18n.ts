@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n'
 import pl from './locales/pl.json'
 import en from './locales/en.json'
 
-type i18mTypes = Record<string, any>;
+type i18mTypes = Record<string, any>
 
 function loadLocaleMessages() {
   const locales: i18mTypes[] = [{ pl: pl }, { en: en }]
@@ -16,5 +16,5 @@ function loadLocaleMessages() {
 
 export default createI18n({
   fallbackLocale: 'en',
-  messages: loadLocaleMessages(),
+  messages: loadLocaleMessages()
 })

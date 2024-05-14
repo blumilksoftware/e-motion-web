@@ -14,12 +14,12 @@ const open = ref(true)
 const props = defineProps({
   name: {
     type: String,
-    required: false,
+    required: false
   },
   type: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 })
 
 const formattedType = computed(() => {
@@ -28,7 +28,7 @@ const formattedType = computed(() => {
 
 const renderHeader = () => {
   let translationKey = ''
-  translationKey = ('delete_' + formattedType.value)
+  translationKey = 'delete_' + formattedType.value
 
   return $t(translationKey).trim() + ` ${props.name}?`
 }

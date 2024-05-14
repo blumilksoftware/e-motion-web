@@ -462,14 +462,12 @@ const closeMobileMenu = () => {
 </template>
 
 <style lang="scss">
-
-
 nav {
   a {
     font-weight: bold;
     color: #2c3e50;
     &.router-link-exact-active {
-      color: #3B82F6;
+      color: #3b82f6;
     }
   }
 }

@@ -17,8 +17,8 @@ const showDeleteModal = ref(false)
 const props = defineProps({
   country: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
 
 const map: any = ref(null)
@@ -27,12 +27,14 @@ const marker: any = ref(null)
 const isMapDialogOpen = ref(false)
 
 const destroyCountry = (countryId: number) => {
-  axios.delete(`${apiUrl}/api/admin/countries/${countryId}`, {
-  }).then(() => {
-    toast.success($t('country_delete_success'))
-  }).catch(() => {
-    toast.error($t('country_delete_error'))
-  })
+  axios
+    .delete(`${apiUrl}/api/admin/countries/${countryId}`, {})
+    .then(() => {
+      toast.success($t('country_delete_success'))
+    })
+    .catch(() => {
+      toast.error($t('country_delete_error'))
+    })
   showDeleteModal.value = false
 }
 
@@ -61,7 +63,7 @@ const updateCountryForm = {
   alternativeName: props.country.alternativeName,
   latitude: props.country.latitude,
   longitude: props.country.longitude,
-  iso: props.country.iso,
+  iso: props.country.iso
 }
 
 const commaInputError = ref('')
@@ -106,9 +108,9 @@ function showMap() {
   map.value.setView(
     [
       parseFloat(updateCountryForm.latitude ? updateCountryForm.latitude : '0'),
-      parseFloat(updateCountryForm.longitude ? updateCountryForm.longitude : '0'),
+      parseFloat(updateCountryForm.longitude ? updateCountryForm.longitude : '0')
     ],
-    6,
+    6
   )
   map.value.invalidateSize()
   setTimeout(() => {
@@ -117,24 +119,24 @@ function showMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18,
+    maxZoom: 18
   }).addTo(map.value)
   if (!marker.value) {
     marker.value = L.marker(
       [
         parseFloat(updateCountryForm.latitude ? updateCountryForm.latitude : '0'),
-        parseFloat(updateCountryForm.longitude ? updateCountryForm.longitude : '0'),
+        parseFloat(updateCountryForm.longitude ? updateCountryForm.longitude : '0')
       ],
       {
         draggable: true,
         autoPan: true,
-        autoPanPadding: [70, 70],
-      },
+        autoPanPadding: [70, 70]
+      }
     ).addTo(map.value)
   } else {
     marker.value.setLatLng([
       updateCountryForm.latitude ? updateCountryForm.latitude : 0,
-      updateCountryForm.longitude ? updateCountryForm.longitude : 0,
+      updateCountryForm.longitude ? updateCountryForm.longitude : 0
     ])
   }
   isMapDialogOpen.value = true
@@ -228,13 +230,13 @@ function hideMap(save: boolean) {
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
-          >
+          />
           <label class="mb-1 mt-4">{{ $t('alt_name') }}</label>
           <input
             v-model="updateCountryForm.alternativeName"
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
-          >
+          />
 
           <div class="flex grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
@@ -245,7 +247,7 @@ function hideMap(save: boolean) {
                 type="text"
                 required
                 @keydown="preventCommaInput"
-              >
+              />
             </div>
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
@@ -255,7 +257,7 @@ function hideMap(save: boolean) {
                 type="text"
                 required
                 @keydown="preventCommaInput"
-              >
+              />
             </div>
           </div>
           <div class="flex w-full justify-end">
@@ -278,7 +280,7 @@ function hideMap(save: boolean) {
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
-          >
+          />
           <small class="text-rose-600">{{ commaInputError }}</small>
 
           <div class="flex w-full justify-end">

@@ -4,7 +4,7 @@ import {
   PencilIcon,
   StarIcon,
   TrashIcon,
-  XMarkIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
@@ -22,19 +22,20 @@ const isAdmin = computed(() => store.state.auth.isAdmin)
 const user = computed(() => store.state.auth.userID)
 const props = defineProps({
   opinion: Object,
-  cityId: Number,
+  cityId: Number
 })
 
 const updateOpinionForm = useForm({
   rating: props.opinion.rating,
   content: props.opinion.content,
-  city_id: props.cityId,
+  city_id: props.cityId
 })
 function updateOpinion(opinionId) {
   if (updateOpinionForm.rating === 0) {
     emptyRatingError.value = $t('no_rating_error')
   } else {
-    axios.patch(`${apiUrl}/opinions/${opinionId}`, updateOpinionForm.data)
+    axios
+      .patch(`${apiUrl}/opinions/${opinionId}`, updateOpinionForm.data)
       .then(() => {
         toast.success($t('update_opinion_success'))
         isUpdateOpinionDialogOpened.value = false
@@ -55,7 +56,8 @@ function toggleUpdateOpinionDialog() {
 }
 
 function deleteOpinion(opinionId) {
-  axios.delete(`${apiUrl}/opinions/${opinionId}`)
+  axios
+    .delete(`${apiUrl}/opinions/${opinionId}`)
     .then(() => {
       toast.success($t('delete_opinion_success'))
       isDeleteOpinionDialogOpened.value = false
@@ -76,7 +78,7 @@ const dateOptions = {
   month: 'numeric',
   day: 'numeric',
   hour: '2-digit',
-  minute: '2-digit',
+  minute: '2-digit'
 }
 
 const maxRating = 5
@@ -109,7 +111,11 @@ const emptyRatingError = ref('')
   </div>
 
   <div v-if="user === props.opinion.user.id || isAdmin" class="mt-1 flex justify-end">
-    <button v-if="user === props.opinion.user.id" class="flex px-1 hover:drop-shadow" @click="toggleUpdateOpinionDialog">
+    <button
+      v-if="user === props.opinion.user.id"
+      class="flex px-1 hover:drop-shadow"
+      @click="toggleUpdateOpinionDialog"
+    >
       <PencilIcon class="size-5 text-gray-500 hover:drop-shadow sm:size-4" />
     </button>
     <button class="flex px-1 hover:drop-shadow" @click="toggleDeleteOpinionDialog">
@@ -117,11 +123,11 @@ const emptyRatingError = ref('')
     </button>
   </div>
 
-  <div v-if="isUpdateOpinionDialogOpened" class="absolute inset-0 z-100 flex items-center bg-black/50">
-    <div
-      ref="updateOpinionDialog"
-      class="mx-auto w-11/12 rounded-lg bg-white shadow-lg"
-    >
+  <div
+    v-if="isUpdateOpinionDialogOpened"
+    class="absolute inset-0 z-100 flex items-center bg-black/50"
+  >
+    <div ref="updateOpinionDialog" class="mx-auto w-11/12 rounded-lg bg-white shadow-lg">
       <div class="flex flex-col">
         <div class="flex justify-end">
           <button class="w-fit px-4 pt-4" @click.stop="toggleUpdateOpinionDialog">

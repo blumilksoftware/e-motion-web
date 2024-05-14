@@ -1,7 +1,8 @@
-import { createRouter, createWebHashHistory, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import AdminCitiesView from '@/views/AdminCitiesView.vue'
-import AdminCountriesView from '@/views/AdminCountriesView.vue'
+import {
+  createRouter,
+  createWebHashHistory,
+  type RouteRecordRaw
+} from 'vue-router'
 import NavAdminPanel from '@/layouts/NavAdminPanel.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -9,7 +10,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     component: () => import('@/Pages/Landing/Index.vue')
-    // component: HomeView
   },
   {
     path: '/admin',

@@ -13,7 +13,7 @@ const apiUrl = 'https://dev.escooters.blumilk.pl'
 const i18n = createI18n({
   messages,
   locale: getCookie('locale') || defaultLocale,
-  legacy: false,
+  legacy: false
 })
 
 createApp(App)
@@ -21,7 +21,7 @@ createApp(App)
   .use(router)
   .use(i18n)
   .use(Vue3Toasity, {
-    autoClose: 3000,
+    autoClose: 3000
   } as ToastContainerOptions)
   .mount('#app')
 export { i18n, apiUrl }

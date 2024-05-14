@@ -6,7 +6,7 @@ import {
   XMarkIcon,
   MapIcon,
   ChevronDownIcon,
-  FolderIcon,
+  FolderIcon
 } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
 import SecondarySaveButton from '@/components/SecondarySaveButton.vue'
@@ -47,12 +47,12 @@ interface Provider {
 const props = defineProps({
   city: {
     type: Object as () => City,
-    required: true,
+    required: true
   },
   providers: {
     type: Object as () => Provider[],
-    required: true,
-  },
+    required: true
+  }
 })
 
 const destroyCity = (cityId: number) => {
@@ -70,11 +70,11 @@ const destroyCity = (cityId: number) => {
 const updateCityForm = {
   name: props.city.name,
   latitude: props.city.latitude,
-  longitude: props.city.longitude,
+  longitude: props.city.longitude
 }
 
 const storeCityAlternativeNameForm = reactive({
-  name: '',
+  name: ''
 })
 
 const filteredSelectedCityProviders = computed(() => {
@@ -115,7 +115,7 @@ function storeAlternativeCityName(cityId: number) {
   axios
     .post(`${apiUrl}/api/city-alternative-name`, {
       name: storeCityAlternativeNameForm.name,
-      city_id: cityId,
+      city_id: cityId
     })
     .then((response) => {
       if (response.status === 201) {
@@ -169,7 +169,7 @@ function toggleProviderSelection(provider: string) {
 function updateCityProviders(cityId: number) {
   axios
     .patch(`${apiUrl}/api/update-city-providers/${cityId}`, {
-      providerNames: selectedCityProviders,
+      providerNames: selectedCityProviders
     })
     .then(() => {
       toast.success($t('update_providers_success'))
@@ -215,9 +215,9 @@ function showMap() {
   map.value.setView(
     [
       parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
-      parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0'),
+      parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
     ],
-    12,
+    12
   )
   map.value.invalidateSize()
   setTimeout(() => {
@@ -226,24 +226,24 @@ function showMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18,
+    maxZoom: 18
   }).addTo(map.value)
   if (!marker.value) {
     marker.value = L.marker(
       [
         parseFloat(updateCityForm.latitude ? updateCityForm.latitude : '0'),
-        parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0'),
+        parseFloat(updateCityForm.longitude ? updateCityForm.longitude : '0')
       ],
       {
         draggable: true,
         autoPan: true,
-        autoPanPadding: [70, 70],
-      },
+        autoPanPadding: [70, 70]
+      }
     ).addTo(map.value)
   } else {
     marker.value.setLatLng([
       updateCityForm.latitude ? updateCityForm.latitude : 0,
-      updateCityForm.longitude ? updateCityForm.longitude : 0,
+      updateCityForm.longitude ? updateCityForm.longitude : 0
     ])
   }
   isMapDialogOpen.value = true
@@ -276,7 +276,7 @@ onMounted(() => {
     <div v-if="city.latitude" class="mt-1 flex flex-col break-all text-gray-500 sm:block lg:hidden">
       <span>{{ city.latitude }}</span>
       <span class="hidden sm:inline">, </span>
-      <br class="hidden sm:inline">
+      <br class="hidden sm:inline" />
       <span>{{ city.longitude }}</span>
     </div>
   </td>
@@ -321,7 +321,7 @@ onMounted(() => {
             :src="'/providers/' + provider.name.toLowerCase() + '.png'"
             :title="provider.name"
             alt=""
-          >
+          />
         </div>
 
         <div
@@ -408,7 +408,7 @@ onMounted(() => {
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
-          >
+          />
           <ErrorMessage :message="updateCityForm" />
           <div class="flex grow w-full flex-col md:flex-row">
             <div class="flex flex-col w-full md:w-1/2">
@@ -419,7 +419,7 @@ onMounted(() => {
                 type="text"
                 required
                 @keydown="preventCommaInput"
-              >
+              />
             </div>
             <div class="flex flex-col w-full md:w-1/2">
               <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
@@ -429,7 +429,7 @@ onMounted(() => {
                 type="text"
                 required
                 @keydown="preventCommaInput"
-              >
+              />
             </div>
           </div>
           <div class="flex w-full justify-end">
@@ -455,7 +455,7 @@ onMounted(() => {
           </div>
         </form>
 
-        <br>
+        <br />
         <button
           :class="isAlternativeCityNameFormOpened ? 'bg-blue-50' : ''"
           class="mb-3 ml-6 rounded-lg bg-blue-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blue-50"
@@ -481,7 +481,7 @@ onMounted(() => {
               class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
               type="text"
               required
-            >
+            />
             <!-- <ErrorMessage :message="storeAlternativeCityNameErrors.name" /> -->
             <div class="flex w-full justify-end">
               <SecondarySaveButton>
@@ -511,9 +511,9 @@ onMounted(() => {
           </div>
         </div>
 
-        <hr v-if="isAlternativeCityNameFormOpened" class="mx-6 my-2 h-px border-0 bg-gray-300">
+        <hr v-if="isAlternativeCityNameFormOpened" class="mx-6 my-2 h-px border-0 bg-gray-300" />
 
-        <br>
+        <br />
         <button
           :class="isProvidersFormOpened ? 'bg-blue-50' : ''"
           class="ml-6 flex rounded-lg bg-blue-25 px-3 py-1 text-sm font-bold text-gray-800 hover:bg-blue-50"
@@ -546,13 +546,13 @@ onMounted(() => {
               class="mx-1 my-2 flex h-10 w-fit cursor-pointer items-center justify-center rounded-lg border border-zinc-300 bg-zinc-300 p-1"
               @click="toggleProviderSelection(provider.name)"
             >
-              <input v-model="selectedCityProviders" class="hidden" type="checkbox">
+              <input v-model="selectedCityProviders" class="hidden" type="checkbox" />
               <label class="cursor-pointer">
                 <img
                   class="w-10"
                   :src="'/providers/' + provider.name.toLowerCase() + '.png'"
                   alt=""
-                >
+                />
               </label>
             </div>
           </div>

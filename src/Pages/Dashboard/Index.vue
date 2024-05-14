@@ -22,36 +22,41 @@ const providersCount = ref(0)
 const providerCitiesCount = ref([{}])
 const providers = ref([{}])
 
-axios.get(`${apiUrl}/api/admin/dashboard`).then((response) => {
-  usersCount.value = response.data.usersCount
-  citiesWithProvidersCount.value = response.data.citiesWithProvidersCount
-  countriesWithCitiesWithProvidersCount.value = response.data.countriesWithCitiesWithProvidersCount
-  providersCount.value = response.data.providersCount
-  providerCitiesCount.value = response.data.providerCitiesCount
-  providers.value = response.data.providers
-  const labels = []
-  const backgroundColors = []
-  const data = []
+axios
+  .get(`${apiUrl}/api/admin/dashboard`)
+  .then((response) => {
+    usersCount.value = response.data.usersCount
+    citiesWithProvidersCount.value = response.data.citiesWithProvidersCount
+    countriesWithCitiesWithProvidersCount.value =
+      response.data.countriesWithCitiesWithProvidersCount
+    providersCount.value = response.data.providersCount
+    providerCitiesCount.value = response.data.providerCitiesCount
+    providers.value = response.data.providers
+    const labels = []
+    const backgroundColors = []
+    const data = []
 
-  providerCitiesCount.value.forEach((provider) => {
-    labels.push(provider.name)
-    backgroundColors.push(getProviderColor(provider.name))
-    data.push(provider.count)
+    providerCitiesCount.value.forEach((provider) => {
+      labels.push(provider.name)
+      backgroundColors.push(getProviderColor(provider.name))
+      data.push(provider.count)
+    })
+    chartData.value = {
+      labels: labels,
+      datasets: [
+        {
+          backgroundColor: backgroundColors,
+          data: data
+        }
+      ]
+    }
   })
-  chartData.value = {
-    labels: labels,
-    datasets: [
-      {
-        backgroundColor: backgroundColors,
-        data: data
-      }
-    ]
-  }
-}).finally(() => {
-  dataIsFetched.value = true
-}).catch((error) => {
-  console.error(error)
-})
+  .finally(() => {
+    dataIsFetched.value = true
+  })
+  .catch((error) => {
+    console.error(error)
+  })
 
 function getProviderColor(providerName) {
   const provider = providers.value.find((provider) => provider.name === providerName)

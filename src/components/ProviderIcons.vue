@@ -2,7 +2,7 @@
 const props = defineProps({
   item: Object,
   providers: Object,
-  apps: Object,
+  apps: Object
 })
 import { ref, reactive } from 'vue'
 
@@ -56,7 +56,7 @@ const urls = reactive({
   android_url: null,
   ios_url: null,
   hidden: true,
-  transparent: true,
+  transparent: true
 })
 </script>
 
@@ -80,7 +80,7 @@ const urls = reactive({
           class="w-7 lg:w-8"
           :src="'/providers/' + cityProvider.provider_name.toLowerCase() + '.png'"
           alt=""
-        >
+        />
       </div>
     </div>
   </div>
@@ -99,7 +99,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="">
+        <img loading="lazy" class="mx-2 w-6" src="/icons/globe.svg" alt="" />
         <p :class="buttonsclass">Web</p>
       </a>
       <a
@@ -108,7 +108,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="">
+        <img loading="lazy" class="mx-2 w-6" src="/icons/android.svg" alt="" />
         <p :class="buttonsclass">Android</p>
       </a>
       <a
@@ -117,7 +117,7 @@ const urls = reactive({
         target="_blank"
         class="flex h-11 w-36 flex-row place-items-center justify-items-center rounded bg-blue-400 [&>p]:hover:after:opacity-100"
       >
-        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="">
+        <img loading="lazy" class="mx-2 w-6" src="/icons/apple.svg" alt="" />
         <p :class="buttonsclass">AppStore</p>
       </a>
     </div>

@@ -5,13 +5,13 @@ import { setCookie } from '../cookies/setCookie.js'
 
 interface state {
   locale: string
-  auth:{
+  auth: {
     token: string | null
     userID: number | null
     isAdmin: boolean
-    isAuth: boolean,
+    isAuth: boolean
     cities: {
-      noCoords: number,
+      noCoords: number
       noCountry: number
     }
   }
@@ -48,7 +48,9 @@ const store = createStore({
     login(state: state, response: { [key: string]: string }) {
       if (response['access_token'] !== undefined) {
         state.auth.token = response['access_token']
-        state.auth.isAdmin = response['abilities'].toString().includes('HasAdminRole') ? true : false
+        state.auth.isAdmin = response['abilities'].toString().includes('HasAdminRole')
+          ? true
+          : false
         state.auth.userID = parseInt(response['userId'])
         state.auth.isAuth = true
         setCookie('token', response['access_token'], 1)
