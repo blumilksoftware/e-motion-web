@@ -28,11 +28,12 @@ const isMapDialogOpen = ref(false)
 
 const destroyCountry = (countryId: number) => {
   axios.delete(`${apiUrl}/api/admin/countries/${countryId}`, {
-    onSuccess: () => {
-      toast.success($t('country_delete_success'))
-      showDeleteModal.value = false
-    }
+  }).then(() => {
+    toast.success($t('country_delete_success'))
+  }).catch(() => {
+    toast.error($t('country_delete_error'))
   })
+  showDeleteModal.value = false
 }
 
 function updateData() {
