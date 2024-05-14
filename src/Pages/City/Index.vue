@@ -94,9 +94,8 @@ function fetchRegulations() {
   axios
     .get(`${fallbackApi}/api/rules/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
-      rules.pl = JSON.parse(response.data.querySelector('pre').textContent)
-      rules.en = response.data.rulesEN
-      console.log(response.data)
+      rules.pl = JSON.parse(response.data.querySelector('pre').textContent).rulesPL
+      rules.en = JSON.parse(response.data.querySelector('pre').textContent).rulesEN
       return
     })
     .catch(() => {
