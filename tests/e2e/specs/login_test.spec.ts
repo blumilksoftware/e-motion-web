@@ -1,0 +1,16 @@
+describe('Login and Visit Favorites', () => {
+  it('should login and visit favorites', () => {
+    cy.visit('/')
+    cy.wait(3000)
+    cy.get('#login').click()
+    cy.wait(1000)
+    cy.get('input[type="email"]').type('admin@example.com')
+    cy.get('input[type="password"]').type('password')
+    cy.get('button[type="submit"]').click()
+    cy.wait(1000)
+    cy.url().should('eq', 'http://172.18.0.2:4173/')
+    cy.get('#favorites').click()
+    cy.wait(1000)
+    cy.url().should('eq', 'http://172.18.0.2:4173/favorites')
+  })
+})

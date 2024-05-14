@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 module.exports = (on, config) => {
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',

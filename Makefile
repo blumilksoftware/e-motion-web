@@ -22,4 +22,7 @@ prune:
 lint:
 	docker exec -it e-motion-web npm run lint
 
-.PHONY: init run shell img-clean stop prune lint
+test:
+	docker exec -it e-motion-web npm run test:e2e
+
+.PHONY: init run shell img-clean stop prune lint test

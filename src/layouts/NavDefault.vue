@@ -160,6 +160,7 @@ const closeMobileMenu = () => {
         v-for="item in navigation"
         :key="item.name"
         :to="item.to"
+        :id="item.name"
         class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
       >
         <span v-if="!item.auth || isAuth">
@@ -190,7 +191,7 @@ const closeMobileMenu = () => {
       <router-link v-if="isAdmin" to="/admin/cities" class="font-bold">
         <computer-desktop-icon class="size-8" />
       </router-link>
-      <button @click="closeMobileMenu">
+      <button id="login" @click="closeMobileMenu">
         <arrow-right-start-on-rectangle-icon v-if="isAuth" class="size-8" @click="logout" />
         <user-circle-icon v-else class="size-8" @click="toggleAuthDialog" />
       </button>
@@ -438,6 +439,7 @@ const closeMobileMenu = () => {
 
                 <span
                   v-if="!isAuth"
+                  id="login"
                   class="flex w-full items-center rounded px-3 py-2.5 hover:bg-blue-25"
                   @click="toggleAuthDialog"
                 >
