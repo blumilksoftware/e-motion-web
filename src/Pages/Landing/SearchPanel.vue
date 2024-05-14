@@ -259,7 +259,7 @@ function selectCountry(country) {
                 type="text"
                 :class="countryAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
-                :placeholder="$t('Search_country')"
+                :placeholder="$t('search_country')"
               >
             </div>
             <button
@@ -323,7 +323,7 @@ function selectCountry(country) {
                 type="text"
                 :class="providerAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
-                :placeholder="$t('Search_provider')"
+                :placeholder="$t('search_provider')"
               >
             </div>
             <button
@@ -372,7 +372,7 @@ function selectCountry(country) {
       </div>
     </div>
     <div class="mb-4 mt-2 w-full px-2 lg:px-3">
-      <p class="text-slate-500">{{ $t('Results_found') }}: {{ filteredCities.length }}</p>
+      <p class="text-slate-500">{{ $t('results_found') }}: {{ filteredCities.length }}</p>
     </div>
     <SelectedCity :providers="props.providers" />
     <div class="">
@@ -428,7 +428,7 @@ function selectCountry(country) {
                 >
                   <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
                   <p class="ml-1 hidden text-xs font-medium sm:flex">
-                    {{ $t('Check_details') }}
+                    {{ $t('check_details') }}
                   </p>
                 </router-link>
               </div>
@@ -438,7 +438,7 @@ function selectCountry(country) {
         </template>
       </DynamicScroller>
       <p v-else class="mt-8 flex justify-center font-medium text-gray-800">
-        {{ $t(`no_providers`) }}
+        {{ $t(`did_not_find_anything`) }}
       </p>
     </div>
   </div>

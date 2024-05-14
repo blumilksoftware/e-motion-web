@@ -55,7 +55,7 @@ function goToCityPage(city) {
           >
             <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
             <p class="ml-1 hidden text-xs font-medium sm:flex">
-              {{ $t('Check details') }}
+              {{ $t('check_details') }}
             </p>
           </router-link>
         </div>

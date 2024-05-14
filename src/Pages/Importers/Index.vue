@@ -6,6 +6,7 @@ import { apiUrl } from '@/main'
 import { ref } from 'vue'
 import { i18n } from '@/main'
 import router from '@/router'
+import store from '@/store/SessionData'
 if (!store.state.auth.isAdmin) {
   router.push('/')
 }
@@ -48,7 +49,7 @@ function runRules() {
 
 <template>
   <div class="flex w-full md:justify-end">
-    <div class="mt-16 flex size-full flex-col justify-between md:mt-0 w-full">
+    <div class="flex size-full flex-col justify-between md:mt-0 w-full">
       <div class="m-4 flex flex-col lg:mx-8">
         <div class="m-4">
           <button
@@ -65,7 +66,6 @@ function runRules() {
           </button>
         </div>
 
-        <!-- <PaginationInfo v-if="importInfo.length" :meta="importInfo.meta" /> -->
         <div v-if="importInfo.length" class="rounded-lg ring-gray-300 sm:ring-1">
           <table class="min-w-full">
             <thead>
@@ -105,7 +105,6 @@ function runRules() {
           {{ $t(`did_not_find_anything`) }}
         </p>
 
-        <!-- <Pagination :meta="importInfo.meta" :links="importInfo.links" /> -->
       </div>
     </div>
   </div>

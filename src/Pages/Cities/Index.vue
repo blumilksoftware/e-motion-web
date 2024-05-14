@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import City from '@/components/City.vue'
-import { computed, ref, watch, reactive } from 'vue'
+import { computed, ref, watch, reactive, onMounted } from 'vue'
 import {
   TrashIcon,
   MagnifyingGlassIcon,
@@ -68,11 +68,11 @@ function storeCity() {
       storeCityForm.value.longitude = ''
       storeCityForm.value.country_id = ''
       toggleStoreDialog()
-      toast.success($t('City created successfully.'))
+      toast.success($t('create_city_success'))
       return
     })
     .catch((error) => {
-      toast.error($t('There was an error creating the city.'))
+      toast.error($t('create_city_error'))
     })
 }
 
@@ -94,16 +94,16 @@ function toggleStoreDialog() {
 function preventCommaInput(event) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = $t('Use `.` instead of `,`')
+    commaInputError.value = $t('should_not_contain_comma')
   }
 }
 
 const searchInput = ref('')
-
-watch(
-  searchInput,
-  debounce(() => {
-    axios
+onMounted(() => {
+  watch(
+    searchInput,
+    debounce(() => {
+      axios
       .get(`/admin/cities?search=${searchInput.value}`, {
         preserveState: true,
         replace: true
@@ -114,10 +114,10 @@ watch(
       .catch((error) => {
         console.error(error)
       })
-  }, 300),
-  { deep: true }
-)
-
+    }, 300),
+    { deep: true }
+  )
+})
 function clearInput() {
   searchInput.value = ''
 }
@@ -178,7 +178,7 @@ function searchCity(city) {
 }
 
 function sendCityToCreateForm(city) {
-  storeCityForm.value.name = city.city_name
+  storeCityForm.name = city.city_name
   toggleCityWithoutCountriesListDialog()
   toggleStoreDialog()
 }
@@ -265,9 +265,12 @@ function hideMap(save: boolean) {
 <template>
   <div v-if="dataIsFetched" class="flex h-full min-h-screen flex-col md:flex-row">
     <div class="flex w-full md:justify-end">
-      <div class="mt-16 flex size-full flex-col justify-between md:mt-0">
+      <div class="flex size-full flex-col justify-between md:mt-0">
         <div class="m-4 flex flex-col lg:mx-8">
-          <div v-if="isStoreDialogOpened" class="fixed inset-0 z-50 flex items-center bg-black/50">
+          <div
+            v-show="isStoreDialogOpened"
+            class="fixed inset-0 z-50 flex items-center bg-black/50"
+          >
             <div
               ref="storeDialog"
               class="mx-auto w-11/12 rounded-lg bg-white shadow-lg sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3"
@@ -280,14 +283,14 @@ function hideMap(save: boolean) {
 
               <div class="flex flex-col p-6 pt-0">
                 <h1 class="mb-3 text-lg font-bold text-gray-800">
-                  {{ $t('Create city') }}
+                  {{ $t('create_city') }}
                 </h1>
 
                 <form
                   class="flex flex-col text-xs font-bold text-gray-600"
                   @submit.prevent="storeCity"
                 >
-                  <label class="mb-1 mt-4">{{ $t('Name') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('name') }}</label>
                   <input
                     v-model="storeCityForm.name"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
@@ -356,7 +359,7 @@ function hideMap(save: boolean) {
                   <p v-if="commaInputError" class="text-xs text-rose-600">
                     {{ commaInputError }}
                   </p>
-                  <label class="mb-1 mt-4">{{ $t('Country') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('country') }}</label>
                   <select
                     v-model="storeCityForm.country_id"
                     required
@@ -374,7 +377,7 @@ function hideMap(save: boolean) {
 
                   <div class="flex w-full justify-end">
                     <PrimarySaveButton>
-                      {{ $t('Save') }}
+                      {{ $t('save') }}
                     </PrimarySaveButton>
                   </div>
                 </form>
@@ -387,7 +390,7 @@ function hideMap(save: boolean) {
               class="mr-1 rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
               @click="toggleStoreDialog"
             >
-              {{ $t('Create city') }}
+              {{ $t('create_city') }}
             </button>
 
             <div class="m-1 flex w-full rounded-md shadow-sm md:w-fit">
@@ -399,7 +402,7 @@ function hideMap(save: boolean) {
                   v-model.trim="searchInput"
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
-                  :placeholder="$t('Search city')"
+                  :placeholder="$t('search_city')"
                 />
               </div>
               <button
@@ -422,7 +425,7 @@ function hideMap(save: boolean) {
               @click="toggleCityWithoutCountriesListDialog"
             >
               <PencilSquareIcon class="mr-1 size-5" />
-              {{ $t('Cities with no country assigned') }}: {{ countCitiesWithoutAssignedCountry }}
+              {{ $t('cities_no_country') }}: {{ countCitiesWithoutAssignedCountry }}
             </button>
           </div>
 
@@ -435,7 +438,7 @@ function hideMap(save: boolean) {
               class="flex items-center rounded border border-rose-500 bg-white p-2 text-sm font-medium text-rose-500 hover:bg-rose-50"
             >
               <PencilSquareIcon class="mr-1 size-5" />
-              {{ $t('Cities with no coordinates assigned') }}: {{ countCitiesWithoutCoordinates }}
+              {{ $t('cities_no_coords') }}: {{ countCitiesWithoutCoordinates }}
             </router-link>
           </div>
 
@@ -452,9 +455,7 @@ function hideMap(save: boolean) {
                 </div>
                 <div class="flex flex-col">
                   <div class="size-full flex-col px-6">
-                    <h1 class="text-xl font-bold text-gray-800">
-                      {{ $t('Cities with no country assigned') }}:
-                    </h1>
+                    <h1 class="text-xl font-bold text-gray-800">{{ $t('cities_no_country') }}:</h1>
                     <div class="mb-2 mt-6 flex w-full rounded-md shadow-sm">
                       <div class="relative flex grow items-stretch focus-within:z-10">
                         <div
@@ -485,7 +486,7 @@ function hideMap(save: boolean) {
                         @click="deleteAllCitiesWithoutCountry"
                       >
                         <TrashIcon class="mr-1 size-4 shrink-0" />
-                        {{ $t('Delete all cities with no country assigned') }}
+                        {{ $t('delete_cities_no_country') }}
                       </button>
                     </div>
 
@@ -529,7 +530,7 @@ function hideMap(save: boolean) {
                     </div>
 
                     <p v-else class="mt-6 flex text-sm font-medium text-gray-500">
-                      {{ $t(`Didn't find anything. Just empty space.`) }}
+                      {{ $t(`did_not_find_anything`) }}
                     </p>
                   </div>
                 </div>
@@ -550,7 +551,7 @@ function hideMap(save: boolean) {
                   aria-haspopup="true"
                   @click="toggleSortDialog"
                 >
-                  {{ $t('Sort') }}
+                  {{ $t('sort') }}
                   <ChevronDownIcon class="ml-1 size-5" />
                 </button>
               </div>
@@ -598,7 +599,7 @@ function hideMap(save: boolean) {
                     scope="col"
                     class="py-3.5 pl-5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:table-cell"
                   >
-                    {{ $t('Name') }}
+                    {{ $t('name') }}
                   </th>
                   <th
                     scope="col"
@@ -616,7 +617,7 @@ function hideMap(save: boolean) {
                     scope="col"
                     class="py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                   >
-                    {{ $t('Providers') }}
+                    {{ $t('providers') }}
                   </th>
                 </tr>
               </thead>
@@ -630,7 +631,7 @@ function hideMap(save: boolean) {
 
           <div v-else>
             <p class="mt-6 text-lg font-medium text-gray-500">
-              {{ $t(`Sorry we couldn't find any cities.`) }}
+              {{ $t(`no_cities_found`) }}
             </p>
           </div>
         </div>

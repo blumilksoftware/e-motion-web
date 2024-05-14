@@ -60,7 +60,7 @@ const commaInputError = ref('')
 function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = $t('Use `.` instead of `,`')
+    commaInputError.value = $t('should_not_contain_comma')
   }
 }
 
@@ -110,9 +110,9 @@ function clearInput() {
 }
 
 const sortingOptions = [
-  { name: 'Latest', href: '/admin/countries?order=latest' },
-  { name: 'Oldest', href: '/admin/countries?order=oldest' },
-  { name: 'By name', href: '/admin/countries?order=name' }
+  { name: 'latest', href: '/admin/countries?order=latest' },
+  { name: 'oldest', href: '/admin/countries?order=oldest' },
+  { name: 'by_name', href: '/admin/countries?order=name' }
 ]
 
 const isSortDialogOpened = ref(false)
@@ -189,7 +189,7 @@ function hideMap(save: boolean) {
 <template>
   <div v-if="dataIsFetched" class="flex h-full min-h-screen flex-col md:flex-row">
     <div class="flex w-full md:justify-end">
-      <div class="mt-16 size-full md:mt-0">
+      <div class="size-full md:mt-0">
         <div class="m-4 flex flex-col lg:mx-8">
           <div v-if="isStoreDialogOpened" class="fixed inset-0 z-50 flex items-center bg-black/50">
             <div
@@ -204,21 +204,21 @@ function hideMap(save: boolean) {
 
               <div class="flex flex-col p-6 pt-0">
                 <h1 class="mb-3 text-lg font-bold text-gray-800">
-                  {{ $t('Create country') }}
+                  {{ $t('create_country') }}
                 </h1>
 
                 <form
                   class="flex flex-col text-xs font-bold text-gray-600"
                   @submit.prevent="storeCountry"
                 >
-                  <label class="mb-1 mt-4">{{ $t('Name') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('name') }}</label>
                   <input
                     v-model="storeCountryForm.name"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
                   />
-                  <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('alt_name') }}</label>
                   <input
                     v-model="storeCountryForm.alternativeName"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
@@ -282,7 +282,7 @@ function hideMap(save: boolean) {
                       </div>
                     </div>
                   </div>
-                  <label class="mb-1 mt-4">{{ $t('Iso') }}</label>
+                  <label class="mb-1 mt-4">{{ $t('iso') }}</label>
                   <input
                     v-model="storeCountryForm.iso"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
@@ -293,7 +293,7 @@ function hideMap(save: boolean) {
 
                   <div class="flex w-full justify-end">
                     <PrimarySaveButton>
-                      {{ $t('Save') }}
+                      {{ $t('save') }}
                     </PrimarySaveButton>
                   </div>
                 </form>
@@ -306,7 +306,7 @@ function hideMap(save: boolean) {
               class="mr-1 rounded bg-blue-500 px-5 py-3 text-sm font-medium text-white shadow-md hover:bg-blue-400 md:py-2"
               @click="toggleStoreDialog"
             >
-              {{ $t('Create country') }}
+              {{ $t('create_country') }}
             </button>
 
             <div class="m-1 flex w-full rounded-md shadow-sm md:w-fit">
@@ -318,7 +318,7 @@ function hideMap(save: boolean) {
                   v-model.trim="searchInput"
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
-                  :placeholder="$t('Search country')"
+                  :placeholder="$t('search_country')"
                 />
               </div>
               <button
@@ -393,25 +393,25 @@ function hideMap(save: boolean) {
                     scope="col"
                     class="py-3.5 pl-5 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:table-cell"
                   >
-                    {{ $t('Name') }}
+                    {{ $t('name') }}
                   </th>
                   <th
                     scope="col"
                     class="table-cell py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    {{ $t('Alternative name') }}
+                    {{ $t('alt_name') }}
                   </th>
                   <th
                     scope="col"
                     class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 xl:table-cell"
                   >
-                    {{ $t('Latitude') }}
+                    {{ $t('latitude') }}
                   </th>
                   <th
                     scope="col"
                     class="hidden py-3.5 text-left text-sm font-semibold text-gray-900 xl:table-cell"
                   >
-                    {{ $t('Longitude') }}
+                    {{ $t('longitude') }}
                   </th>
                   <th
                     scope="col"
@@ -430,10 +430,9 @@ function hideMap(save: boolean) {
           </div>
           <div v-else>
             <p class="mt-6 text-lg font-medium text-gray-500">
-              {{ $t(`Sorry we couldn't find any countries.`) }}
+              {{ $t(`no_countries_found`) }}
             </p>
           </div>
-          <!-- <Pagination :meta="props.countries.meta" :links="props.countries.links" /> -->
         </div>
       </div>
     </div>

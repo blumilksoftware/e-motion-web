@@ -12,10 +12,10 @@ const $t = i18n.global.t
 const props = defineProps({
   cityid: {
     type: Number,
-    required: true,
+    required: true
   },
   isFavoriteCitiesPage: Boolean,
-  growUp: Boolean,
+  growUp: Boolean
 })
 
 const result = ref(null)
@@ -37,20 +37,24 @@ const toggleFavorite = async () => {
       await fetchData()
     }
 
-    await axios.post(`${apiUrl}/api/favorites`, {
-      city_id: props.cityid,
-    }, {
-      preserveScroll: true,
-    })
+    await axios.post(
+      `${apiUrl}/api/favorites`,
+      {
+        city_id: props.cityid
+      },
+      {
+        preserveScroll: true
+      }
+    )
     result.value = !result.value
 
     if (result.value === false) {
-      toast.info($t('City removed from favorites.'))
+      toast.info($t('remove_fav_city_success'))
     } else if (result.value === true) {
-      toast.success($t('City added to favorites.'))
+      toast.success($t('add_fav_city_success'))
     }
   } catch (error) {
-    toast.error($t('There was an error'))
+    toast.error($t('error'))
   }
 }
 
@@ -66,7 +70,7 @@ onMounted(() => {
   if (intersectionTarget.value && !props.isFavoriteCitiesPage) {
     const observer = new IntersectionObserver(onIntersection, {
       root: null,
-      threshold: 0.5,
+      threshold: 0.5
     })
     observer.observe(intersectionTarget.value)
   } else {
@@ -78,14 +82,14 @@ onMounted(() => {
 <template>
   <div ref="intersectionTarget">
     <button @click.stop="toggleFavorite">
-      <component :is="result ? SolidHeartIcon : OutlineHeartIcon" v-if="result !== null"
-                 class="text-rose-500"
-                 :class="growUp ? 'h-10 w-10 sm:h-9 sm:w-9' : 'h-8 w-8 sm:h-6 sm:w-6'"
+      <component
+        :is="result ? SolidHeartIcon : OutlineHeartIcon"
+        v-if="result !== null"
+        class="text-rose-500"
+        :class="growUp ? 'h-10 w-10 sm:h-9 sm:w-9' : 'h-8 w-8 sm:h-6 sm:w-6'"
       />
       <span v-else class="animate-pulse text-rose-200">
-        <SolidHeartIcon
-          :class="growUp ? 'h-10 w-10 sm:h-9 sm:w-9' : 'h-8 w-8 sm:h-6 sm:w-6'"
-        />
+        <SolidHeartIcon :class="growUp ? 'h-10 w-10 sm:h-9 sm:w-9' : 'h-8 w-8 sm:h-6 sm:w-6'" />
       </span>
     </button>
   </div>

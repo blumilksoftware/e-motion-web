@@ -2,10 +2,10 @@
 import { ClipboardIcon, FlagIcon, MapPinIcon, PlayCircleIcon } from '@heroicons/vue/24/solid'
 
 const navigation = [
-  { name: 'Dashboard', to: '/admin/dashboard', icon: ClipboardIcon },
-  { name: 'Importers', to: '/admin/importers', icon: PlayCircleIcon },
-  { name: 'Countries', to: '/admin/countries', icon: FlagIcon },
-  { name: 'Cities', to: '/admin/cities', icon: MapPinIcon }
+  { name: 'dashboard', to: '/admin/dashboard', icon: ClipboardIcon },
+  { name: 'importers', to: '/admin/importers', icon: PlayCircleIcon },
+  { name: 'countries', to: '/admin/countries', icon: FlagIcon },
+  { name: 'cities', to: '/admin/cities', icon: MapPinIcon }
 ]
 </script>
 

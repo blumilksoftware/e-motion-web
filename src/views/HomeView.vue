@@ -34,7 +34,7 @@ const data = reactive(fStore.state.citiesWithProviders)
   </div>
   <button
     class="fixed z-10 lg:hidden bottom-16 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"
-    :title="!map ? $t('showMap') : $t('hideMap')"
+    :title="!map ? $t('show_map') : $t('hide_map')"
     @click="toggleMap()"
   >
     <MapIcon class="size-6" aria-hidden="true" />

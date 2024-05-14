@@ -117,7 +117,7 @@ onUnmounted(() => {
                   >
                     <InformationCircleIcon class="size-8 hover:drop-shadow sm:size-6" />
                     <p class="ml-1 hidden text-xs font-medium sm:flex">
-                      {{ $t('Check_details') }}
+                      {{ $t('check_details') }}
                     </p>
                   </router-link>
                 </div>
@@ -167,7 +167,7 @@ onUnmounted(() => {
   </div>
   <button
     class="fixed z-50 lg:hidden bottom-8 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"
-    :title="!map ? $t('showMap') : $t('hideMap')"
+    :title="!map ? $t('show_map') : $t('hide_map')"
     @click="toggleMap()"
   >
     <MapIcon v-if="!map" class="size-6" aria-hidden="true" />

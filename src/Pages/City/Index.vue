@@ -88,7 +88,7 @@ function fetchCityData() {
       dataIsFetched.value = true
     })
     .catch(() => {
-      toast.error($t('There was an error fetching city data.'))
+      toast.error($t('fetching_error'))
     })
 }
 function toggleRegulations() {
@@ -103,7 +103,7 @@ function fetchRegulations() {
       return
     })
     .catch(() => {
-      toast.error($t('There was an error fetching rules.'))
+      toast.error($t('fetching_error'))
     })
 }
 
@@ -111,7 +111,7 @@ const emptyRatingError = ref('')
 
 function createOpinion() {
   if (opinionForm.rating === '0') {
-    emptyRatingError.value = $t('Please, rate that city')
+    emptyRatingError.value = $t('no_rating_error')
   } else {
     axios
       .post(`${apiUrl}/api/opinions`, {
@@ -121,12 +121,12 @@ function createOpinion() {
       })
       .then(() => {
         opinionForm.content = ''
-        toast.success($t('Opinion added successfully.'))
+        toast.success($t('add_opinion_success'))
         emptyRatingError.value = ''
         return
       })
       .catch(() => {
-        toast.error($t('There was an error adding your opinion.'))
+        toast.error($t('add_opinion_error'))
         emptyRatingError.value = ''
       })
   }
@@ -177,7 +177,7 @@ function createOpinion() {
               class="my-3 flex cursor-pointer items-center text-2xl font-bold text-gray-700"
               @click="toggleRegulations()"
             >
-              {{ $t('Rules') }}
+              {{ $t('rules') }}
               <ArrowDownIcon
                 :class="regulationsOpen ? 'rotated' : ''"
                 class="absolute right-3 inline-block size-6 transition-all"
@@ -204,7 +204,7 @@ function createOpinion() {
 
           <form v-if="isAuth" class="mt-8 flex flex-col" @submit.prevent="createOpinion">
             <p class="mb-2 text-xs font-medium text-gray-700">
-              {{ $t('Add opinion') }}
+              {{ $t('add_opinion') }}
             </p>
             <div class="mb-2 flex items-center space-x-1">
               <StarIcon
@@ -227,14 +227,14 @@ function createOpinion() {
             <button
               class="mt-2 flex w-full items-center justify-center rounded-lg bg-emerald-500 p-3 text-xs font-medium text-white hover:bg-emerald-600 sm:w-fit sm:px-4 sm:py-2"
             >
-              {{ $t('Send') }}
+              {{ $t('send') }}
               <PaperAirplaneIcon class="ml-2 size-4" />
             </button>
           </form>
 
           <div v-if="data.cityOpinions.length" class="mt-6">
             <p class="mb-2 text-xs font-medium text-gray-700">
-              {{ $t(`Users' opinions`) }}
+              {{ $t(`users_opinions`) }}
             </p>
             <div
               v-for="opinion in data.cityOpinions"
@@ -280,7 +280,7 @@ function createOpinion() {
       </div>
       <button
         class="fixed z-50 lg:hidden bottom-8 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"
-        :title="!map ? $t('showMap') : $t('hideMap')"
+        :title="!map ? $t('show_map') : $t('hide_map')"
         @click="toggleMap()"
       >
         <MapIcon class="size-6" aria-hidden="true" />

@@ -24,7 +24,7 @@ const currentLocale = computed(() => store.state.locale)
 </script>
 
 <template>
-  <div class="flex space-x-2 pt-1.5">
+  <div class="flex space-x-2">
     <button
       v-for="locale in locales"
       :key="locale.lang"
@@ -34,7 +34,7 @@ const currentLocale = computed(() => store.state.locale)
     >
       <i
         :class="`fi-${locale.iso} flat fi`"
-        class="!h-[24px] !w-[36px] rounded md:!h-[18px] md:!w-[27px]"
+        class="!h-6 !w-8 rounded md:!h-6 md:!w-8 outline-1 outline-black outline"
       />
     </button>
   </div>

@@ -68,7 +68,7 @@ const commaInputError = ref('')
 function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
-    commaInputError.value = $t('correct_separation')
+    commaInputError.value = $t('shold_not_contain_comma')
   }
 }
 
@@ -221,14 +221,14 @@ function hideMap(save: boolean) {
           class="flex flex-col rounded px-6 text-xs font-bold text-gray-600"
           @submit.prevent="updateCountry(country.id)"
         >
-          <label class="mb-1">{{ $t('Name') }}</label>
+          <label class="mb-1">{{ $t('name') }}</label>
           <input
             v-model="updateCountryForm.name"
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
             type="text"
             required
           >
-          <label class="mb-1 mt-4">{{ $t('Alternative name') }}</label>
+          <label class="mb-1 mt-4">{{ $t('alt_name') }}</label>
           <input
             v-model="updateCountryForm.alternativeName"
             class="rounded border border-blue-100 p-4 text-sm font-semibold text-gray-800 shadow md:p-3"
@@ -282,7 +282,7 @@ function hideMap(save: boolean) {
 
           <div class="flex w-full justify-end">
             <SecondarySaveButton>
-              {{ $t('Save') }}
+              {{ $t('save') }}
             </SecondarySaveButton>
           </div>
         </form>

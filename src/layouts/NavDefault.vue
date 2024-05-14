@@ -12,11 +12,12 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon,
+  EyeSlashIcon
 } from '@heroicons/vue/24/outline'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
 import { apiUrl } from '@/main'
+import router from '@/router'
 store.commit('restore')
 const isMobileMenuOpened = ref(false)
 const isAuthDialogOpened = ref(false)
@@ -32,31 +33,31 @@ onMounted(async () => {
     () => store.state.auth.isAdmin,
     () => {
       isAdmin.value = store.state.auth.isAdmin
-    },
+    }
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    },
+    }
   )
   watch(
     () => store.state.auth.token,
     () => {
       axios.defaults.headers.common.Authorization = `Bearer ${store.state.auth.token}`
-    },
+    }
   )
   watch(
     () => store.state.auth.cities.noCoords,
     () => {
       countCitiesWithoutCoordinates.value = store.state.auth.cities.noCoords
-    },
+    }
   )
   watch(
     () => store.state.auth.cities.noCountry,
     () => {
       countCitiesWithoutAssignedCountry.value = store.state.auth.cities.noCountry
-    },
+    }
   )
 })
 
@@ -91,19 +92,21 @@ const toggleMobileMenu = () => {
 }
 const logout = () => {
   axios.post(`${apiUrl}/api/logout`, {
-    Authorization: store.state.auth.token,
+    Authorization: store.state.auth.token
   })
   store.commit('logout')
   toast.success('You have been logged out')
+  closeMobileMenu()
+  router.push('/')
 }
 
 const loginForm = ref({
   email: '',
   password: '',
   errors: {
-    loginError: '',
+    loginError: ''
   },
-  processing: false,
+  processing: false
 })
 const registerForm = ref({
   name: '',
@@ -112,15 +115,15 @@ const registerForm = ref({
   errors: {
     name: '',
     email: '',
-    password: '',
-  },
+    password: ''
+  }
 })
 const navigation = [
   {
-    name: 'Favorites',
+    name: 'favorites',
     to: '/favorites',
-    auth: true,
-  },
+    auth: true
+  }
 ]
 const closeMobileMenu = () => {
   isMobileMenuOpened.value = false
@@ -134,7 +137,7 @@ const closeMobileMenu = () => {
       class="flex items-center space-x-2 text-2xl font-bold"
       @click="closeMobileMenu"
     >
-      <img src="/logo.svg" class="h-10 inline-block float-start">
+      <img src="/logo.svg" class="h-10 inline-block float-start" />
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -207,24 +210,24 @@ const closeMobileMenu = () => {
       <div v-if="isLoginFormSelected" class="rounded-lg px-6 pb-8">
         <form class="space-y-5" @submit.prevent="login">
           <div>
-            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('Email') }}</label>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('email') }}</label>
             <input
               v-model="loginForm.email"
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            >
+            />
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
-              $t('Password')
+              $t('password')
             }}</label>
             <input
               v-model="loginForm.password"
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -236,38 +239,40 @@ const closeMobileMenu = () => {
               />
             </button>
           </div>
-          <div>
-            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800">{{ $t('altlogin') }}:</label>
+          <!-- <div>
+            <label class="mb-4 flex justify-center text-sm font-semibold text-gray-800"
+              >{{ $t('altlogin') }}:</label
+            >
             <div class="flex items-center justify-center space-x-5">
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('github')"
               >
-                <img class="size-10" src="@/assets/github.png" alt="github logo">
+                <img class="size-10" src="@/assets/github.png" alt="github logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('facebook')"
               >
-                <img class="size-10" src="@/assets/facebook.png" alt="facebook logo">
+                <img class="size-10" src="@/assets/facebook.png" alt="facebook logo" />
               </button>
               <button
                 type="button"
                 class="flex items-center justify-center"
                 @click="socialMediaLogin('google')"
               >
-                <img class="size-10" src="@/assets/google.png" alt="google logo">
+                <img class="size-10" src="@/assets/google.png" alt="google logo" />
               </button>
             </div>
-          </div>
+          </div> -->
           <div class="flex w-full md:w-fit">
             <button
               type="submit"
               class="w-full rounded-lg bg-blue-500 p-4 font-semibold text-white hover:bg-blue-600 md:py-2"
             >
-              {{ $t('Login') }}
+              {{ $t('login') }}
             </button>
           </div>
         </form>
@@ -277,41 +282,41 @@ const closeMobileMenu = () => {
           @click="toggleAuthOption"
         >
           {{ $t('dont_have_account') }}
-          <span class="font-normal">{{ $t('Signup') }}</span>
+          <span class="font-normal">{{ $t('signup') }}</span>
         </button>
       </div>
 
       <div v-else class="rounded-lg px-6 pb-8">
         <form class="space-y-5" @submit.prevent="register">
           <div>
-            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('Name') }}</label>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('name') }}</label>
             <input
               v-model="registerForm.name"
               type="text"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               requirederror
-            >
+            />
           </div>
 
           <div>
-            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('Email') }}</label>
+            <label class="mb-1 block text-sm font-semibold text-gray-800">{{ $t('email') }}</label>
             <input
               v-model="registerForm.email"
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            >
+            />
           </div>
           <div class="relative">
             <label class="mb-1 block text-sm font-semibold text-gray-800">{{
-              $t('Password')
+              $t('password')
             }}</label>
             <input
               v-model="registerForm.password"
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            >
+            />
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -328,13 +333,13 @@ const closeMobileMenu = () => {
               type="submit"
               class="w-full rounded-lg bg-blue-500 p-4 font-semibold text-white hover:bg-blue-600 md:py-2"
             >
-              {{ $t('Signup') }}
+              {{ $t('signup') }}
             </button>
           </div>
         </form>
         <button class="mt-6 text-xs font-light" @click="toggleAuthOption">
           {{ $t('hasaccount') }}?
-          <span class="font-normal">{{ $t('Login') }}</span>
+          <span class="font-normal">{{ $t('login') }}</span>
         </button>
       </div>
     </div>
@@ -352,14 +357,14 @@ const closeMobileMenu = () => {
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/" @click="closeMobileMenu">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
         </router-link>
         <button
           type="button"
           class="-m-2.5 rounded-md px-2.5 text-gray-700 sm:pt-4"
           @click="toggleMobileMenu"
         >
-          <span class="sr-only">{{ $t('Close_menu') }}</span>
+          <span class="sr-only">{{ $t('close_menu') }}</span>
           <XMarkIcon class="size-6" aria-hidden="true" />
         </button>
       </div>
@@ -374,7 +379,9 @@ const closeMobileMenu = () => {
                 class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-800 hover:bg-blue-25"
                 @click="closeMobileMenu"
               >
-                {{ $t(item.name) }}
+                <span v-if="!item.auth || isAuth">
+                  {{ $t(item.name) }}
+                </span>
               </router-link>
             </div>
 
@@ -389,7 +396,7 @@ const closeMobileMenu = () => {
                 @click="closeMobileMenu"
               >
                 <FlagIcon class="mr-2 size-5 shrink-0" />
-                {{ $t('Cities_no_country') }}:
+                {{ $t('cities_no_country') }}:
                 {{ countCitiesWithoutAssignedCountry }}
               </router-link>
               <router-link
@@ -399,7 +406,7 @@ const closeMobileMenu = () => {
                 @click="closeMobileMenu"
               >
                 <MapPinIcon class="mr-2 size-5 shrink-0" />
-                {{ $t('Cities_no_coordinates') }}:
+                {{ $t('cities_no_coordinates') }}:
                 {{ countCitiesWithoutCoordinates }}
               </router-link>
             </div>
@@ -413,7 +420,7 @@ const closeMobileMenu = () => {
                   @click="closeMobileMenu"
                 >
                   <ComputerDesktopIcon class="size-6" />
-                  <span class="ml-2">{{ $t('Admin_panel') }}</span>
+                  <span class="ml-2">{{ $t('admin_panel') }}</span>
                 </router-link>
               </button>
               <button
@@ -426,7 +433,7 @@ const closeMobileMenu = () => {
                   @click="logout"
                 >
                   <ArrowRightStartOnRectangleIcon class="size-6" />
-                  <span class="ml-2">{{ $t('Logout') }}</span>
+                  <span class="ml-2">{{ $t('logout') }}</span>
                 </span>
 
                 <span
@@ -435,7 +442,7 @@ const closeMobileMenu = () => {
                   @click="toggleAuthDialog"
                 >
                   <UserCircleIcon class="size-6" />
-                  <span class="ml-2">{{ $t('Login') }}</span>
+                  <span class="ml-2">{{ $t('login') }}</span>
                 </span>
               </button>
               <div class="mx-auto flex items-center pt-8">
@@ -453,21 +460,14 @@ const closeMobileMenu = () => {
 </template>
 
 <style lang="scss">
-// #app {
-//   font-family: Avenir, Helvetica, Arial, sans-serif;
-//   -webkit-font-smoothing: antialiased;
-//   -moz-osx-font-smoothing: grayscale;
-//   text-align: center;
-//   color: #2c3e50;
-// }
+
 
 nav {
   a {
     font-weight: bold;
     color: #2c3e50;
-
     &.router-link-exact-active {
-      color: #42b983;
+      color: #3B82F6;
     }
   }
 }

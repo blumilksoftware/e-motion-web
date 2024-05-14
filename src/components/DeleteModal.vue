@@ -28,16 +28,9 @@ const formattedType = computed(() => {
 
 const renderHeader = () => {
   let translationKey = ''
-  translationKey = $t('delete_' + formattedType.value)
+  translationKey = ('delete_' + formattedType.value)
 
   return $t(translationKey).trim() + ` ${props.name}?`
-}
-
-const renderText = () => {
-  let translationKey = ''
-  translationKey = 'unundoable_operation'
-
-  return $t(translationKey)
 }
 
 const dialogRef = ref(null)
@@ -94,7 +87,7 @@ onClickOutside(dialogRef, () => closeModal())
                       </DialogTitle>
                       <div class="mt-2">
                         <p class="text-sm text-gray-500">
-                          {{ renderText() }}
+                          {{ $t('unundoable_operation') }}
                         </p>
                       </div>
                     </div>

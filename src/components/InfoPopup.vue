@@ -7,7 +7,7 @@ const $t = i18n.global.t
 </script>
 
 <template>
-  <span @click.stop="toast.info($t('Log in to add to favorites.'))">
+  <span @click.stop="toast.info($t('log_in_to_fav'))">
     <OutlineHeartIcon class="size-8 text-gray-500 sm:size-6" />
   </span>
 </template>

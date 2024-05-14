@@ -131,7 +131,7 @@ onUnmounted(() => {
   </div>
   <button
     class="fixed z-50 lg:hidden bottom-8 left-1/2 -translate-x-1/2 rounded-full aspect-square bg-white shadow-md p-2"
-    :title="!map ? $t('showMap') : $t('hideMap')"
+    :title="!map ? $t('show_map') : $t('hide_map')"
     @click="toggleMap()"
   >
     <MapIcon v-if="!map" class="size-6" aria-hidden="true" />

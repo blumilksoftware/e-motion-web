@@ -32,7 +32,7 @@ const updateOpinionForm = useForm({
 })
 function updateOpinion(opinionId) {
   if (updateOpinionForm.rating === 0) {
-    emptyRatingError.value = $t('empty_rating_error')
+    emptyRatingError.value = $t('no_rating_error')
   } else {
     axios.patch(`${apiUrl}/opinions/${opinionId}`, updateOpinionForm.data)
       .then(() => {
