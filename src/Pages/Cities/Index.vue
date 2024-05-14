@@ -10,7 +10,7 @@ import {
   XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
-import { debounce } from 'lodash/function'
+import { debounce } from 'lodash'
 import PrimarySaveButton from '@/components/PrimarySaveButton.vue'
 import { toast } from 'vue3-toastify'
 import { i18n } from '@/main'
@@ -25,12 +25,12 @@ if (!store.state.auth.isAdmin) {
   router.push('/')
 }
 const $t = i18n.global.t
-const url = ref(window.location.pathname)
-const cities: Array = ref(null)
-const providers: Array = ref(null)
-const countries: Array = ref(null)
-const citiesWithoutAssignedCountry = ref([])
-const dataIsFetched = ref(false)
+const url: string = ref(window.location.pathname)
+const cities: Array<any> = ref(null)
+const providers: Array<any> = ref(null)
+const countries: Array<any> = ref(null)
+const citiesWithoutAssignedCountry: Array<any> = ref([])
+const dataIsFetched: boolean = ref(false)
 
 axios
   .get(`${apiUrl}/api/admin/cities`)
@@ -39,7 +39,7 @@ axios
     providers.value = response.data.providers
     countries.value = response.data.countries
     citiesWithoutAssignedCountry.value = response.data.citiesWithoutAssignedCountry
-    let citiesNoCoords = cities.value.filter((city) => !city.latitude || !city.longitude).length
+    let citiesNoCoords = cities.value.filter((city: Object) => !city.latitude || !city.longitude).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
     dataIsFetched.value = true
@@ -63,10 +63,10 @@ function storeCity() {
   axios
     .post(`${apiUrl}/api/admin/cities`, storeCityForm)
     .then(() => {
-      storeCityForm.value.name = ''
-      storeCityForm.value.latitude = ''
-      storeCityForm.value.longitude = ''
-      storeCityForm.value.country_id = ''
+      storeCityForm.name = ''
+      storeCityForm.latitude = ''
+      storeCityForm.longitude = ''
+      storeCityForm.country_id = ''
       toggleStoreDialog()
       toast.success($t('create_city_success'))
       return
@@ -91,7 +91,7 @@ function toggleStoreDialog() {
   isStoreDialogOpened.value = !isStoreDialogOpened.value
 }
 
-function preventCommaInput(event) {
+function preventCommaInput(event: KeyboardEvent) {
   if (event.key === ',') {
     event.preventDefault()
     commaInputError.value = $t('should_not_contain_comma')
@@ -104,16 +104,15 @@ onMounted(() => {
     searchInput,
     debounce(() => {
       axios
-      .get(`/admin/cities?search=${searchInput.value}`, {
-        preserveState: true,
-        replace: true
-      })
-      .then(() => {
-        return
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        .get(`/admin/cities?search=${searchInput.value}`, {
+          replace: true
+        })
+        .then(() => {
+          return
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }, 300),
     { deep: true }
   )
@@ -149,7 +148,7 @@ function toggleCityWithoutCountriesListDialog() {
   isCityWithoutCountriesListDialogOpened.value = !isCityWithoutCountriesListDialogOpened.value
 }
 
-function deleteCityWithoutAssignedCountry(city) {
+function deleteCityWithoutAssignedCountry(city: Object) {
   axios
     .delete(`${apiUrl}/api/delete-city-without-assigned-country/${city.id}`)
     .then(() => {
@@ -172,12 +171,12 @@ function deleteAllCitiesWithoutCountry() {
     })
 }
 
-function searchCity(city) {
+function searchCity(city: Object) {
   searchInput.value = city.city_name
   toggleCityWithoutCountriesListDialog()
 }
 
-function sendCityToCreateForm(city) {
+function sendCityToCreateForm(city: Object) {
   storeCityForm.name = city.city_name
   toggleCityWithoutCountriesListDialog()
   toggleStoreDialog()
