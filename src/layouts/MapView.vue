@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import fStore from '@/store/FilterStore'
 
 defineOptions({
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 interface City {
   id: number
@@ -35,12 +35,12 @@ const markers = ref<L.FeatureGroup | null>(null)
 const props = defineProps({
   cities: {
     type: Array,
-    required: true
+    required: true,
   },
   isCityPage: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 onMounted(async () => {
@@ -57,14 +57,14 @@ onMounted(async () => {
       centerToSelectedCountry()
       clearMap()
       fillMap()
-    }
+    },
   )
 
   watch(
     () => fStore.state.selectedCity,
     () => {
       centerToSelectedCity()
-    }
+    },
   )
 })
 
@@ -75,7 +75,7 @@ function buildMap() {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-      maxZoom: 18
+      maxZoom: 18,
     }).addTo(map.value as L.Map)
   }
 }
@@ -93,14 +93,14 @@ function centerToSelectedCity() {
 function centerToSelectedCountry() {
   if (fStore.state.selectedCountry) {
     switch ((fStore.state.selectedCountry as Country).name) {
-      case 'Australia':
-      case 'Canada':
-      case 'China':
-      case 'Russia':
-        centerToLocation(fStore.state.selectedCountry, 2)
-        break
-      default:
-        centerToLocation(fStore.state.selectedCountry, 6)
+    case 'Australia':
+    case 'Canada':
+    case 'China':
+    case 'Russia':
+      centerToLocation(fStore.state.selectedCountry, 2)
+      break
+    default:
+      centerToLocation(fStore.state.selectedCountry, 6)
     }
   }
 }
@@ -135,7 +135,7 @@ function fillMap() {
   const filteredCities = filterCities(
     props.cities,
     selectedCountry || '',
-    selectedProviderName || ''
+    selectedProviderName || '',
   )
 
   filteredCities.forEach((city) => {
@@ -144,7 +144,7 @@ function fillMap() {
       weight: 1,
       color: '#6F90C6',
       fillColor: '#527ABA',
-      fillOpacity: 1
+      fillOpacity: 1,
     })
 
     marker
@@ -159,7 +159,7 @@ function fillMap() {
         }
       })
       .bindTooltip(
-        `<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`
+        `<i class="fi-${city.country.iso} flat fi shadow"></i> ${city.name}, ${city.country.name}`,
       )
   })
 
@@ -174,7 +174,7 @@ function filterCities(cities: any[], selectedCountry: any, selectedProviderName:
     const matchProvider =
       !selectedProviderName ||
       city.cityProviders.some(
-        (cityProvider: any) => cityProvider.provider_name === selectedProviderName
+        (cityProvider: any) => cityProvider.provider_name === selectedProviderName,
       )
 
     return matchCountry && matchProvider

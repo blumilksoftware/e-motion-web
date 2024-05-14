@@ -4,7 +4,7 @@ import {
   PencilIcon,
   StarIcon,
   TrashIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
@@ -22,13 +22,13 @@ const isAdmin = computed(() => store.state.auth.isAdmin)
 const user = computed(() => store.state.auth.userID)
 const props = defineProps({
   opinion: Object,
-  cityId: Number
+  cityId: Number,
 })
 
 const updateOpinionForm = useForm({
   rating: props.opinion.rating,
   content: props.opinion.content,
-  city_id: props.cityId
+  city_id: props.cityId,
 })
 function updateOpinion(opinionId) {
   if (updateOpinionForm.rating === 0) {
@@ -78,7 +78,7 @@ const dateOptions = {
   month: 'numeric',
   day: 'numeric',
   hour: '2-digit',
-  minute: '2-digit'
+  minute: '2-digit',
 }
 
 const maxRating = 5

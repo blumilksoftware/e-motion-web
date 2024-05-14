@@ -17,7 +17,7 @@ if (!store.state.auth.isAdmin) {
   router.push('/')
 }
 const $t = i18n.global.t
-interface Country {
+interface CountryType {
   id: number
   name: string
   alternativeName: string
@@ -52,7 +52,7 @@ const storeCountryForm = {
   alternativeName: '',
   latitude: '',
   longitude: '',
-  iso: ''
+  iso: '',
 }
 
 const commaInputError = ref('')
@@ -64,12 +64,13 @@ function preventCommaInput(event: KeyboardEvent) {
   }
 }
 
-const countries: Ref<Country[]> = ref([])
+const countries: Ref<CountryType[]> = ref([])
 axios
   .get(`${apiUrl}/api/admin/countries`)
   .then((response) => {
     countries.value = response.data.countries
     dataIsFetched.value = true
+    return
   })
   .catch((error) => {
     console.error(error)
@@ -98,11 +99,12 @@ watch(
       .get(`/admin/countries?search=${searchInput.value}`)
       .then((response) => {
         countries.value = response.data.countries
+        return
       })
       .catch((error) => {
         console.error(error)
       })
-  }, 300)
+  }, 300),
 )
 
 function clearInput() {
@@ -112,7 +114,7 @@ function clearInput() {
 const sortingOptions = [
   { name: 'latest', href: '/admin/countries?order=latest' },
   { name: 'oldest', href: '/admin/countries?order=oldest' },
-  { name: 'by_name', href: '/admin/countries?order=name' }
+  { name: 'by_name', href: '/admin/countries?order=name' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -144,9 +146,9 @@ function showMap() {
   map.value.setView(
     [
       parseFloat(storeCountryForm.latitude ? storeCountryForm.latitude : '0'),
-      parseFloat(storeCountryForm.longitude ? storeCountryForm.longitude : '0')
+      parseFloat(storeCountryForm.longitude ? storeCountryForm.longitude : '0'),
     ],
-    12
+    12,
   )
   map.value.invalidateSize()
   setTimeout(() => {
@@ -155,24 +157,24 @@ function showMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18
+    maxZoom: 18,
   }).addTo(map.value)
   if (!marker.value) {
     marker.value = L.marker(
       [
         parseFloat(storeCountryForm.latitude ? storeCountryForm.latitude : '0'),
-        parseFloat(storeCountryForm.longitude ? storeCountryForm.longitude : '0')
+        parseFloat(storeCountryForm.longitude ? storeCountryForm.longitude : '0'),
       ],
       {
         draggable: true,
         autoPan: true,
-        autoPanPadding: [70, 70]
-      }
+        autoPanPadding: [70, 70],
+      },
     ).addTo(map.value)
   } else {
     marker.value.setLatLng([
       storeCountryForm.latitude ? storeCountryForm.latitude : 0,
-      storeCountryForm.longitude ? storeCountryForm.longitude : 0
+      storeCountryForm.longitude ? storeCountryForm.longitude : 0,
     ])
   }
   isMapDialogOpen.value = true
@@ -217,13 +219,13 @@ function hideMap(save: boolean) {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <label class="mb-1 mt-4">{{ $t('alt_name') }}</label>
                   <input
                     v-model="storeCountryForm.alternativeName"
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
-                  />
+                  >
                   <div class="flex grow w-full flex-col md:flex-row">
                     <div class="flex flex-col w-full md:w-1/2">
                       <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
@@ -233,7 +235,7 @@ function hideMap(save: boolean) {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                     </div>
                     <div class="flex flex-col w-full md:w-1/2">
                       <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
@@ -243,7 +245,7 @@ function hideMap(save: boolean) {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                     </div>
                   </div>
                   <div class="flex w-full justify-end">
@@ -288,7 +290,7 @@ function hideMap(save: boolean) {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <small class="text-rose-600">{{ commaInputError }}</small>
 
                   <div class="flex w-full justify-end">
@@ -319,7 +321,7 @@ function hideMap(save: boolean) {
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('search_country')"
-                />
+                >
               </div>
               <button
                 v-if="searchInput.length"

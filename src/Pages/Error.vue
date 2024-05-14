@@ -4,16 +4,16 @@ import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
 defineProps({
   statusTitle: {
     type: String,
-    default: ''
+    default: '',
   },
   statusDescription: {
     type: String,
-    default: ''
+    default: '',
   },
   statusCode: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 </script>
 
@@ -50,7 +50,7 @@ defineProps({
         src="../assets/error-page-photo.jpg"
         alt=""
         class="absolute inset-0 size-full object-cover"
-      />
+      >
     </div>
   </div>
 </template>

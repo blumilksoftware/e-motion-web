@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import MapView from '@/layouts/MapView.vue'
 import router from '@/router/index'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, onUnmounted, ref, reactive } from 'vue'
 import {
   MapIcon,
-  XMarkIcon,
   StarIcon,
   PaperAirplaneIcon,
-  ArrowDownIcon
+  ArrowDownIcon,
 } from '@heroicons/vue/24/outline'
 import fStore from '@/store/FilterStore'
 import FavoriteButton from '@/components/FavoriteButton.vue'
@@ -18,7 +16,7 @@ import Opinion from '@/components/Opinion.vue'
 import axios from 'axios'
 import store from '@/store/SessionData'
 import { toast } from 'vue3-toastify'
-import { i18n, apiUrl } from '@/main'
+import { i18n, apiUrl, fallbackApi } from '@/main'
 const $t = i18n.global.t
 const dataIsFetched = ref(false)
 const $route = router.currentRoute.value
@@ -44,12 +42,12 @@ let data = {
       longitude: '',
       iso: '',
       created_at: '',
-      updated_at: ''
+      updated_at: '',
     },
-    cityOpinions: []
+    cityOpinions: [],
   },
   providers: [],
-  cityOpinions: []
+  cityOpinions: [],
 }
 fetchCityData()
 const map = ref(false)
@@ -59,8 +57,6 @@ function toggleMap() {
 const currentLocale = ref(computed(() => store.state.locale))
 const currentRules = ref(computed(() => rules[currentLocale.value as keyof typeof rules]))
 
-const shouldShowMap = ref(false)
-
 onUnmounted(() => {
   fStore.commit('changeSelectedCity', null)
 })
@@ -68,7 +64,7 @@ onUnmounted(() => {
 const opinionForm = reactive({
   rating: '',
   content: '',
-  city_id: data.city.id
+  city_id: data.city.id,
 })
 
 const maxRating = 5
@@ -96,10 +92,11 @@ function toggleRegulations() {
 }
 function fetchRegulations() {
   axios
-    .get(`${apiUrl}/api/rules/${$route.params.country}/${$route.params.city}`)
+    .get(`${fallbackApi}/api/rules/${$route.params.country}/${$route.params.city}`)
     .then((response) => {
       rules.pl = response.data.rulesPL
       rules.en = response.data.rulesEN
+      console.log(response.data)
       return
     })
     .catch(() => {
@@ -117,7 +114,7 @@ function createOpinion() {
       .post(`${apiUrl}/api/opinions`, {
         rating: opinionForm.rating,
         content: opinionForm.content,
-        city_id: data.city.id.toString()
+        city_id: data.city.id.toString(),
       })
       .then(() => {
         opinionForm.content = ''

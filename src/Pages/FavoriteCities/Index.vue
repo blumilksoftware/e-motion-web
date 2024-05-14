@@ -1,5 +1,4 @@
 <script setup>
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, onUnmounted, ref } from 'vue'
 import { InformationCircleIcon, MapIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
@@ -11,7 +10,6 @@ import ProviderIcons from '@/components/ProviderIcons.vue'
 import fStore from '@/store/FilterStore'
 import axios from 'axios'
 import store from '@/store/SessionData'
-import { reactive } from 'vue'
 import MapView from '@/layouts/MapView.vue'
 import router from '@/router'
 const $t = i18n.global.t
@@ -28,6 +26,9 @@ axios.get(`${apiUrl}/api/favorite-cities`).then((response) => {
   cities.value = response.data.cities
   providers.value = response.data.providers
   dataIsFetched.value = true
+  return
+}).catch((error) => {
+  console.error(error)
 })
 
 const buttonIcon = computed(() => {
@@ -42,9 +43,6 @@ function showCity(city) {
   }
 }
 
-const buttonAnimation = computed(() => {
-  return fStore.state.selectedCity && buttonIcon.value === MapIcon ? 'animate-bounce' : ''
-})
 function toggleMap() {
   map.value = !map.value
 }

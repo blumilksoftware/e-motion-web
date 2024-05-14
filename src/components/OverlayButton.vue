@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 const props = defineProps({
-  hint: String
+  hint: String,
 })
 </script>
 

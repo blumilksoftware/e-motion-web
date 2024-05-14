@@ -9,7 +9,7 @@ const options = { hour: 'numeric', minute: 'numeric', second: 'numeric' }
 const props = defineProps({
   info: Object,
   codes: Object,
-  providers: Object
+  providers: Object,
 })
 
 const status = computed(() => {
@@ -128,7 +128,7 @@ function toggleImportDialog() {
                       :src="`/providers/${provider.name.toLowerCase()}.png`"
                       alt=""
                       class="w-12"
-                    />
+                    >
                   </div>
                 </div>
               </div>

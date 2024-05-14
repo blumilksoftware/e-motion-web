@@ -12,10 +12,10 @@ const $t = i18n.global.t
 const props = defineProps({
   cityid: {
     type: Number,
-    required: true
+    required: true,
   },
   isFavoriteCitiesPage: Boolean,
-  growUp: Boolean
+  growUp: Boolean,
 })
 
 const result = ref(null)
@@ -40,11 +40,11 @@ const toggleFavorite = async () => {
     await axios.post(
       `${apiUrl}/api/favorites`,
       {
-        city_id: props.cityid
+        city_id: props.cityid,
       },
       {
-        preserveScroll: true
-      }
+        preserveScroll: true,
+      },
     )
     result.value = !result.value
 
@@ -70,7 +70,7 @@ onMounted(() => {
   if (intersectionTarget.value && !props.isFavoriteCitiesPage) {
     const observer = new IntersectionObserver(onIntersection, {
       root: null,
-      threshold: 0.5
+      threshold: 0.5,
     })
     observer.observe(intersectionTarget.value)
   } else {

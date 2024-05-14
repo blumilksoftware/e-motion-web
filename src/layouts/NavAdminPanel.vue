@@ -5,7 +5,7 @@ const navigation = [
   { name: 'dashboard', to: '/admin/dashboard', icon: ClipboardIcon },
   { name: 'importers', to: '/admin/importers', icon: PlayCircleIcon },
   { name: 'countries', to: '/admin/countries', icon: FlagIcon },
-  { name: 'cities', to: '/admin/cities', icon: MapPinIcon }
+  { name: 'cities', to: '/admin/cities', icon: MapPinIcon },
 ]
 </script>
 

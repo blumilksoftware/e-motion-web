@@ -7,13 +7,13 @@ const locales = [
   {
     name: 'Polski',
     lang: 'pl',
-    iso: 'pl'
+    iso: 'pl',
   },
   {
     name: 'English',
     lang: 'en',
-    iso: 'gb'
-  }
+    iso: 'gb',
+  },
 ]
 
 const changeLocale = (locale: string) => {

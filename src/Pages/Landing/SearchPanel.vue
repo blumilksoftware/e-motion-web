@@ -1,38 +1,32 @@
 <script setup>
 import fStore from '@/store/FilterStore'
-import router from '@/router/index.ts'
 import { computed, onMounted, ref, watch } from 'vue'
-import { usePage } from '@inertiajs/vue3'
-import { TrashIcon, XMarkIcon, MapIcon } from '@heroicons/vue/24/outline'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import InfoPopup from '@/components/InfoPopup.vue'
 import { FlagIcon, TruckIcon, FunnelIcon, InformationCircleIcon } from '@heroicons/vue/24/outline'
-import { breakpointsTailwind, onClickOutside, useBreakpoints } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import SelectedCity from '@/components/SelectedCity.vue'
 import ProviderIcons from '@/components/ProviderIcons.vue'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import store from '@/store/SessionData'
-import { reactive } from 'vue'
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const props = defineProps({
   cities: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   providers: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   countries: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   isAuth: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 const filteredCities = computed(() => {
   const selectedCountryId = fStore.state.selectedCountry ? fStore.state.selectedCountry.id : null
@@ -44,15 +38,15 @@ const filteredCities = computed(() => {
     return props.cities.filter((city) => city.country.id === selectedCountryId)
   } else if (selectedCountryId === null && selectedProviderName !== null) {
     return props.cities.filter((city) =>
-      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName)
+      city.cityProviders.some((cityProvider) => cityProvider.provider_name === selectedProviderName),
     )
   } else {
     return props.cities.filter(
       (city) =>
         city.country.id === selectedCountryId &&
         city.cityProviders.some(
-          (cityProvider) => cityProvider.provider_name === selectedProviderName
-        )
+          (cityProvider) => cityProvider.provider_name === selectedProviderName,
+        ),
     )
   }
 })
@@ -66,8 +60,8 @@ const filteredProviders = computed(() => {
       props.cities.some(
         (city) =>
           city.country.id === selectedCountryId &&
-          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name)
-      )
+          city.cityProviders.some((cityProvider) => cityProvider.provider_name === provider.name),
+      ),
     )
   }
 })
@@ -79,7 +73,7 @@ const filteredCountries = computed(() => {
   for (const city of props.cities) {
     const cityProviders = city.cityProviders
     const hasProvider = cityProviders.some(
-      (cityProvider) => cityProvider.provider_name === selectedProviderName
+      (cityProvider) => cityProvider.provider_name === selectedProviderName,
     )
     cityMap.set(city.country.id, cityMap.get(city.country.id) || false || hasProvider)
   }
@@ -87,7 +81,7 @@ const filteredCountries = computed(() => {
   return props.countries.map((country) => ({
     ...country,
     hasProvider: selectedProviderName === null ? true : cityMap.get(country.id) || false,
-    isSelected: country.id === selectedCountryId
+    isSelected: country.id === selectedCountryId,
   }))
 })
 
@@ -112,11 +106,6 @@ function filterProvider(providerName) {
   }
 }
 
-function clearFilters() {
-  fStore.commit('changeSelectedProvider', null)
-  fStore.commit('changeSelectedCountry', null)
-  fStore.commit('changeSelectedCity', null)
-}
 
 function showCity(city) {
   if (fStore.state.selectedCity && fStore.state.selectedCity.id === city.id) {
@@ -140,9 +129,6 @@ function toggleProviderList() {
   isProviderListOpened.value = !isProviderListOpened.value
 }
 
-function clearMap() {
-  fStore.commit('changeSelectedCity', null)
-}
 
 function getProviderColor(providerName) {
   const provider = props.providers.find((provider) => provider.name === providerName)
@@ -150,10 +136,6 @@ function getProviderColor(providerName) {
   return provider ? provider.color : ''
 }
 
-function goToCityPage(city) {
-  router.push(`/city/${city.country.slug}/${city.slug}`)
-  // get(`/city?country=${city.country.slug}&city=${city.slug}`)
-}
 const providerAutocomplete = ref('')
 const countryAutocomplete = ref('')
 
@@ -179,13 +161,13 @@ onMounted(() => {
     () => fStore.state.selectedProviderName,
     () => {
       rememberProviderAutocompleteValue()
-    }
+    },
   )
   watch(
     () => fStore.state.selectedCountry,
     () => {
       rememberCountryAutocompleteValue()
-    }
+    },
   )
   watch(
     () => providerAutocomplete.value,
@@ -193,7 +175,7 @@ onMounted(() => {
       if (providerAutocomplete.value === '') {
         fStore.commit('changeSelectedProvider', null)
       }
-    }
+    },
   )
   watch(
     () => countryAutocomplete.value,
@@ -201,7 +183,7 @@ onMounted(() => {
       if (countryAutocomplete.value === '') {
         fStore.commit('changeSelectedCountry', null)
       }
-    }
+    },
   )
 })
 
@@ -216,12 +198,12 @@ function clearCountryAutocompleteInput() {
 }
 const filteredProviderSuggestions = computed(() => {
   return filteredProviders.value.filter((provider) =>
-    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase())
+    provider.name.toLowerCase().includes(providerAutocomplete.value.toLowerCase()),
   )
 })
 const filteredCountrySuggestions = computed(() => {
   return filteredCountries.value.filter((country) =>
-    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase())
+    country.name.toLowerCase().includes(countryAutocomplete.value.toLowerCase()),
   )
 })
 
@@ -260,7 +242,7 @@ function selectCountry(country) {
                 :class="countryAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('search_country')"
-              />
+              >
             </div>
             <button
               v-if="countryAutocomplete.length"
@@ -314,7 +296,7 @@ function selectCountry(country) {
                     class="w-5"
                     :src="'/providers/' + fStore.state.selectedProviderName.toLowerCase() + '.png'"
                     alt=""
-                  />
+                  >
                 </div>
                 <TruckIcon v-else class="ml-1 size-6 text-gray-800" />
               </div>
@@ -324,7 +306,7 @@ function selectCountry(country) {
                 :class="providerAutocomplete.length ? 'rounded-l-lg' : 'rounded-lg'"
                 class="block w-full border-0 py-4 pl-12 font-medium text-gray-800 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:py-3 sm:text-sm sm:leading-6"
                 :placeholder="$t('search_provider')"
-              />
+              >
             </div>
             <button
               v-if="providerAutocomplete.length"
@@ -357,7 +339,7 @@ function selectCountry(country) {
                   class="w-5"
                   :src="'/providers/' + provider.name.toLowerCase() + '.png'"
                   alt=""
-                />
+                >
               </div>
               <span class="ml-2 block truncate text-sm">{{ provider.name }}</span>
             </li>

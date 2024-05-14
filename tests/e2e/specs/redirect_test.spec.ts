@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 describe('Redirect Test', () => {
   it('should redirect to / when accessing /favorites without logging in', () => {
     cy.visit('/#/favorites')

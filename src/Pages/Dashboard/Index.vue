@@ -46,13 +46,12 @@ axios
       datasets: [
         {
           backgroundColor: backgroundColors,
-          data: data
-        }
-      ]
+          data: data,
+        },
+      ],
     }
-  })
-  .finally(() => {
     dataIsFetched.value = true
+    return
   })
   .catch((error) => {
     console.error(error)
@@ -69,9 +68,9 @@ const chartData = ref({
   datasets: [
     {
       backgroundColor: [],
-      data: [5]
-    }
-  ]
+      data: [5],
+    },
+  ],
 })
 
 onMounted(() => {
@@ -90,9 +89,9 @@ onMounted(() => {
     datasets: [
       {
         backgroundColor: backgroundColors,
-        data: data
-      }
-    ]
+        data: data,
+      },
+    ],
   }
 })
 
@@ -103,9 +102,9 @@ const chartOptions = {
   animation: false,
   plugins: {
     legend: {
-      display: false
-    }
-  }
+      display: false,
+    },
+  },
 }
 </script>
 
@@ -170,13 +169,12 @@ const chartOptions = {
                     loading="lazy"
                     :src="provider.name ? '/providers/' + provider.name.toLowerCase() + '.png' : ''"
                     alt=""
-                  />
+                  >
                 </div>
                 <div class="w-full rounded rounded-t-none border border-t-0 bg-gray-50">
                   <span
                     class="flex w-full justify-center rounded-full text-sm font-medium text-gray-700"
-                    >{{ provider.count }}</span
-                  >
+                  >{{ provider.count }}</span>
                 </div>
               </div>
             </div>

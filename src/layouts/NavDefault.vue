@@ -12,7 +12,7 @@ import {
   MapPinIcon,
   FlagIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
 } from '@heroicons/vue/24/outline'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
@@ -33,31 +33,31 @@ onMounted(async () => {
     () => store.state.auth.isAdmin,
     () => {
       isAdmin.value = store.state.auth.isAdmin
-    }
+    },
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    }
+    },
   )
   watch(
     () => store.state.auth.token,
     () => {
       axios.defaults.headers.common.Authorization = `Bearer ${store.state.auth.token}`
-    }
+    },
   )
   watch(
     () => store.state.auth.cities.noCoords,
     () => {
       countCitiesWithoutCoordinates.value = store.state.auth.cities.noCoords
-    }
+    },
   )
   watch(
     () => store.state.auth.cities.noCountry,
     () => {
       countCitiesWithoutAssignedCountry.value = store.state.auth.cities.noCountry
-    }
+    },
   )
 })
 
@@ -92,7 +92,7 @@ const toggleMobileMenu = () => {
 }
 const logout = () => {
   axios.post(`${apiUrl}/api/logout`, {
-    Authorization: store.state.auth.token
+    Authorization: store.state.auth.token,
   })
   store.commit('logout')
   toast.success('You have been logged out')
@@ -104,9 +104,9 @@ const loginForm = ref({
   email: '',
   password: '',
   errors: {
-    loginError: ''
+    loginError: '',
   },
-  processing: false
+  processing: false,
 })
 const registerForm = ref({
   name: '',
@@ -115,15 +115,15 @@ const registerForm = ref({
   errors: {
     name: '',
     email: '',
-    password: ''
-  }
+    password: '',
+  },
 })
 const navigation = [
   {
     name: 'favorites',
     to: '/favorites',
-    auth: true
-  }
+    auth: true,
+  },
 ]
 const closeMobileMenu = () => {
   isMobileMenuOpened.value = false
@@ -137,7 +137,7 @@ const closeMobileMenu = () => {
       class="flex items-center space-x-2 text-2xl font-bold"
       @click="closeMobileMenu"
     >
-      <img src="/logo.svg" class="h-10 inline-block float-start" />
+      <img src="/logo.svg" class="h-10 inline-block float-start">
     </router-link>
     <div class="flex md:hidden">
       <button
@@ -158,9 +158,9 @@ const closeMobileMenu = () => {
     <div class="hidden items-center md:flex md:gap-x-12">
       <router-link
         v-for="item in navigation"
+        :id="item.name"
         :key="item.name"
         :to="item.to"
-        :id="item.name"
         class="text-sm font-medium leading-6 text-gray-800 lg:text-base"
       >
         <span v-if="!item.auth || isAuth">
@@ -217,7 +217,7 @@ const closeMobileMenu = () => {
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block w-full text-sm font-semibold text-gray-800">{{
@@ -228,7 +228,7 @@ const closeMobileMenu = () => {
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -296,7 +296,7 @@ const closeMobileMenu = () => {
               type="text"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               requirederror
-            />
+            >
           </div>
 
           <div>
@@ -306,7 +306,7 @@ const closeMobileMenu = () => {
               type="email"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
           </div>
           <div class="relative">
             <label class="mb-1 block text-sm font-semibold text-gray-800">{{
@@ -317,7 +317,7 @@ const closeMobileMenu = () => {
               :type="isPasswordVisible ? 'text' : 'password'"
               class="w-full rounded-lg border border-blue-200 py-3 md:p-2"
               required
-            />
+            >
             <button
               type="button"
               class="absolute bottom-3 right-2 md:bottom-2"
@@ -358,7 +358,7 @@ const closeMobileMenu = () => {
     >
       <div class="flex items-center justify-between sm:justify-end">
         <router-link to="/" @click="closeMobileMenu">
-          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo" />
+          <img class="h-10 sm:hidden" src="@/assets/logo.png" alt="escooter logo">
         </router-link>
         <button
           type="button"

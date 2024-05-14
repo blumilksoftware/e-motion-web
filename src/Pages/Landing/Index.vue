@@ -3,17 +3,12 @@ import MapView from '@/layouts/MapView.vue'
 import fStore from '@/store/FilterStore'
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import SearchPanel from './SearchPanel.vue'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { XMarkIcon, MapIcon } from '@heroicons/vue/24/outline'
-import { usePage } from '@inertiajs/vue3'
 import axios from 'axios'
 import SearchPanelScaffolding from '@/layouts/SearchPanelScaffolding.vue'
 import store from '@/store/SessionData'
 import { apiUrl } from '@/main'
-const breakpoints = useBreakpoints(breakpointsTailwind)
 const showInfo = ref(true)
-const isMobile = ref(breakpoints.smaller('lg'))
-const isDesktop = ref(breakpoints.greaterOrEqual('lg'))
 const shouldShowMap = ref(false)
 
 function switchPanel() {
@@ -24,9 +19,6 @@ const map = ref(false)
 function toggleMap() {
   map.value = !map.value
 }
-const nav = ref(null)
-
-const page = usePage()
 const isAuth = ref(store.state.auth.isAuth)
 
 const dataIsFetched = ref(false)
@@ -37,9 +29,10 @@ function fetchData() {
       .get(`${apiUrl}/api/providers`)
       .then((response) => {
         fStore.commit('saveCitiesWithProviders', response)
-      })
-      .finally(() => {
         dataIsFetched.value = true
+        return
+      }).catch((error) => {
+        console.error(error)
       })
   } else {
     dataIsFetched.value = true
@@ -54,22 +47,14 @@ onMounted(() => {
     () => fStore.state.selectedCity,
     () => {
       window.scrollTo(0, 0)
-    }
+    },
   )
   watch(
     () => store.state.auth.isAuth,
     () => {
       isAuth.value = store.state.auth.isAuth
-    }
+    },
   )
-})
-
-const buttonIcon = computed(() => {
-  return shouldShowMap.value ? XMarkIcon : MapIcon
-})
-
-const buttonAnimation = computed(() => {
-  return fStore.state.selectedCity && buttonIcon.value === MapIcon ? 'animate-bounce' : ''
 })
 
 onUnmounted(() => {

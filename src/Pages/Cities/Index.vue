@@ -7,7 +7,7 @@ import {
   ChevronDownIcon,
   PlusCircleIcon,
   PencilSquareIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { onClickOutside } from '@vueuse/core'
 import { debounce } from 'lodash'
@@ -42,7 +42,7 @@ axios
     countries.value = response.data.countries
     citiesWithoutAssignedCountry.value = response.data.citiesWithoutAssignedCountry
     let citiesNoCoords = cities.value.filter(
-      (city: { latitude: string; longitude: string }) => !city.latitude || !city.longitude
+      (city: CityType) => !city.latitude || !city.longitude,
     ).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
@@ -53,10 +53,12 @@ axios
     console.error(error)
     throw error
   })
-interface City {
+interface CityType {
   id: string
   city_name: string
   country_name: string
+  latitude: string
+  longitude: string
 }
 const countCitiesWithoutAssignedCountry = ref(store.state.auth.cities.noCountry)
 const countCitiesWithoutCoordinates = ref(store.state.auth.cities.noCoords)
@@ -88,7 +90,7 @@ const storeCityForm = reactive({
   name: '',
   latitude: '',
   longitude: '',
-  country_id: ''
+  country_id: '',
 })
 
 const isStoreDialogOpened = ref(false)
@@ -120,7 +122,7 @@ onMounted(() => {
           console.error(error)
         })
     }, 300),
-    { deep: true }
+    { deep: true },
   )
 })
 function clearInput() {
@@ -132,7 +134,7 @@ const sortingOptions = [
   { name: 'oldest', to: '/admin/cities?order=oldest' },
   { name: 'by_name', to: '/admin/cities?order=name' },
   { name: 'by_providers', to: '/admin/cities?order=providers' },
-  { name: 'by_country', to: '/admin/cities?order=country' }
+  { name: 'by_country', to: '/admin/cities?order=country' },
 ]
 
 const isSortDialogOpened = ref(false)
@@ -147,14 +149,14 @@ const isCityWithoutCountriesListDialogOpened = ref(false)
 const cityWithoutCountriesListDialog = ref(null)
 onClickOutside(
   cityWithoutCountriesListDialog,
-  () => (isCityWithoutCountriesListDialogOpened.value = false)
+  () => (isCityWithoutCountriesListDialogOpened.value = false),
 )
 
 function toggleCityWithoutCountriesListDialog() {
   isCityWithoutCountriesListDialogOpened.value = !isCityWithoutCountriesListDialogOpened.value
 }
 
-function deleteCityWithoutAssignedCountry(city: City) {
+function deleteCityWithoutAssignedCountry(city: CityType) {
   axios
     .delete(`${apiUrl}/api/delete-city-without-assigned-country/${city.id}`)
     .then(() => {
@@ -177,18 +179,18 @@ function deleteAllCitiesWithoutCountry() {
     })
 }
 
-function searchCity(city: City) {
+function searchCity(city: CityType) {
   searchInput.value = city.city_name
   toggleCityWithoutCountriesListDialog()
 }
 
-function sendCityToCreateForm(city: City) {
+function sendCityToCreateForm(city: CityType) {
   storeCityForm.name = city.city_name
   toggleCityWithoutCountriesListDialog()
   toggleStoreDialog()
 }
 
-function goToGoogleMaps(city: City) {
+function goToGoogleMaps(city: CityType) {
   window.open('https://www.google.com/maps/search/' + city.city_name)
 }
 
@@ -225,9 +227,9 @@ function showMap() {
   map.value.setView(
     [
       parseFloat(storeCityForm.latitude ? storeCityForm.latitude : '0'),
-      parseFloat(storeCityForm.longitude ? storeCityForm.longitude : '0')
+      parseFloat(storeCityForm.longitude ? storeCityForm.longitude : '0'),
     ],
-    12
+    12,
   )
   map.value.invalidateSize()
   setTimeout(() => {
@@ -236,24 +238,24 @@ function showMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18
+    maxZoom: 18,
   }).addTo(map.value)
   if (!marker.value) {
     marker.value = L.marker(
       [
         parseFloat(storeCityForm.latitude ? storeCityForm.latitude : '0'),
-        parseFloat(storeCityForm.longitude ? storeCityForm.longitude : '0')
+        parseFloat(storeCityForm.longitude ? storeCityForm.longitude : '0'),
       ],
       {
         draggable: true,
         autoPan: true,
-        autoPanPadding: [70, 70]
-      }
+        autoPanPadding: [70, 70],
+      },
     ).addTo(map.value)
   } else {
     marker.value.setLatLng([
       storeCityForm.latitude ? storeCityForm.latitude : 0,
-      storeCityForm.longitude ? storeCityForm.longitude : 0
+      storeCityForm.longitude ? storeCityForm.longitude : 0,
     ])
   }
   isMapDialogOpen.value = true
@@ -301,7 +303,7 @@ function hideMap(save: boolean) {
                     class="rounded-md border border-blue-100 p-4 text-sm font-semibold text-gray-800 md:p-3"
                     type="text"
                     required
-                  />
+                  >
                   <div class="flex grow w-full flex-col md:flex-row">
                     <div class="flex flex-col w-full md:w-1/2">
                       <label class="mb-1 mt-4">{{ $t('latitude') }}</label>
@@ -311,7 +313,7 @@ function hideMap(save: boolean) {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                     </div>
                     <div class="flex flex-col w-full md:w-1/2">
                       <label class="mb-1 mt-4">{{ $t('longitude') }}</label>
@@ -321,7 +323,7 @@ function hideMap(save: boolean) {
                         type="text"
                         required
                         @keydown="preventCommaInput"
-                      />
+                      >
                     </div>
                   </div>
                   <div class="flex w-full justify-end">
@@ -408,7 +410,7 @@ function hideMap(save: boolean) {
                   type="text"
                   class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                   :placeholder="$t('search_city')"
-                />
+                >
               </div>
               <button
                 v-if="searchInput.length"
@@ -473,7 +475,7 @@ function hideMap(save: boolean) {
                           type="text"
                           class="block w-full rounded border-0 py-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-300 sm:text-sm sm:leading-6 md:py-1.5"
                           :placeholder="$t('search_city')"
-                        />
+                        >
                       </div>
                       <button
                         v-if="searchCityWithoutCountryInput.length"

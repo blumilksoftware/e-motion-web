@@ -20,7 +20,7 @@ interface ImportInfo {
   status: string
   created_at: string | null
   updated_at: string | null
-  import_info_details: Object | null
+  import_info_details: {} | null
 }
 const codes = ref([])
 const providers = ref([])
@@ -31,6 +31,7 @@ axios
     importInfo.value = response.data.importInfo
     codes.value = response.data.codes
     providers.value = response.data.providers
+    return
   })
   .catch((error) => {
     console.error(error)
