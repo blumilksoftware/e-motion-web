@@ -43,11 +43,6 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue')
-  },
-  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: { name: 'home' }
