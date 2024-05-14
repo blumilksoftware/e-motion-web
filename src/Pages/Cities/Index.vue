@@ -25,12 +25,14 @@ if (!store.state.auth.isAdmin) {
   router.push('/')
 }
 const $t = i18n.global.t
-const url: string = ref(window.location.pathname)
-const cities: Array<any> = ref(null)
-const providers: Array<any> = ref(null)
-const countries: Array<any> = ref(null)
-const citiesWithoutAssignedCountry: Array<any> = ref([])
-const dataIsFetched: boolean = ref(false)
+const url: string = window.location.pathname
+import type { Ref } from 'vue'
+
+const cities: Ref<any[]> = ref([])
+const providers = ref<any[]>([])
+const countries = ref<any[]>([])
+const citiesWithoutAssignedCountry = ref<any[]>([])
+const dataIsFetched = ref<boolean>(false)
 
 axios
   .get(`${apiUrl}/api/admin/cities`)
@@ -39,7 +41,7 @@ axios
     providers.value = response.data.providers
     countries.value = response.data.countries
     citiesWithoutAssignedCountry.value = response.data.citiesWithoutAssignedCountry
-    let citiesNoCoords = cities.value.filter((city: Object) => !city.latitude || !city.longitude).length
+    let citiesNoCoords = cities.value.filter((city: {latitude: string, longitude: string }) => !city.latitude || !city.longitude).length
     let citiesNoCountry = citiesWithoutAssignedCountry.value.length
     store.commit('setCities', { citiesNoCoords, citiesNoCountry })
     dataIsFetched.value = true
@@ -49,7 +51,11 @@ axios
     console.error(error)
     throw error
   })
-
+interface City{
+  id: string
+  city_name: string
+  country_name: string
+}
 const countCitiesWithoutAssignedCountry = ref(store.state.auth.cities.noCountry)
 const countCitiesWithoutCoordinates = ref(store.state.auth.cities.noCoords)
 const map: any = ref(null)
@@ -105,7 +111,6 @@ onMounted(() => {
     debounce(() => {
       axios
         .get(`/admin/cities?search=${searchInput.value}`, {
-          replace: true
         })
         .then(() => {
           return
@@ -148,7 +153,7 @@ function toggleCityWithoutCountriesListDialog() {
   isCityWithoutCountriesListDialogOpened.value = !isCityWithoutCountriesListDialogOpened.value
 }
 
-function deleteCityWithoutAssignedCountry(city: Object) {
+function deleteCityWithoutAssignedCountry(city: City) {
   axios
     .delete(`${apiUrl}/api/delete-city-without-assigned-country/${city.id}`)
     .then(() => {
@@ -171,18 +176,18 @@ function deleteAllCitiesWithoutCountry() {
     })
 }
 
-function searchCity(city: Object) {
+function searchCity(city: City) {
   searchInput.value = city.city_name
   toggleCityWithoutCountriesListDialog()
 }
 
-function sendCityToCreateForm(city: Object) {
+function sendCityToCreateForm(city: City) {
   storeCityForm.name = city.city_name
   toggleCityWithoutCountriesListDialog()
   toggleStoreDialog()
 }
 
-function goToGoogleMaps(city) {
+function goToGoogleMaps(city: City) {
   window.open('https://www.google.com/maps/search/' + city.city_name)
 }
 
